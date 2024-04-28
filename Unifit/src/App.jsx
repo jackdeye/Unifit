@@ -1,35 +1,30 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Homepage from './Pages/Homepage';
+import PostPage from './Pages/PostPage';
+import Profile from './Pages/Profile';
+import Login from './Pages/Login';
+import Gallery from './Pages/Gallery';
+import Favorites from './Pages/Favorites';
+import NavBar from './Pages/Components/NavBar';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <BrowserRouter>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://web.cs.ucla.edu/classes/spring24/cs35L/assign.html" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <NavBar />
+        <Routes>
+          <Route path="/homepage" element={<Homepage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/postpage" element={<PostPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Navigate to="/homepage" replace />} />
+        </Routes>
       </div>
-      <h1>'Unifit <3'</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </BrowserRouter>
+  );
 }
-
-export default App
+export default App;
