@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+//import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Homepage from './Pages/Homepage';
 import PostPage from './Pages/PostPage';
@@ -7,7 +7,7 @@ import Profile from './Pages/Profile';
 import Login from './Pages/Login';
 import Gallery from './Pages/Gallery';
 import Favorites from './Pages/Favorites';
-import NavBar from './Pages/Components/NavBar';
+import NavBar from './Components/NavBar';
 
 function App() {
   return (
