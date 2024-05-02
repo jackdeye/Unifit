@@ -8,6 +8,7 @@ import Login from './Pages/Login';
 import Gallery from './Pages/Gallery';
 import Favorites from './Pages/Favorites';
 import NavBar from './Components/NavBar';
+import EditProfile from './Pages/EditProfile';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/postpage" element={<PostPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
       </div>

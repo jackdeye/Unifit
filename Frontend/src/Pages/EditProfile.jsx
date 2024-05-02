@@ -1,33 +1,23 @@
-import React, { Component} from 'react';
+import React, { useState} from 'react';
   
-class EditProfile extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: 'Input Name'};
-    
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-      }
-    
-      handleChange(event) {
-        this.setState({value: event.target.value});
-      }
-    
-      handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
-        event.preventDefault();
-      }
-    
-      render() {
-        return (
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Name:
-              <input type="text" value={this.state.value} onChange={this.handleChange} />
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
-        );
-      }
-    
+function EditProfile () {
+    const [name, setName] = useState('');
+    const handleChange = (event) => {
+        setName(event.target.value);
+    };
+
+  return (
+    <div>
+      <h1>Input Name</h1>
+        <input
+        type="text"
+        value={name}
+        onChange={handleChange}
+        placeholder='Type Name...'
+        />
+        <p>You Typed: {name}</p>
+    </div>
+  );
 }
+
+export default EditProfile;
