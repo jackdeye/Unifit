@@ -1,21 +1,13 @@
-// fileName : server.js 
-// Example using the http module
-const http = require('http');
+import express from "express";
+import records from "./routes/record.js";
 
-// Create an HTTP server
-const server = http.createServer((req, res) => {
-    // Set the response headers
-    res.writeHead(200, { 'Content-Type': 'text/html' });
+const PORT = process.env.PORT || 5050;
+const app = express();
 
-    // Write the response content
-    res.write('<h1>Hello, Node.js HTTP Server!</h1>');
-    res.end();
-});
+app.use(express.json());
+app.use("/record", records);
 
-// Specify the port to listen on
-const port = 3000;
-
-// Start the server
-server.listen(port, () => {
-    console.log(`Node.js HTTP server is running on port ${port}`);
+// start the Express server
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
