@@ -5,7 +5,5 @@ stdenv.mkDerivation {
     nodePackages.create-react-app
     nodejs
     yarn
-	python3
-	python311Packages.selenium
   ];
 }
