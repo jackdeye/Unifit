@@ -6,7 +6,7 @@ import "./NavBar.css"
 export default function Navbar() {
 	return (
 		<div className='navbar'>
-			<h2>Unifits</h2>
+			<h2><Link to='/homepage'>Unifits</Link></h2>
       <div className='link-container'>
           <Link to="/homepage">Home</Link>
           <Link to="/profile">Profile</Link>

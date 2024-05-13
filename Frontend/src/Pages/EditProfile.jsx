@@ -1,4 +1,5 @@
 import React, { useState} from 'react';
+import "./EditProfile.css"
   
 function EditProfile () {
     const [name, setName] = useState('');
