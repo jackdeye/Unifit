@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
-import "./EditProfile.css"
+import "../styles/EditProfile.css"
   
-function EditProfile () {
+export default function EditProfile () {
     const [name, setName] = useState('');
     const handleChange = (event) => {
         setName(event.target.value);
@@ -40,5 +40,3 @@ function EditProfile () {
     </div>
   );
 }
-
-export default EditProfile;

@@ -1,0 +1,48 @@
+.info {
+    position: fixed;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust the space between buttons */
+    top: 50%;
+    left: 10px;
+
+}
+
+.info div {
+    display: inline-block;
+    padding: 20px 30px;
+    font-size: 25px;
+    background-color: #eff0eb;
+    color: black; /* Change the text color as per your requirement */
+    border-radius: 30px; /* Adjust the border radius for rounded corners */
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.info div:hover {
+    color: #ccc;
+}
+
+img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+} 
+
+.cards {
+    display: inline-block;
+    padding: 40px 60px;
+    height: 200px;
+    width: 100px;
+    background-color: #eff0eb;
+    color: black;
+    /* justify-content: flex-end; */
+    transform: translateX(800px);
+
+}
+
+.header {
+    font-size: 35px;
+}
