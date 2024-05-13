@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    desc: ''
+    name: 'name',
+    position: 'position',
+    level: 'level'
   });
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -16,18 +18,21 @@ const PostPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+
     try {
       const response = await fetch('http://localhost:5050/upload', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
       if (response.ok) {
         alert('Post saved successfully!');
-        setFormData({ name: '', desc: '' }); // reset form
+        // setFormData({ name: '', desc: '' }); // reset form
       } else {
         throw new Error('Failed to save post.');
       }

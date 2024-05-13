@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Homepage from './Pages/Homepage';
@@ -10,8 +10,17 @@ import Favorites from './Pages/Favorites';
 import NavBar from './Pages/Components/NavBar';
 
 function App() {
+  const [message, setMessage] = useState("");
+
+  // useEffect(() => {
+  //   fetch("http://localhost:5050/update")
+  //     .then((res) => res.json())
+  //     .then((data) => setMessage(data.message));
+  // }, []);
+
   return (
     <BrowserRouter>
+      {/* <h1>{message}</h1> */}
       <div>
         <NavBar />
         <Routes>
