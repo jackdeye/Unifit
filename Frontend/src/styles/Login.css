@@ -11,9 +11,11 @@
     transform: translate(-50%, -50%);
 }
 
-.form {
-    display: flex;
+.input input {
+    display: block;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
+
