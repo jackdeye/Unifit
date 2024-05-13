@@ -1,0 +1,7 @@
+.EditProfile {
+    background-color: #748b18;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px
+}
