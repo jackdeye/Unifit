@@ -3,8 +3,19 @@ import "../styles/EditProfile.css"
   
 export default function EditProfile () {
     const [name, setName] = useState('');
-    const handleChange = (event) => {
+    const [bio, setBio] = useState('');
+    const [email, setEmail] = useState('');
+
+    const handleNameChange = (event) => {
         setName(event.target.value);
+    };
+
+    const handleBioChange = (event) => {
+        setBio(event.target.value);
+    };
+
+    const handleEmailChange = (event) => {
+      setEmail(event.target.value);
     };
 
   return (
@@ -14,28 +25,32 @@ export default function EditProfile () {
           <input
             type="text"
             value={name}
-            onChange={handleChange}
+            onChange={handleNameChange}
             placeholder='Current Name Displayed here?...'
           />
           <input type="submit" value='Save'/>
           </h4>
-        <p>You Typed: {name}</p>
         
         <h4>Bio
         <input
             type="text"
-            value={name}
-            onChane={handleChange}
+            value={bio}
+            onChange={handleBioChange}
             placeholder="current bio displayed here..."
           />
           <input type="submit" value='Save'/>
           </h4>
         
         <h4>Email:
-          <h5>Display Email...</h5>
+          <input
+            type="text"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="display email here..."
+          />
         </h4>
         
-        <h4>Passworld:</h4>
+        <h4>Password:</h4>
           <h5>Display Password with *** ??</h5>
     </div>
   );
