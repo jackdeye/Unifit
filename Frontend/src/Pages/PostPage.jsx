@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
@@ -18,9 +17,20 @@ const PostPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post('http://localhost:5000/upload', formData);
-      alert('Post saved successfully!');
-      setFormData({ name: '', desc: '' }); // reset form
+      const response = await fetch('http://localhost:5050/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        alert('Post saved successfully!');
+        setFormData({ name: '', desc: '' }); // reset form
+      } else {
+        throw new Error('Failed to save post.');
+      }
     } catch (error) {
       console.error('Error submitting post:', error);
       alert('Failed to save post.');

@@ -29,7 +29,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // This section will help you create a new record.
-router.post("/", async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
     let newDocument = {
       name: req.body.name,
@@ -80,5 +80,37 @@ router.delete("/:id", async (req, res) => {
     res.status(500).send("Error deleting record");
   }
 });
+
+// router.post('/upload', async (req, res) => {
+//   try {
+//     const { name, desc } = req.body;  // 'name' and 'desc' data fields
+//     console.log(`Received name: ${name}, desc: ${desc}`);
+    
+//     // Make a POST request to the specified URL
+//     const response = await fetch('http://localhost:5050/upload', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       credentials: 'include',
+//       body: JSON.stringify({ name, desc }) // Send 'name' and 'desc' as JSON in the request body
+//     });
+
+//     // Check if the request was successful
+//     if (response.ok) {
+//       // Retrieve the response data
+//       const responseData = await response.text();
+//       console.log('Server response:', responseData);
+//       res.status(201).send('Post saved successfully');
+//     } else {
+//       // Handle errors if the request was not successful
+//       throw new Error('Failed to save post.');
+//     }
+//   } catch (error) {
+//     // Handle any errors that occur during the request
+//     console.error('Error submitting post:', error);
+//     res.status(500).send('Error saving post.');
+//   }
+// });
 
 export default router;
