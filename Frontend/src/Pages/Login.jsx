@@ -1,35 +1,32 @@
 import React, { useState } from 'react';
+import {useAuth} from '../auth.js';
 import "../styles/Login.css"
 
-export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-  const handleSubmittion = (event) => {
-    if(username === 'guest1' && password === 'abc'){
-      console.log('Logged In!')
-    } else{
-      console.log('Failed to Log in')
-    }
-  }
+export default function Login({login}) {    
+    const handleSubmission = (event) => {
+      event.preventDefault(); // Prevent form submission (optional)
+      // Replace this with your actual form input handling
+      const username = event.target.username.value;
+      const password = event.target.password.value;
+
+      if (username === "guest1" && password === "abc") {
+        login(); // Call the login method from useAuth
+        console.log("Logged In!");
+      } else {
+        console.log("Failed to Log in");
+      }
+    };
   return(
     <div className='container'>
     <div className='header'>
       <h1>Login</h1>
     </div>
     <div className='input'>
-      <form onSubmit={handleSubmittion}>
+      <form onSubmit={handleSubmission}>
         <label htmlFor='Username'>Username:</label>
         <input
           type='text'
           id='username'
-          value={username}
-          onChange={handleUsernameChange}
           placeholder='Enter your Username'
           required
         />
@@ -37,8 +34,6 @@ export default function Login() {
         <input
           type='text'
           id='password'
-          value={password}
-          onChange={handlePasswordChange}
           placeholder='Enter your password'
           required
         />

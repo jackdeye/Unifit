@@ -8,23 +8,25 @@ import Login from './Pages/Login';
 import Gallery from './Pages/Gallery';
 import Favorites from './Pages/Favorites';
 import NavBar from './Components/NavBar';
+import { useAuth } from './auth.js';
 
-function App() {
+export default function App() {
+  const [authed, setAuthed] = useState(false);
+  const { login } = useAuth(authed,setAuthed);
   return (
     <BrowserRouter>
       <div>
         <NavBar />
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={authed ? <Profile /> : <Homepage /> } />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/postpage" element={<PostPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login login={login} />} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
       </div>
     </BrowserRouter>
   );
 }
-export default App;
