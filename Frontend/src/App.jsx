@@ -15,6 +15,7 @@ export default function App() {
   const { login } = useAuth(authed,setAuthed);
   return (
     <BrowserRouter>
+      {/* <h1>{message}</h1> */}
       <div>
         <NavBar />
         <Routes>
