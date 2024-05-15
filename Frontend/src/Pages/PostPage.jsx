@@ -19,9 +19,8 @@ const PostPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-
     try {
-      const response = await fetch('http://localhost:5050/upload', {
+      const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -34,6 +33,8 @@ const PostPage = () => {
         alert('Post saved successfully!');
         // setFormData({ name: '', desc: '' }); // reset form
       } else {
+        const errorText = await response.text();
+        console.error('Failed to save post:', errorText);
         throw new Error('Failed to save post.');
       }
     } catch (error) {
