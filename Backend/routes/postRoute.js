@@ -1,9 +1,11 @@
 import express from "express";
 import db from "../connection.js";
 import { ObjectId } from "mongodb";
+import multer from "multer";
 
 // Router is an instance of the express router.
 const router = express.Router();
+const upload = multer();
 
 // Get all the posts (list)
 router.get("/", async (req, res) => {
@@ -23,12 +25,24 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create a new post
-router.post("/upload", async (req, res) => {
+router.post("/upload", upload.any(), async (req, res) => {
   try {
-    let newDocument = {
+    if (!req.body.name || !req.body.position || !req.body.level || !req.files || !req.files.length) {
+      return res.status(400).send("Name, position, level, and image are required.");
+    }
+
+    const image = req.files.find(file => file.mimetype.startsWith('image/'));
+    if (!image) {
+      return res.status(400).send("Image file is required.");
+    }
+
+    const base64Image = image.buffer.toString("base64");
+
+    const newDocument = {
       name: req.body.name,
       position: req.body.position,
       level: req.body.level,
+      image: base64Image,
     };
 
     let collection = db.collection("posts");

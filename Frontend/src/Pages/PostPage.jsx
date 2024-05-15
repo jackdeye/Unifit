@@ -2,31 +2,46 @@ import React, { useState } from 'react';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
-    name: 'name',
-    position: 'position',
-    level: 'level'
+    name: ' ',
+    position: ' ',
+    level: ' ',
+    image: null,
   });
 
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    const { name, value, files } = event.target;
+    if (name === 'image') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: files[0] // Store only the first file
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('position', formData.position);
+      formDataToSend.append('level', formData.level);
+      formDataToSend.append('image', formData.image);
+
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        // headers: {
+        //   'Content-Type': 'application/json'
+        // },
         credentials: 'include',
-        body: JSON.stringify(formData)
+        body: formDataToSend
+        //body: JSON.stringify(formData)
       });
 
       if (response.ok) {
@@ -57,6 +72,12 @@ const PostPage = () => {
           <label>
             Description:
             <textarea name="desc" value={formData.desc} onChange={handleChange} required />
+          </label>
+        </div>
+        <div>
+          <label>
+            Image:
+            <input type="file" name="image" accept="image/*" onChange={handleChange} required />
           </label>
         </div>
         <button type="submit">Submit</button>
