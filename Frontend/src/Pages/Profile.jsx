@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import "../styles/Profile.css"
-import cat from "/Users/alyssaleung/CS35L/Unifit/Frontend/Subject.jpg"
+import cat from "../../Subject.jpg"
 
 
 export default function Profile() {
