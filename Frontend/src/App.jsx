@@ -11,8 +11,17 @@ import NavBar from './Components/NavBar';
 import EditProfile from './Pages/EditProfile';
 
 function App() {
+  const [message, setMessage] = useState("");
+
+  // useEffect(() => {
+  //   fetch("http://localhost:5050/update")
+  //     .then((res) => res.json())
+  //     .then((data) => setMessage(data.message));
+  // }, []);
+
   return (
     <BrowserRouter>
+      {/* <h1>{message}</h1> */}
       <div>
         <NavBar />
         <Routes>
