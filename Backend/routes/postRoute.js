@@ -9,10 +9,16 @@ const upload = multer();
 
 // Get all the posts (list)
 router.get("/", async (req, res) => {
-  let collection = await db.collection("posts");
-  let results = await collection.find({}).toArray();
-  res.send(results).status(200);
+  try {
+    const collection = await db.collection("posts");
+    const results = await collection.find({}).toArray();
+    res.status(200).json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching posts");
+  }
 });
+
 
 // Get a single post by id
 router.get("/:id", async (req, res) => {
