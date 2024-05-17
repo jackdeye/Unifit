@@ -1,26 +1,22 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import "../styles/Login.css"
-//import router from '../../../Backend/routes/userRoute.js';
+//import "../styles/Login.css"
 
-export default function Login({login}) {    
+export default function SignUp() {    
     const handleSubmission = (event) => {
-      event.preventDefault(); // Prevent form submission (optional)
-      // Replace this with your actual form input handling
+      event.preventDefault(); 
       const username = event.target.username.value;
       const password = event.target.password.value;
+      console.log("Created an Account");
+      console.log("Username: " + username);
+      console.log("Password: " + username);
+      //try: 
+      //catch: 
 
-      if (username === "guest1" && password === "abc") {
-        login(); // Call the login method from useAuth
-        console.log("Logged In!");
-      } else {
-        console.log("Failed to Log in");
-      }
     };
   return(
     <div className='container'>
     <div className='header'>
-      <h1>Login</h1>
+      <h1>Signup</h1>
     </div>
     <div className='input'>
       <form onSubmit={handleSubmission}>
@@ -38,10 +34,9 @@ export default function Login({login}) {
           placeholder='Enter your password'
           required
         />
-        <button type='submit'>Login</button>
+        <button type='submit'>Signup</button>
       </form>
     </div>
-    <div><Link to="/signup">SignUp</Link></div>
   </div>
 );
 }
