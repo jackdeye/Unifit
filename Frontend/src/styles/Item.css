@@ -1,0 +1,14 @@
+
+.product-item {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .product-item h3 {
+    margin: 0 0 10px 0;
+  }
+  .product-item img {
+    width: 100%; 
+    object-fit: cover;
+  }

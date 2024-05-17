@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-//import './Gallery.css'; // Assuming you have a CSS file for styling
+import '../styles/Gallery.css'; 
 import Item from './Item.jsx';
 
 const Gallery = () => {
