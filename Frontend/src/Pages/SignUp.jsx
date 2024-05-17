@@ -2,36 +2,60 @@
 export default function SignUp() {    
     var username = '';
     var password = '';
+    var doesExist = false;
+
     const handleSubmission = async (event) => {
       event.preventDefault(); 
       username = event.target.username.value;
       password = event.target.password.value;
-      console.log("Created an Account");
-      console.log("Username: " + username);
-      console.log("Password: " + password);
+
+      //First check to see if the username already exists
       try {
-        const formDataToSend = new FormData();
-        formDataToSend.append('username', username);
-        formDataToSend.append('password', password);
-  
-        const response = await fetch('http://localhost:5050/user/upload', {
-          method: 'POST',
-          credentials: 'include',
-          body: formDataToSend
-          //body: JSON.stringify(formData)
+        const check = await fetch(`http://localhost:5050/user/check?username=${username}`, {
+          method: 'GET',
+          credentials: 'include'
         });
-  
-        if (response.ok) {
-          alert('User created saved successfully!');
-          // setFormData({ name: '', desc: '' }); // reset form
-        } else {
+        const checkResponse = await check.json();
+
+        if(checkResponse.bad){
           const errorText = await response.text();
-          console.error('Failed to save post:', errorText);
-          throw new Error('Failed to save post.');
+          console.error('Failed to check usernames:', errorText);
+          throw new Error('Failed to check usernames.');
         }
-      } catch (error) {
-        console.error('Error submitting post:', error);
-        alert('Failed to save post.');
+        if(checkResponse.username){
+          console.log("Username already in use, please choose a different username");
+          doesExist = true;
+        } else{
+          doesExist = false;
+        }
+      } catch (err){
+        console.error('Error checking usernames present:', err);
+        alert('Failed to check usernames.');
+      }
+      
+      if(!doesExist){
+        try {
+          const formDataToSend = new FormData();
+          formDataToSend.append('username', username); //replace username with event....
+          formDataToSend.append('password', password);
+  
+          const response = await fetch('http://localhost:5050/user/upload', {
+            method: 'POST',
+            credentials: 'include',
+            body: formDataToSend
+          });
+    
+          if (response.ok) {
+            alert('User created saved successfully!');
+          } else {
+            const errorText = await response.text();
+            console.error('Failed to save post:', errorText);
+            throw new Error('Failed to save post.');
+          }
+        } catch (error) {
+          console.error('Error submitting post:', error);
+          alert('Failed to save post.');
+        }
       }
     };
 
