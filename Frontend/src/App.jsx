@@ -17,7 +17,7 @@ export default function App() {
     <BrowserRouter>
       {/* <h1>{message}</h1> */}
       <div>
-        <NavBar />
+        <NavBar/>
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/profile" element={authed ? <Profile /> : <Homepage /> } />
