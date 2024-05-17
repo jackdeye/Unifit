@@ -5,6 +5,8 @@ import Item from './Item.jsx';
 const Gallery = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showForSale, setShowForSale] = useState(true);
+  const [showForRent, setShowForRent] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,20 +32,29 @@ const Gallery = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleToggleForSale = () => {
+    setShowForSale(prev => !prev);
+  };
+
+  const handleToggleForRent = () => {
+    setShowForRent(prev => !prev);
+  };
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSaleFilter = showForSale ? product.isForSale : true;
+    const matchesRentFilter = showForRent ? product.isForRent : true;
+    return matchesSearch && matchesSaleFilter && matchesRentFilter;
+  });
 
   return (
+
     <div className="product-list-container">
       <div className="filters-section">
         <h2>Filters</h2>
         <ul>
-          {/* Add your filters here */}
-          <li>Buy</li>
-          <li>Rent</li>
-          <li>Price</li>
-          <li>Rent</li>
+          <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
+          <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
         </ul>
       </div>
       <div className="products-gallery">

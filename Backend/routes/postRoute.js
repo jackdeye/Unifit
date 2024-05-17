@@ -33,10 +33,11 @@ router.get("/:id", async (req, res) => {
 // Create a new post
 router.post("/upload", upload.any(), async (req, res) => {
   try {
-    if (!req.body.name || !req.body.position || !req.body.level || !req.files || !req.files.length) {
-      return res.status(400).send("Name, position, level, and image are required.");
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice } = req.body;
+    if (!name || !desc || !req.files || !req.files.length) {
+      return res.status(400).send("Name, description, and image are required.");
     }
-
+    
     const image = req.files.find(file => file.mimetype.startsWith('image/'));
     if (!image) {
       return res.status(400).send("Image file is required.");
@@ -45,14 +46,17 @@ router.post("/upload", upload.any(), async (req, res) => {
     const base64Image = image.buffer.toString("base64");
 
     const newDocument = {
-      name: req.body.name,
-      position: req.body.position,
-      level: req.body.level,
+      name,
+      desc,
       image: base64Image,
+      isForSale: isForSale === 'true', // Ensure boolean conversion
+      isForRent: isForRent === 'true', // Ensure boolean conversion
+      buyPrice: isForSale === 'true' ? buyPrice : null,
+      rentPrice: isForRent === 'true' ? rentPrice : null,
     };
 
     let collection = db.collection("posts");
-    let result = await collection.insertOne(newDocument);
+    await collection.insertOne(newDocument);
     
     res.sendStatus(204);
   } catch (err) {
@@ -67,9 +71,12 @@ router.patch("/:id", async (req, res) => {
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
       $set: {
-        name: req.body.name,
-        position: req.body.position,
-        level: req.body.level,
+        name,
+        desc,
+        isForSale: isForSale === 'true',
+        isForRent: isForRent === 'true',
+        buyPrice: isForSale === 'true' ? buyPrice : null,
+        rentPrice: isForRent === 'true' ? rentPrice : null,
       },
     };
 
