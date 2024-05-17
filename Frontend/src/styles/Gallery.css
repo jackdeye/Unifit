@@ -1,0 +1,39 @@
+.product-list-container {
+    display: flex;
+  }
+  
+  .filters-section {
+    width: 25%;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .filters-section h2 {
+    margin-bottom: 10px;
+  }
+  
+  .filters-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .filters-section li {
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .products-gallery {
+    display: grid;
+    width: 75%;
+    padding: 20px;
+  }
+  
+  .products-gallery h2 {
+    margin-bottom: 10px;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }

@@ -1,11 +1,14 @@
+.all {
+  display: flex;
+  /* gap: 20px; */
+}
+
 .info {
-    position: fixed;
-    transform: translateY(-50%);
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 10px; /* Adjust the space between buttons */
-    top: 50%;
-    left: 10px;
+    align-items: flex-start;
 
 }
 
@@ -31,18 +34,22 @@ img {
     border-radius: 50%;
 } 
 
-.cards {
-    display: inline-block;
-    padding: 40px 60px;
-    height: 200px;
-    width: 100px;
-    background-color: #eff0eb;
-    color: black;
-    /* justify-content: flex-end; */
-    transform: translateX(800px);
-
-}
-
 .header {
     font-size: 35px;
+}
+
+.products-gallery {
+  display: grid;
+  width: 75%;
+  padding: 20px;
+}
+
+.products-gallery h2 {
+  margin-bottom: 10px;
+}
+
+.products-grid {
+  /* flex-wrap: wrap; */
+  display: flex;
+  gap: 20px;
 }
