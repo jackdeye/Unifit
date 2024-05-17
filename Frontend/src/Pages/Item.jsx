@@ -1,7 +1,6 @@
 import React from 'react';
 import '../styles/Item.css'; // Assuming you have a CSS file for styling
 
-
 const Item = ({ product }) => {
   return (
     <div className="product-item">
