@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
 import "../styles/Profile.css"
+<<<<<<< HEAD
 import cat from "/Users/alyssaleung/CS35L/Unifit/Frontend/Subject.jpg"
 import Item from './Item.jsx'
 import "../styles/Gallery.css"
+=======
+import cat from "../../Subject.jpg"
+
+>>>>>>> origin/main
 
 export default function Profile() {
 
