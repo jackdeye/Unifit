@@ -11,15 +11,15 @@ export default function SignUp() {
 
       //First check to see if the username already exists
       try {
-        const check = await fetch(`http://localhost:5050/user/check?username=${username}`, {
+        const check = await fetch(`http://localhost:5050/users/check?username=${username}`, {
           method: 'GET',
           credentials: 'include'
         });
         const checkResponse = await check.json();
-
+        console.log(checkResponse);
         if(checkResponse.bad){
           const errorText = await response.text();
-          console.error('Failed to check usernames:', errorText);
+          console.error('Error 1:', errorText);
           throw new Error('Failed to check usernames.');
         }
         if(checkResponse.username){
@@ -29,7 +29,7 @@ export default function SignUp() {
           doesExist = false;
         }
       } catch (err){
-        console.error('Error checking usernames present:', err);
+        console.error('Error 2:', err);
         alert('Failed to check usernames.');
       }
       
@@ -49,12 +49,12 @@ export default function SignUp() {
             alert('User created saved successfully!');
           } else {
             const errorText = await response.text();
-            console.error('Failed to save post:', errorText);
-            throw new Error('Failed to save post.');
+            console.error('Error 3: ', errorText);
+            throw new Error('Failed to create user: ');
           }
         } catch (error) {
-          console.error('Error submitting post:', error);
-          alert('Failed to save post.');
+          console.error('Error 4:', error);
+          alert('Failed to create user.');
         }
       }
     };
