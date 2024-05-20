@@ -35,8 +35,8 @@ export default function Profile() {
         <div className="products-gallery">
           <h2>Products</h2>
           <div className="products-grid">
-            {products.map((product) => (
-              <Item product={product}/>
+            {products.map((product, index) => (
+              <Item key={index} product={product}/>
               //<Item id={product.id} name={product.name} buyPrice={product.buyPrice} rentPrice={product.rentPrice} />
             ))}
           </div>
