@@ -22,6 +22,25 @@
     cursor: pointer;
   }
   
+  .price-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px; /* Add some margin to separate it from other filters */
+  }
+
+  .price-input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .filters-section label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
   .products-gallery {
     width: 75%;
     padding: 20px;
