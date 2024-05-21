@@ -106,7 +106,7 @@ const PostPage = () => {
           <div>
             <label>
               Buy Price:
-              <input type="text" name="buyPrice" value={formData.buyPrice} onChange={handleChange} required={formData.isForSale} />
+              <input type="number" name="buyPrice" value={formData.buyPrice} onChange={handleChange} required={formData.isForSale} />
             </label>
           </div>
         )}
@@ -114,7 +114,7 @@ const PostPage = () => {
           <div>
             <label>
               Rent Price:
-              <input type="text" name="rentPrice" value={formData.rentPrice} onChange={handleChange} required={formData.isForRent} />
+              <input type="number" name="rentPrice" value={formData.rentPrice} onChange={handleChange} required={formData.isForRent} />
             </label>
           </div>
         )}

@@ -49,8 +49,8 @@ router.post("/upload", upload.any(), async (req, res) => {
       name,
       desc,
       image: base64Image,
-      isForSale: isForSale === 'true', // Ensure boolean conversion
-      isForRent: isForRent === 'true', // Ensure boolean conversion
+      isForSale: isForSale === 'true', // bool conversion
+      isForRent: isForRent === 'true', 
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
     };
