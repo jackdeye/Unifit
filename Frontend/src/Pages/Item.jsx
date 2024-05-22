@@ -8,6 +8,10 @@ const Item = ({ product }) => {
       <h3>{product.name}</h3>
       <p>Buy Price: {product.buyPrice}</p>
       <p>Rent Price: {product.rentPrice}</p>
+      
+      <button class="heart-button" aria-label="Like">
+        <span class="heart"></span>
+    </button>
     </div>
   );
 };
