@@ -6,22 +6,24 @@ import multer from "multer";
 // Router is an instance of the express router.
 const router = express.Router();
 const upload = multer();
-
-router.get("/", async (req, res) => {
-    let collection = await db.collection("users");
-    let results = await collection.find({}).toArray();
-    res.send(results).status(200);
-  });
   
   // Get a single user by id
   router.get("/:id", async (req, res) => {
     let collection = await db.collection("users");
     let query = { _id: new ObjectId(req.params.id) };
     let result = await collection.findOne(query);
-  
     if (!result) res.send("Post not found").status(404);
     else res.send(result).status(200);
   });
+
+  // Checks to see if the username exists
+  router.get("/checkUsername/:username", async (req, res) => {
+    let collection = await db.collection("users");
+    let query = { username: req.params.username };
+    let result = await collection.findOne(query);
+    if (!result) res.status(404).send("Username not found");
+    else res.status(200).send("Username exists");
+  }); 
 
   // Create a new user
 router.post("/upload", upload.any(), async (req, res) => {

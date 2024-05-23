@@ -1,8 +1,9 @@
 
+
 export default function SignUp() {    
     var username = '';
     var password = '';
-    var doesExist = false;
+    var doesExist = null;
 
     const handleSubmission = async (event) => {
       event.preventDefault(); 
@@ -11,7 +12,7 @@ export default function SignUp() {
 
       //First check to see if the username already exists
       try {
-        const check = await fetch(`http://localhost:5050/users/check?username=${username}`, {
+        const check = await fetch(`http://localhost:5050/users/checkUsername/${username}`, {
           method: 'GET',
           credentials: 'include'
         });
