@@ -3,23 +3,30 @@ import React, { useState } from 'react';
 const PostPage = () => {
   const [formData, setFormData] = useState({
     name: ' ',
-    position: ' ',
-    level: ' ',
+    desc: ' ',
     image: null,
+    isForSale: false,
+    isForRent: false,
+    buyPrice: '',
+    rentPrice: '',
   });
 
-
   const handleChange = (event) => {
-    const { name, value, files } = event.target;
-    if (name === 'image') {
+    const { name, value, files, type, checked } = event.target;
+    if (type === 'file') {
       setFormData(prev => ({
         ...prev,
-        [name]: files[0] // Store only the first file
+        [name]: files[0], // Store only the first file
+      }));
+    } else if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked,
       }));
     } else {
       setFormData(prev => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -30,9 +37,12 @@ const PostPage = () => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
-      formDataToSend.append('position', formData.position);
-      formDataToSend.append('level', formData.level);
+      formDataToSend.append('desc', formData.desc);
       formDataToSend.append('image', formData.image);
+      formDataToSend.append('isForSale', formData.isForSale);
+      formDataToSend.append('isForRent', formData.isForRent);
+      formDataToSend.append('buyPrice', formData.buyPrice);
+      formDataToSend.append('rentPrice', formData.rentPrice);
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
@@ -80,6 +90,34 @@ const PostPage = () => {
             <input type="file" name="image" accept="image/*" onChange={handleChange} required />
           </label>
         </div>
+        <div>
+          <label>
+            For Sale:
+            <input type="checkbox" name="isForSale" checked={formData.isForSale} onChange={handleChange} />
+          </label>
+        </div>
+        <div>
+          <label>
+            For Rent:
+            <input type="checkbox" name="isForRent" checked={formData.isForRent} onChange={handleChange} />
+          </label>
+        </div>
+        {formData.isForSale && (
+          <div>
+            <label>
+              Buy Price:
+              <input type="text" name="buyPrice" value={formData.buyPrice} onChange={handleChange} required={formData.isForSale} />
+            </label>
+          </div>
+        )}
+        {formData.isForRent && (
+          <div>
+            <label>
+              Rent Price:
+              <input type="text" name="rentPrice" value={formData.rentPrice} onChange={handleChange} required={formData.isForRent} />
+            </label>
+          </div>
+        )}
         <button type="submit">Submit</button>
       </form>
     </div>
