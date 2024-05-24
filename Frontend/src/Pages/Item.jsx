@@ -2,11 +2,21 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Link } from 'react-router-dom';
+import React from 'react';
+import '../styles/Item.css'; // Assuming you have a CSS file for styling
+import { useState } from "react";
+
 
 const Item = ({ product }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [availability, setAvailability] = useState([]);
+  const [like, setLike] = useState(false);
+
+  const handleLike = () => {
+    setLike(!like);
+    console.log(`set favorite to ${!like}`);
+  };
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -44,6 +54,15 @@ const Item = ({ product }) => {
       <h3>{product.name}</h3>
       <p>Buy Price: {product.buyPrice}</p>
       <p>Rent Price: {product.rentPrice}</p>
+      
+      <button
+        className={`heart-button ${like ? 'liked' : ''}`}
+        aria-label="Like"
+        onClick={handleLike}
+      >
+        <span className="heart"></span>
+      </button>
+
       </Link>
       {/* <DatePicker
         selected={startDate}
