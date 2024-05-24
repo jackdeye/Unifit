@@ -11,7 +11,6 @@ export default function Login({login}) {
       const password = event.target.password.value;
 
       if (username === "guest1" && password === "abc") {
-        login(); // Call the login method from useAuth
         console.log("Logged In!");
       } else {
         console.log("Failed to Log in");
