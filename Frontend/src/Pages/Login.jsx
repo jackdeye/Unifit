@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import {useAuth} from '../auth.js';
+import { Link } from 'react-router-dom';
 import "../styles/Login.css"
+//import router from '../../../Backend/routes/userRoute.js';
 
 export default function Login({login}) {    
     const handleSubmission = (event) => {
@@ -32,7 +33,7 @@ export default function Login({login}) {
         />
         <label htmlFor='password'>Password:</label>
         <input
-          type='text'
+          type='password'
           id='password'
           placeholder='Enter your password'
           required
@@ -40,6 +41,7 @@ export default function Login({login}) {
         <button type='submit'>Login</button>
       </form>
     </div>
+    <div><Link to="/signup">SignUp</Link></div>
   </div>
 );
 }

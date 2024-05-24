@@ -9,12 +9,6 @@ import jwt from 'jsonwebtoken';
 // Router is an instance of the express router.
 const router = express.Router();
 const upload = multer();
-
-router.get("/", async (req, res) => {
-    let collection = await db.collection("users");
-    let results = await collection.find({}).toArray();
-    res.send(results).status(200);
-  });
   
   // SignIn
 router.get("/signin", async (req, res) => {
@@ -42,7 +36,7 @@ router.post("/signup", upload.any(), async (req, res) => {
       const existingUser = await collection.findOne({ email });
       if (existingUser) res.send("User already exists.").status(400);
 
-      if (passowrd !== confirmPassword) res.send("Passwords don't match.").status(400);
+      if (password !== confirmPassword) res.send("Passwords don't match.").status(400);
 
       const hashedPassword = await bcrypt.hash(password, 12);
       const result = await User.create({ email, password: hashedPassword, name: '${firstName} ${lastName}' });

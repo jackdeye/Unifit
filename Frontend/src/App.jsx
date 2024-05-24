@@ -9,6 +9,7 @@ import Favorites from './Pages/Favorites';
 import NavBar from './Components/NavBar';
 import { useAuth } from './auth.js';
 import EditProfile from './Pages/EditProfile';
+import SignUp from './Pages/SignUp.jsx';
 
 export default function App() {
   const [authed, setAuthed] = useState(false);
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/postpage" element={<PostPage />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login login={login} />} />
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
