@@ -12,22 +12,50 @@ const upload = multer();
   
 // SignUp - create a new user
 router.post("/signup", upload.none(), async (req, res) => {
-  //const { email, password, confirmPassword, firstName, lastName } = req.body;
-  const { username, password } = req.body;
+  // //const { email, password, confirmPassword, firstName, lastName } = req.body;
+  // const { username, password } = req.body;
+
+  // try {
+  //   if (!username || !password) {
+  //     return res.status(400).send("Username and Password are required");
+  //   }
+  //   const collection = db.collection("users");
+  //   const existingUser = await collection.findOne({ username });
+  //   if (existingUser) res.send("User already exists.").status(400);
+
+  //   const hashedPassword = await bcrypt.hash(password, 12);
+  //   const result = await collection.insertOne({ username, password: hashedPassword });
+
+  //   if (result.insertedId) {
+  //     res.status(201).json({ message: "User created successfully", user: { username, id: result.insertedId } });
+  //   } else {
+  //     res.status(500).send("Something went wrong");
+  //   }
+    
+  // } catch (err) {
+  //   console.error(err);
+  //   res.status(500).send("Something went wrong");
+  // }
+
+  const { username, password, confirmPassword, firstName, lastName } = req.body;
 
   try {
-    if (!username || !password) {
-      return res.status(400).send("Username and Password are required");
+    if (!username || !password || !firstName || !lastName) {
+      return res.status(400).send("Username, Password, First Name, and Last Name are required");
     }
     const collection = db.collection("users");
     const existingUser = await collection.findOne({ username });
     if (existingUser) res.send("User already exists.").status(400);
 
+    if (password !== confirmPassword) res.send("Passwords don't match.").status(400);
+
     const hashedPassword = await bcrypt.hash(password, 12);
-    const result = await collection.insertOne({ username, password: hashedPassword });
+    const result = await collection.insertOne({ username, password: hashedPassword, name: `${firstName} ${lastName}` });
+    // const token = jwt.sign({ username: result.username, id: result._id }, 'test', { expiresIn: "1h" });
 
     if (result.insertedId) {
       res.status(201).json({ message: "User created successfully", user: { username, id: result.insertedId } });
+      // res.status(201).json({ result, token });
     } else {
       res.status(500).send("Something went wrong");
     }
@@ -36,15 +64,6 @@ router.post("/signup", upload.none(), async (req, res) => {
     console.error(err);
     res.status(500).send("Something went wrong");
   }
-
-  // try {
-  //   if (!email || !password || !firstName || !lastName) {
-  //     return res.status(400).send("Username, Password, First Name, and Last Name are required");
-  //   }
-  //   const existingUser = await collection.findOne({ email });
-  //   if (existingUser) res.send("User already exists.").status(400);
-
-  //   if (password !== confirmPassword) res.send("Passwords don't match.").status(400);
 
   //   const hashedPassword = await bcrypt.hash(password, 12);
   //   const result = await User.create({ email, password: hashedPassword, name: '${firstName} ${lastName}' });
