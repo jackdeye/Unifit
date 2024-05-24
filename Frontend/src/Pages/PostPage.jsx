@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../styles/Login.css"
+import "../styles/PostPage.css"
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -130,8 +130,8 @@ const PostPage = () => {
         )}
         <div>
           <label>
-            Availability:
-            <DatePicker
+            <h3>Availability:</h3>
+            <div> <DatePicker
               selected={formData.availability[0]}
               onChange={handleDateChange}
               startDate={formData.availability[0]}
@@ -139,6 +139,7 @@ const PostPage = () => {
               selectsRange
               inline
             />
+            </div>
           </label>
         </div>
         <button type="submit">Submit</button>

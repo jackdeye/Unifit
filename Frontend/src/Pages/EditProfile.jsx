@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import "./EditProfile.css";
+import "../styles/Login.css";
   
 function EditProfile () {
     const [name, setName] = useState('');
@@ -19,7 +19,7 @@ function EditProfile () {
     };
 
   return (
-    <div>
+    <div className='container'>
       <h1>Edit Profile</h1>
           <h4>Name: 
           <input
