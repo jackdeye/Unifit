@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +11,7 @@ const PostPage = () => {
     isForRent: false,
     buyPrice: '',
     rentPrice: '',
+    availability: [],
   });
 
   const handleChange = (event) => {
@@ -31,6 +34,14 @@ const PostPage = () => {
     }
   };
 
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setFormData(prev => ({
+      ...prev,
+      availability: [start, end]
+    }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -43,15 +54,12 @@ const PostPage = () => {
       formDataToSend.append('isForRent', formData.isForRent);
       formDataToSend.append('buyPrice', formData.buyPrice);
       formDataToSend.append('rentPrice', formData.rentPrice);
+      formDataToSend.append('availability', JSON.stringify(formData.availability));
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
-        // headers: {
-        //   'Content-Type': 'application/json'
-        // },
         credentials: 'include',
         body: formDataToSend
-        //body: JSON.stringify(formData)
       });
 
       if (response.ok) {
@@ -118,6 +126,19 @@ const PostPage = () => {
             </label>
           </div>
         )}
+        <div>
+          <label>
+            Availability:
+            <DatePicker
+              selected={formData.availability[0]}
+              onChange={handleDateChange}
+              startDate={formData.availability[0]}
+              endDate={formData.availability[1]}
+              selectsRange
+              inline
+            />
+          </label>
+        </div>
         <button type="submit">Submit</button>
       </form>
     </div>
