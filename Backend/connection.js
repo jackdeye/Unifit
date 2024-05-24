@@ -9,7 +9,6 @@ const client = new MongoClient(uri, {
   },
 });
 
-
 try {
   console.log("test");
   // Connect the client to the server

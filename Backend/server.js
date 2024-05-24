@@ -3,7 +3,7 @@ import cors from 'cors';
 
 // Import routes
 import postRoutes from "./routes/postRoute.js";
-// import userRoutes from "./routes/userRoute.js";
+import userRoutes from "./routes/userRoute.js";
 
 // Start the Node Express server
 const PORT = process.env.PORT || 5050;
@@ -14,7 +14,7 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 // API Routes
 app.use("/post", postRoutes);
-// app.use("/user", userRoutes);
+app.use("/user", userRoutes);
 
 // Start the Express server
 app.listen(PORT, () => {
