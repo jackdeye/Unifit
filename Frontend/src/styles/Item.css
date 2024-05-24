@@ -8,10 +8,13 @@
 .product-item h3 {
   margin: 0 0 10px 0;
 }
+
 .product-item img {
-  width: 100%; 
-  object-fit: cover;
-}
+    height: 70%;
+    width: 90%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
 
 .heart-button {
   background: none;
