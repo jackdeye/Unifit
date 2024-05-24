@@ -36,3 +36,14 @@
   .item-info p {
     margin: 10px 0;
   }
+
+  .unavailable {
+    background-color: #ffcccc;
+    color: #d9534f;
+    pointer-events: none; /*date unselectable */
+  }
+
+  .available {
+    background-color: #d4edda !important; /* light green for available dates */
+    color: #155724 !important; /* dark green for text */
+  }
