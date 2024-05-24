@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { Link } from 'react-router-dom';
 
 const Item = ({ product }) => {
   const [startDate, setStartDate] = useState(null);
@@ -37,10 +38,13 @@ const Item = ({ product }) => {
 
   return (
     <div className="product-item">
+      {/* <Link to="/postpage">Posts */}
+      <Link to={`/item/${product._id}`}>
       <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name} />
       <h3>{product.name}</h3>
       <p>Buy Price: {product.buyPrice}</p>
       <p>Rent Price: {product.rentPrice}</p>
+      </Link>
       {/* <DatePicker
         selected={startDate}
         onChange={handleDateChange}

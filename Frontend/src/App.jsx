@@ -9,6 +9,7 @@ import Gallery from './Pages/Gallery';
 import Favorites from './Pages/Favorites';
 import NavBar from './Components/NavBar';
 import EditProfile from './Pages/EditProfile';
+import ItemPage from './Pages/ItemPage';
 
 function App() {
   const [message, setMessage] = useState("");
@@ -32,6 +33,7 @@ function App() {
           <Route path="/postpage" element={<PostPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/item/:id" element={<ItemPage />} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
       </div>
