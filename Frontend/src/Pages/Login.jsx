@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/Login.css"
 //import router from '../../../Backend/routes/userRoute.js';
+import "../styles/PostPage.css"
 
 export default function Login({login}) {    
     const handleSubmission = (event) => {
