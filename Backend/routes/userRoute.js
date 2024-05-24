@@ -26,23 +26,21 @@ router.get("/signin", async (req, res) => {
 });
 
   // SignUp - create a new user
-router.post("/signup", upload.any(), async (req, res) => {
-    const { email, password, confirmPassword, firstName, lastName } = req.body;
+router.post("/signup", async (req, res) => {
+    //const { email, password, confirmPassword, firstName, lastName } = req.body;
+    const { username, password } = req.body;
 
     try {
-      if (!email || !password || !firstName || !lastName) {
-        return res.status(400).send("Username, Password, First Name, and Last Name are required");
+      if (!username || !password) {
+        return res.status(400).send("Username and Password are required");
       }
-      const existingUser = await collection.findOne({ email });
+      const existingUser = await collection.findOne({ username });
       if (existingUser) res.send("User already exists.").status(400);
 
-      if (password !== confirmPassword) res.send("Passwords don't match.").status(400);
+      const result = await User.create({ username, password });
+      // const token = jwt.sign({ email: result.username, id: result._id }, 'test', { expiresIn: "1h" });
 
-      const hashedPassword = await bcrypt.hash(password, 12);
-      const result = await User.create({ email, password: hashedPassword, name: '${firstName} ${lastName}' });
-      const token = jwt.sign({ email: result.email, id: result._id }, 'test', { expiresIn: "1h" });
-
-      res.status(201).json({ result, token });
+      res.status(201).json({ result });
       let collection = db.collection("users");
       
       res.sendStatus(204);
@@ -50,6 +48,28 @@ router.post("/signup", upload.any(), async (req, res) => {
       console.error(err);
       res.status(500).send("Something went wrong");
     }
+
+    // try {
+    //   if (!email || !password || !firstName || !lastName) {
+    //     return res.status(400).send("Username, Password, First Name, and Last Name are required");
+    //   }
+    //   const existingUser = await collection.findOne({ email });
+    //   if (existingUser) res.send("User already exists.").status(400);
+
+    //   if (password !== confirmPassword) res.send("Passwords don't match.").status(400);
+
+    //   const hashedPassword = await bcrypt.hash(password, 12);
+    //   const result = await User.create({ email, password: hashedPassword, name: '${firstName} ${lastName}' });
+    //   const token = jwt.sign({ email: result.email, id: result._id }, 'test', { expiresIn: "1h" });
+
+    //   res.status(201).json({ result, token });
+    //   let collection = db.collection("users");
+      
+    //   res.sendStatus(204);
+    // } catch (err) {
+    //   console.error(err);
+    //   res.status(500).send("Something went wrong");
+    // }
   });
   
   export default router;

@@ -10,54 +10,76 @@ export default function SignUp() {
       username = event.target.username.value;
       password = event.target.password.value;
 
-      //First check to see if the username already exists
       try {
-        const check = await fetch(`http://localhost:5050/users/checkUsername/${username}`, {
-          method: 'GET',
-          credentials: 'include'
+        const formDataToSend = new FormData();
+        formDataToSend.append('username', username); //replace username with event....
+        formDataToSend.append('password', password);
+
+        const response = await fetch('http://localhost:5050/user/signup', {
+          method: 'POST',
+          credentials: 'include',
+          body: formDataToSend
         });
-        const checkResponse = await check.json();
-        console.log(checkResponse);
-        if(checkResponse.bad){
-          const errorText = await response.text();
-          console.error('Error 1:', errorText);
-          throw new Error('Failed to check usernames.');
-        }
-        if(checkResponse.username){
-          console.log("Username already in use, please choose a different username");
-          doesExist = true;
-        } else{
-          doesExist = false;
-        }
-      } catch (err){
-        console.error('Error 2:', err);
-        alert('Failed to check usernames.');
-      }
-      
-      if(!doesExist){
-        try {
-          const formDataToSend = new FormData();
-          formDataToSend.append('username', username); //replace username with event....
-          formDataToSend.append('password', password);
   
-          const response = await fetch('http://localhost:5050/user/upload', {
-            method: 'POST',
-            credentials: 'include',
-            body: formDataToSend
-          });
-    
-          if (response.ok) {
-            alert('User created saved successfully!');
-          } else {
-            const errorText = await response.text();
-            console.error('Error 3: ', errorText);
-            throw new Error('Failed to create user: ');
-          }
-        } catch (error) {
-          console.error('Error 4:', error);
-          alert('Failed to create user.');
+        if (response.ok) {
+          alert('User created saved successfully!');
+        } else {
+          const errorText = await response.text();
+          console.error('Error 3: ', errorText);
+          throw new Error('Failed to create user: ');
         }
+      } catch (error) {
+        console.error('Error 4:', error);
+        alert('Failed to create user.');
       }
+      // //First check to see if the username already exists
+      // try {
+      //   const check = await fetch(`http://localhost:5050/users/checkUsername/${username}`, {
+      //     method: 'GET',
+      //     credentials: 'include'
+      //   });
+      //   const checkResponse = await check.json();
+      //   console.log(checkResponse);
+      //   if(checkResponse.bad){
+      //     const errorText = await response.text();
+      //     console.error('Error 1:', errorText);
+      //     throw new Error('Failed to check usernames.');
+      //   }
+      //   if(checkResponse.username){
+      //     console.log("Username already in use, please choose a different username");
+      //     doesExist = true;
+      //   } else{
+      //     doesExist = false;
+      //   }
+      // } catch (err){
+      //   console.error('Error 2:', err);
+      //   alert('Failed to check usernames.');
+      // }
+      
+      // if(!doesExist){
+      //   try {
+      //     const formDataToSend = new FormData();
+      //     formDataToSend.append('username', username); //replace username with event....
+      //     formDataToSend.append('password', password);
+  
+      //     const response = await fetch('http://localhost:5050/user/signup', {
+      //       method: 'POST',
+      //       credentials: 'include',
+      //       body: formDataToSend
+      //     });
+    
+      //     if (response.ok) {
+      //       alert('User created saved successfully!');
+      //     } else {
+      //       const errorText = await response.text();
+      //       console.error('Error 3: ', errorText);
+      //       throw new Error('Failed to create user: ');
+      //     }
+      //   } catch (error) {
+      //     console.error('Error 4:', error);
+      //     alert('Failed to create user.');
+      //   }
+      // }
     };
 
   return(
@@ -72,6 +94,7 @@ export default function SignUp() {
           type='text'
           id='username'
           placeholder='Enter your Username'
+          value={username}
           required
         />
         <label htmlFor='password'>Password:</label>
@@ -79,6 +102,7 @@ export default function SignUp() {
           type='password'
           id='password'
           placeholder='Enter your password'
+          value={password}
           required
         />
         <button type='submit'>Signup</button>
