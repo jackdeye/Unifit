@@ -45,8 +45,9 @@ router.post("/signup", upload.none(), async (req, res) => {
     }
     const collection = db.collection("users");
     const existingUser = await collection.findOne({ username });
-    if (existingUser) res.send("User already exists.").status(400);
-
+    if (existingUser) {
+      return res.status(400).send("User already exists.");
+    }
     if (password !== confirmPassword) res.send("Passwords don't match.").status(400);
 
     const hashedPassword = await bcrypt.hash(password, 12);
