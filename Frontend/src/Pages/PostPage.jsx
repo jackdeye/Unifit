@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import "../styles/Login.css"
+
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -77,8 +79,8 @@ const PostPage = () => {
   };
 
   return (
-    <div>
-      <h2>Create a New Post</h2>
+    <div className='container'>
+      <h1 className='header'>Create a New Post</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>

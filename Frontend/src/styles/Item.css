@@ -5,12 +5,60 @@
     text-align: center;
   }
   
-  .product-item h3 {
-    margin: 0 0 10px 0;
-  }
-  .product-item img {
+.product-item h3 {
+  margin: 0 0 10px 0;
+}
+
+.product-item img {
     height: 70%;
     width: 90%;
     object-fit: cover;
     border-radius: 8px;
   }
+
+.heart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  position: relative;
+}
+
+.heart-button .heart {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: lightgray;
+  position: relative;
+  transform: rotate(-45deg);
+  margin: 0 auto;
+  transition: background-color 0.3s ease;
+}
+
+.heart-button .heart::before,
+.heart-button .heart::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: lightgray;
+  transition: background-color 0.3s ease;
+}
+
+.heart-button .heart::before {
+  top: -10px;
+  left: 0;
+}
+
+.heart-button .heart::after {
+  left: 10px;
+  top: 0;
+}
+
+.heart-button.liked .heart,
+.heart-button.liked .heart::before,
+.heart-button.liked .heart::after {
+  background-color: red;
+}

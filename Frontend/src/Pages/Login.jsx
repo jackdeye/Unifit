@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/Login.css"
 //import router from '../../../Backend/routes/userRoute.js';
+import "../styles/PostPage.css"
 
 export default function Login({login}) {    
     const handleSubmission = (event) => {
@@ -11,7 +12,6 @@ export default function Login({login}) {
       const password = event.target.password.value;
 
       if (username === "guest1" && password === "abc") {
-        login(); // Call the login method from useAuth
         console.log("Logged In!");
       } else {
         console.log("Failed to Log in");

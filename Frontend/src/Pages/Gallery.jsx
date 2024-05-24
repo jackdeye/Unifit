@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gallery.css'; 
 import Item from './Item.jsx';
+import Fuse from 'fuse.js';
 
 const Gallery = () => {
   const [products, setProducts] = useState([]);
@@ -30,7 +31,6 @@ const Gallery = () => {
     fetchProducts();
   }, []);
 
-
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -55,8 +55,7 @@ const Gallery = () => {
     setMaxPrice(event.target.value);
   };
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+  const filterProducts = (p) => p.filter(product => {
     const matchesSaleFilter = showForSale ? product.isForSale : true;
     const matchesRentFilter = showForRent ? product.isForRent : true;
     const buyPrice = product.isForSale ? product.buyPrice : Infinity;
@@ -64,17 +63,28 @@ const Gallery = () => {
     const min = minPrice ? parseFloat(minPrice) : 0;
     const max = maxPrice ? parseFloat(maxPrice) : Infinity;
     const matchesPriceRange = (buyPrice >= min && buyPrice <= max) || (rentPrice >= min && rentPrice <= max);
-    return matchesSearch && matchesSaleFilter && matchesRentFilter && matchesPriceRange;
+    return matchesSaleFilter && matchesRentFilter && matchesPriceRange;
   });
 
-  const sortedProducts = filteredProducts.sort((a, b) => {
-    const aPrice = a.isForSale ? a.buyPrice : a.isForRent ? a.rentPrice : 0;
-    const bPrice = b.isForSale ? b.buyPrice : b.isForRent ? b.rentPrice : 0;
-    return priceOrder === 'desc' ? aPrice - bPrice : bPrice - aPrice;
-  });
+  const fuse = new Fuse(products, {keys: ["name"]});
+
+  const getFilteredAsItems = () => {
+    var ret = []
+    if(searchQuery === "") {
+      ret = products;
+    } else {
+      ret = fuse.search(searchQuery).map(obj => obj.item);
+    }
+    ret = filterProducts(ret).map((product) => (
+      <Item key={product._id} product={product} />
+    ));
+    if(ret.length === 0) {
+      ret = <div>No Products Found</div>;
+    }
+    return ret;
+  }
 
   return (
-
     <div className="product-list-container">
       <div className="filters-section">
         <h2>Filters</h2>
@@ -106,9 +116,8 @@ const Gallery = () => {
             </select>
           </label>
         </div>
-
       </div>
-            <div className="products-gallery">
+      <div className="products-gallery">
         <h2>Products</h2>
         <input
           type="text"
@@ -118,9 +127,7 @@ const Gallery = () => {
           className="search-bar"
         />
         <div className="products-grid">
-          {filteredProducts.map((product) => (
-            <Item key={product._id} product={product} />
-          ))}
+          {getFilteredAsItems()}
         </div>
       </div>
     </div>
