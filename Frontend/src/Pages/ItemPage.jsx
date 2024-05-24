@@ -36,6 +36,7 @@ const ItemPage = () => {
             </div>
             <div className='item-info'>
                 <h3>{product.name}</h3>
+                <p>{product.desc}</p>
                 <p>Buy Price: {product.buyPrice}</p>
                 <p>Rent Price: {product.rentPrice}</p>
             </div>
