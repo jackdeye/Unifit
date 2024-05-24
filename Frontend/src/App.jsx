@@ -10,6 +10,7 @@ import NavBar from './Components/NavBar';
 import { useAuth } from './auth.js';
 import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
+import ItemPage from './Pages/ItemPage';
 
 export default function App() {
   const [authed, setAuthed] = useState(false);
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login login={login} />} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/item/:id" element={<ItemPage />} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
       </div>

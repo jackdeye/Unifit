@@ -31,10 +31,27 @@ router.get("/:id", async (req, res) => {
   else res.send(result).status(200);
 });
 
+router.get("/:id/availability", async (req, res) => {
+  try {
+    const collection = await db.collection("posts");
+    const query = { _id: new ObjectId(req.params.id) };
+    const post = await collection.findOne(query, { projection: { availability: 1 } });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    res.status(200).json(post.availability);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching availability");
+  }
+});
+
 // Create a new post
 router.post("/upload", upload.any(), async (req, res) => {
   try {
-    const { name, desc, isForSale, isForRent, buyPrice, rentPrice } = req.body;
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability } = req.body;
     if (!name || !desc || !req.files || !req.files.length) {
       return res.status(400).send("Name, description, and image are required.");
     }
@@ -50,10 +67,11 @@ router.post("/upload", upload.any(), async (req, res) => {
       name,
       desc,
       image: base64Image,
-      isForSale: isForSale === 'true', // Ensure boolean conversion
-      isForRent: isForRent === 'true', // Ensure boolean conversion
+      isForSale: isForSale === 'true', // bool conversion
+      isForRent: isForRent === 'true', 
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
+      availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
     };
 
     let collection = db.collection("posts");
@@ -69,6 +87,7 @@ router.post("/upload", upload.any(), async (req, res) => {
 // Update a post by id
 router.patch("/:id", async (req, res) => {
   try {
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice } = req.body;
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
       $set: {
@@ -81,9 +100,12 @@ router.patch("/:id", async (req, res) => {
       },
     };
 
-    let collection = await db.collection("posts");
-    let result = await collection.updateOne(query, updates);
-    res.send(result).status(200);
+    const collection = db.collection("posts");
+    const result = await collection.updateOne(query, updates);
+    if (result.matchedCount === 0) {
+      return res.status(404).send("Post not found");
+    }
+    res.status(200).json(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error updating post");
@@ -94,11 +116,12 @@ router.patch("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
-
     const collection = db.collection("posts");
-    let result = await collection.deleteOne(query);
-
-    res.send(result).status(200);
+    const result = await collection.deleteOne(query);
+    if (result.deletedCount === 0) {
+      return res.status(404).send("Post not found");
+    }
+    res.status(200).json(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting post");

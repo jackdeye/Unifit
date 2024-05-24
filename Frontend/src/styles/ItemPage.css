@@ -1,0 +1,38 @@
+.item-page {
+    display: flex;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    gap: 20px;
+    margin: 20px;
+  }
+  .item-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-evenly;
+  }
+  .item-image {
+    width: 40%;
+    padding: 20px;
+  }
+  .item-image img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 40%
+  }
+  
+  .item-info h2 {
+    margin: 0;
+    font-size: 2em;
+  }
+  
+  .item-info p {
+    margin: 10px 0;
+  }
