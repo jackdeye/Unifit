@@ -82,8 +82,7 @@ const Gallery = () => {
           <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
           <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
         </ul>
-      </div>
-      <div className="price-filter">
+        <div className="price-filter">
           <div className="price-input">
           <label>
             Min Price: 
@@ -107,7 +106,9 @@ const Gallery = () => {
             </select>
           </label>
         </div>
-      <div className="products-gallery">
+
+      </div>
+            <div className="products-gallery">
         <h2>Products</h2>
         <input
           type="text"
