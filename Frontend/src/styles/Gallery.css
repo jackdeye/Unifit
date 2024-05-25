@@ -44,6 +44,7 @@
   .products-gallery {
     width: 75%;
     padding: 20px;
+    gap: 10px;
   }
   
   .products-gallery h2 {
@@ -54,5 +55,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
+    grid-auto-rows: 1fr;
+
   }
   
