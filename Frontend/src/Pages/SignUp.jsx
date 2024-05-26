@@ -63,7 +63,7 @@ export default function SignUp() {
               onChange={handleChange}
               required
         />
-        <label htmlFor='password'>Last Name:</label>
+        <label htmlFor='lastName'>Last Name:</label> 
           <input
               type='lastName'
               id='lastName'
