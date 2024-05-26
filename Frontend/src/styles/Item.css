@@ -62,3 +62,16 @@
 .heart-button.liked .heart::after {
   background-color: red;
 }
+.product-interact {
+  display: flex;
+  gap: 20px;
+  justify-content: space-evenly;
+}
+.price-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-info p {
+  margin: 0.5em 0; 
+}
