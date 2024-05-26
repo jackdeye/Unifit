@@ -1,16 +1,41 @@
-import { Link } from 'react-router-dom';
-function Homepage() {
+import React from 'react';
+import '../styles/Homepage.css';
+import { Link, useNavigate } from 'react-router-dom';
+
+const Homepage = () => {
+    const navigate = useNavigate();
   return (
-    <div className="Homepage">
-      <header className="UniFit-Home">
-        
-        <h1 className="title">Unifit</h1> 
+    <div className="homepage">
+      <div className='item'>
+        <h1>Unifit</h1> 
+        </div>
+        <div className='item'>
         <p>
-          Lets get Started!
+          blurb blurb blurb!!
         </p>
-        <button><Link to="/Gallery">Gallery</Link></button>
-      </header>
+        </div>
+        <div className='item'>
+        <button className='browse-gallery' onClick={() => navigate('/gallery')}>
+          Browse Collection
+        </button>
+        </div>
+        <div className='item'>
+        <p> Welcome back! To access your profile or view your saved favorites, log in below.</p>
+          <p>New around here? Sign up below to create your account. </p>
+          </div>
+          <div className='item'>
+        <div className="start-button-container">
+        <button className="start-button" onClick={() => navigate('/login')}>
+          Login
+        </button>
+        <button className="start-button" onClick={() => navigate('/signup')}>
+          Sign up!
+        </button>
+        </div>
+      </div>
+
     </div>
   );
-}
-  export default Homepage;
+};
+
+export default Homepage;
