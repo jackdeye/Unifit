@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/NavBar.css"
+import { Counter } from '../Auth/test.jsx';
 
 
 export default function Navbar() {
@@ -13,6 +14,8 @@ export default function Navbar() {
           <Link to="/gallery">Gallery</Link>
           <Link to="/favorites">Favorites</Link>
           <Link to="/postpage">Posts</Link>
+          <Counter></Counter>
+
       </div>
         <div className='button'>
           <Link to="/login">Login</Link>
