@@ -22,7 +22,8 @@ export default function App() {
         <NavBar/>
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
-          <Route path="/profile" element={authed ? <Profile /> : <Homepage /> } />
+          {/* <Route path="/profile" element={authed ? <Profile /> : <Homepage /> } />  */}
+          <Route path="/profile" element={<Profile/>} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/postpage" element={<PostPage />} />
