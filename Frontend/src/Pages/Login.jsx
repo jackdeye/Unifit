@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { loginSuccess} from '../Auth/authSlice'
 import "../styles/Login.css"
 import "../styles/PostPage.css"
 
-export default function Login({login}) {     
+export default function Login() {     
+  {/*const isAuthed = useSelector((state) => state.auth.value) */}
+  const dispatch = useDispatch()
+  
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -34,7 +39,8 @@ export default function Login({login}) {
       console.log(response);
       if (response.ok) {
         alert('User has logged in successfully!');
-        login();
+        dispatch(loginSuccess());
+
       } else {
         const errorText = await response.text();
         console.error('Error 3: ', errorText);

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 import "../styles/NavBar.css"
-import { Counter } from '../Auth/test.jsx';
 
 
 export default function Navbar() {
-	return (
+	const isAuthed = useSelector((state) => state.auth.value)
+  {/*const dispatch = useDispatch()*/}
+  return (
 		<div className='navbar'>
 			<h1><Link to="/homepage">Unifit</Link></h1>
       <div className='link-container'>
@@ -14,8 +16,11 @@ export default function Navbar() {
           <Link to="/gallery">Gallery</Link>
           <Link to="/favorites">Favorites</Link>
           <Link to="/postpage">Posts</Link>
-          <Counter></Counter>
-
+          {isAuthed ? (
+            <p>User is authenticated!</p>
+            ) : (
+            <p>User is not authenticated.</p>
+          )}
       </div>
         <div className='button'>
           <Link to="/login">Login</Link>
