@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function SignUp() {    
+
+export default function SignUp({ onSignup }) {    
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -8,6 +10,8 @@ export default function SignUp() {
     username: '',
     password: ''
   });
+
+  const navigate = useNavigate(); 
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -32,13 +36,16 @@ export default function SignUp() {
         credentials: 'include',
         body: formDataToSend
       });
-
       if (response.ok) {
-        alert('User created saved successfully!');
+        const data = await response.json();
+        onSignup(data.user.name, data.token);
+        alert('User created and logged in successfully!');
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('profile', data.user.name);
+        navigate('/homepage'); // Redirect to homepage after signup
       } else {
-        const errorText = await response.text();
-        console.error('Error 3: ', errorText);
-        throw new Error('Failed to create user: ');
+        const data = await response.json(); // Parse the error response as JSON
+        throw new Error(data.message || 'Failed to create user');
       }
     } catch (error) {
       console.error('Error:', error);

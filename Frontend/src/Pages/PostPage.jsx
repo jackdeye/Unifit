@@ -48,6 +48,12 @@ const PostPage = () => {
     event.preventDefault();
 
     try {
+
+      const token = localStorage.getItem('token'); // Retrieve the token from local storage
+      if (!token) {
+        throw new Error('No token found. Please log in again.');
+      }
+
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('desc', formData.desc);
@@ -61,7 +67,10 @@ const PostPage = () => {
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
         credentials: 'include',
-        body: formDataToSend
+        body: formDataToSend,
+        headers: {
+          'Authorization': `Bearer ${token}` //must include token in Authorization header!
+        },
       });
 
       if (response.ok) {
