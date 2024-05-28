@@ -8,7 +8,6 @@ import Login from './Pages/Login';
 import Gallery from './Pages/Gallery';
 import Favorites from './Pages/Favorites';
 import NavBar from './Components/NavBar';
-import { useAuth } from './auth.js';
 import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';

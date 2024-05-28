@@ -58,7 +58,7 @@ export default function Login({ onLogin }) {
     </div>
     <div className='input'>
       <form onSubmit={handleSubmission}>
-        <label htmlFor='Username'>Username:</label>
+        <label htmlFor='username'>Username:</label>
         <input
             type='text'
             id='username'
