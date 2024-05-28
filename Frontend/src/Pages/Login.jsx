@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import "../styles/Login.css"
 import "../styles/PostPage.css"
 
-export default function Login({login}) {     
+export default function Login() {     
   const [formData, setFormData] = useState({
     username: '',
     password: ''
