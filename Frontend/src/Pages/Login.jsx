@@ -2,13 +2,39 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/Login.css"
 import "../styles/PostPage.css"
-import Button from '@mui/material/Button';
+import {
+  Button,
+  IconButton,
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  FormControl,
+  TextField,
+  ButtonGroup,
+  Paper,
+  Grid,
+} from '@mui/material';
+import {
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
 
 export default function Login() {     
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
+
+  var username = "";
+  var password = "";
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -23,8 +49,8 @@ export default function Login() {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('username', formData.username);
-      formDataToSend.append('password', formData.password);
+      formDataToSend.append('username', username);
+      formDataToSend.append('password', password);
 
       const response = await fetch('http://localhost:5050/user/signin', {
         method: 'POST',
@@ -47,36 +73,58 @@ export default function Login() {
     }
   };
   return(
-    <div className='container'>
-    <div className='header'>
-      <h1>Login</h1>
-    </div>
-    <div className='input'>
-      <form onSubmit={handleSubmission}>
-        <label htmlFor='username'>Username:</label>
-        <input
-          type='text'
-          id='username'
-          name='username'
-          placeholder='Enter your Username'
-          value={formData.username} 
-          onChange={handleChange}
-          required
+    <div style={{height:"80vh", alignItems: "center", display: "flex"}}>
+    <Paper sx={{ width:400, height:400, margin:"auto" }}>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Grid item>
+            <div className='header'>
+              <h1>Login</h1>
+            </div>
+        </Grid>
+        <Grid item>
+        <TextField
+          sx={{ m: 1, width: '25ch' }}
+          id="outlined-required"
+          label="Username"
+          onChange={(e)=>username=e.target.value}
         />
-        <label htmlFor='password'>Password:</label>
-        <input
-          type='password'
-          id='password'
-          name='password'
-          placeholder='Enter your password'
-          value={formData.password} 
-          onChange={handleChange}
-          required
+        </Grid>
+        <Grid item>
+      <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+          onChange={(e)=>password=e.target.value}
         />
-        <Button variant='contained' type='submit'>Login</Button>
-      </form>
+      </FormControl>
+        </Grid>
+        <Grid item>
+      <ButtonGroup size="large" aria-label="Basic button group">
+        <Button variant='contained' type='submit' onSubmit={handleSubmission}>Login</Button>
+        <Button href='/signup' variant='outlined'>Sign Up</Button>
+      </ButtonGroup>
+    </Grid>
+  </Grid>
+    </Paper>
     </div>
-    <div><Link to="/signup">SignUp</Link></div>
-  </div>
 );
 }

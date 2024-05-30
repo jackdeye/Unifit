@@ -11,13 +11,12 @@ import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Checkbox from '@mui/material/Checkbox';
 
 export default function App() {
   //const theme = createTheme(themeData.schemes.light);
   const theme = createTheme({
     palette: {
-      mode: 'dark',
+      mode: 'light',
       primary: {
         main: '#367765',
       },
@@ -35,7 +34,6 @@ export default function App() {
       {/* <h1>{message}</h1> */}
       <ThemeProvider theme={theme}>
         <NavBar/>
-        <Checkbox defaultChecked />
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
           
