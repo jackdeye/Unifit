@@ -72,6 +72,7 @@ router.post("/upload", upload.any(), async (req, res) => {
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
+      comments: []
     };
 
     let collection = db.collection("posts");
@@ -127,6 +128,49 @@ router.delete("/:id", async (req, res) => {
     res.status(500).send("Error deleting post");
   }
 });
+
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const collection = await db.collection("posts");
+    const query = { _id: new ObjectId(req.params.id) };
+    const post = await collection.findOne(query, { projection: { comments: 1 } });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    res.status(200).json(post.comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching comments");
+  }
+});
+router.post("/:id/comments", async (req, res) => {
+  try { 
+    const { username, comment } = req.body;
+    if (!username || !comment){
+      return res.status(400).send("Missing either username or comment")
+    }
+    const query = { _id: new ObjectId(req.params.id) };
+    const update = { 
+      $push: {
+        comments: {
+          username, 
+          comment
+        }
+      }
+    };
+    const collection = await db.collection("posts");
+    const result = await collection.updateOne(query, update);
+
+    }
+    catch(err) {
+      console.error(err);
+      res.status(500).send("Unable to add comment");
+    }
+  }
+);
+
 
 // Like a post by id
 router.patch("/:id/likePost", async (req, res) => {

@@ -18,16 +18,16 @@ const Item = ({ product }) => {
       </Link>
       <div className='product-interact'>
         <div className='price-info'>
-      <p>Buy Price: {product.buyPrice}</p>
-      <p>Rent Price: {product.rentPrice}</p>
-      </div>
-      <button
-        className={`heart-button ${like ? 'liked' : ''}`}
-        aria-label="Like"
-        onClick={handleLike}
-      >
-        <span className="heart"></span>
-      </button>
+        <p>Buy Price: {product.buyPrice}</p>
+        <p>Rent Price: {product.rentPrice}</p>
+        </div>
+        <button
+          className={`heart-button ${like ? 'liked' : ''}`}
+          aria-label="Like"
+          onClick={handleLike}
+        >
+          <span className="heart"></span>
+        </button>
       </div>
 
     </div>
