@@ -48,6 +48,13 @@ const PostPage = () => {
     event.preventDefault();
 
     try {
+
+      const token = localStorage.getItem('token'); // Retrieve the token from local storage
+      if (!token) {
+        throw new Error('No token found. Please log in again.');
+      }
+      const username = localStorage.getItem('username');
+      console.log("username: ", username);
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('desc', formData.desc);
@@ -57,16 +64,27 @@ const PostPage = () => {
       formDataToSend.append('buyPrice', formData.buyPrice);
       formDataToSend.append('rentPrice', formData.rentPrice);
       formDataToSend.append('availability', JSON.stringify(formData.availability));
+      formDataToSend.append('username', username);
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
         credentials: 'include',
-        body: formDataToSend
+        body: formDataToSend,
+        headers: {
+          'Authorization': `Bearer ${token}` //must include token in Authorization header!
+        },
       });
 
       if (response.ok) {
         alert('Post saved successfully!');
-        // setFormData({ name: '', desc: '' }); // reset form
+        setFormData({ name: ' ',
+        desc: ' ',
+        image: null,
+        isForSale: false,
+        isForRent: false,
+        buyPrice: '',
+        rentPrice: '',
+        availability: []}); // reset form
       } else {
         const errorText = await response.text();
         console.error('Failed to save post:', errorText);
