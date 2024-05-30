@@ -77,7 +77,14 @@ const PostPage = () => {
 
       if (response.ok) {
         alert('Post saved successfully!');
-        // setFormData({ name: '', desc: '' }); // reset form
+        setFormData({ name: ' ',
+        desc: ' ',
+        image: null,
+        isForSale: false,
+        isForRent: false,
+        buyPrice: '',
+        rentPrice: '',
+        availability: []}); // reset form
       } else {
         const errorText = await response.text();
         console.error('Failed to save post:', errorText);
