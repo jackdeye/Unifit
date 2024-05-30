@@ -28,7 +28,6 @@ export default function App() {
       },
     },
   });
-  console.log(theme);
   return (
     <BrowserRouter>
       {/* <h1>{message}</h1> */}

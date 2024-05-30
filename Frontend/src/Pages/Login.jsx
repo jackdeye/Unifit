@@ -20,10 +20,6 @@ import {
 } from '@mui/icons-material';
 
 export default function Login() {     
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
 
   var username = "";
   var password = "";
@@ -37,6 +33,9 @@ export default function Login() {
   };
 
   const handleSubmission = async (event) => {
+    console.log("we are getting run");
+    console.log(username);
+    console.log(password);
     event.preventDefault(); 
 
     try {
@@ -111,7 +110,7 @@ export default function Login() {
         </Grid>
         <Grid item>
       <ButtonGroup size="large" aria-label="Basic button group">
-        <Button variant='contained' type='submit' onSubmit={handleSubmission}>Login</Button>
+        <Button variant='contained' onClick={handleSubmission}>Login</Button>
         <Button href='/signup' variant='outlined'>Sign Up</Button>
       </ButtonGroup>
     </Grid>
