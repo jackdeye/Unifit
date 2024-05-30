@@ -65,7 +65,7 @@ function EditProfile() {
   };
   
   return (
-    <div>
+    <div className='container'>
       <h1>Edit Profile</h1>
       <form onSubmit={handleSubmit}>
         <h4>Name:
@@ -87,7 +87,7 @@ function EditProfile() {
             placeholder="Enter your bio"
           />
         </h4>
-        
+
         <h4>Password:
           <input
             type="password"

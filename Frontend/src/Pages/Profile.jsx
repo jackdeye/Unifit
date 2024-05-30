@@ -41,7 +41,7 @@ export default function Profile() {
         <div className='info'>
           <div>School</div>
           <div><Link to="/EditProfile">EditProfile</Link></div>
-          <div><Link to="/postpage">Posts</Link></div>
+          <div><Link to="/postpage">Create Post</Link></div>
         </div>
 
         <div className="products-gallery">
