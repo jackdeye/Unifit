@@ -133,7 +133,7 @@ const ItemPage = () => {
       <div className='comment-section'>
         <h3>Reviews</h3>
         <div className='comment-input'>
-          <input
+          <textarea
             type='text'
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -144,7 +144,8 @@ const ItemPage = () => {
           <div className='comments-list'>
             {comments.map((comment, index) => (
               <div key={index} className='comment'>
-                <p><strong>{comment.username}</strong>: {comment.comment}</p>
+                <p><strong>{comment.username}</strong>
+                 {comment.comment}</p>
               </div>
             ))}
           </div>

@@ -47,3 +47,64 @@
     background-color: #d4edda !important; /* light green for available dates */
     color: #155724 !important; /* dark green for text */
   }
+
+  .comment-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+.comment-input textarea {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  resize: vertical; /* Allow vertical resizing */
+}
+
+  
+  .comment-input button {
+    padding: 10px 20px;
+    background-color: #419292;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .comment-input button:hover {
+    opacity: 0.7;
+  }
+  .comments-list .comment {
+    background-color: #f1f1f1; /* Light background color for the bubble */
+    border-radius: 15px; /* Rounded corners */
+    padding: 10px 15px; /* Padding inside the bubble */
+    margin-bottom: 10px; /* Space between bubbles */
+    max-width: 70%; /* Limit the width of the bubble */
+    word-wrap: break-word; /* Ensure long words break to fit the bubble */
+    position: relative;
+  }
+  
+  /* Add a small triangle to the left of the bubble to make it look like a speech bubble */
+  .comments-list .comment::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -10px; /* Position it to the left */
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #f1f1f1 transparent transparent; /* Match the bubble color */
+  }
+  
+  .comments-list .comment p {
+    margin: 0; /* Remove default paragraph margin */
+  }
+  
+  .comments-list .comment p strong {
+    display: block; /* Display username on its own line */
+    margin-bottom: 5px; /* Space between username and comment text */
+  }
+  
