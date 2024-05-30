@@ -21,8 +21,8 @@ export default function Navbar({ profile, isAuthenticated, onLogout}) {
         <Link to="/postpage">Posts</Link>
       </div>
       {isAuthenticated ? (
-        <div className='button'>
-          <h5>Welcome, {profile}</h5>
+        <div>
+          <h5 className='button'>Welcome, {profile}</h5>
           <h5><button onClick={handleLogout}>Logout</button></h5>
         </div>
       ) : (
