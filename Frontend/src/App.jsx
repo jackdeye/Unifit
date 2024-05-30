@@ -10,13 +10,32 @@ import NavBar from './Components/NavBar';
 import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Checkbox from '@mui/material/Checkbox';
 
 export default function App() {
+  //const theme = createTheme(themeData.schemes.light);
+  const theme = createTheme({
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#367765',
+      },
+      secondary: {
+        main: '#c84a5a',
+      },
+      error: {
+        main: '#cc2b3c',
+      },
+    },
+  });
+  console.log(theme);
   return (
     <BrowserRouter>
       {/* <h1>{message}</h1> */}
-      <div>
+      <ThemeProvider theme={theme}>
         <NavBar/>
+        <Checkbox defaultChecked />
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
           
@@ -30,7 +49,7 @@ export default function App() {
           <Route path="/item/:id" element={<ItemPage />} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
-      </div>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

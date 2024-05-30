@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/Login.css"
 import "../styles/PostPage.css"
+import Button from '@mui/material/Button';
 
 export default function Login() {     
   const [formData, setFormData] = useState({
@@ -72,7 +73,7 @@ export default function Login() {
           onChange={handleChange}
           required
         />
-        <button type='submit'>Login</button>
+        <Button variant='contained' type='submit'>Login</Button>
       </form>
     </div>
     <div><Link to="/signup">SignUp</Link></div>
