@@ -42,6 +42,8 @@ export default function SignUp({ onSignup }) {
         alert('User created and logged in successfully!');
         localStorage.setItem('token', data.token);
         localStorage.setItem('profile', data.user.name);
+        localStorage.setItem('username', data.user.username);
+        localStorage.setItem('profilePicture', null);
         navigate('/homepage'); // Redirect to homepage after signup
       } else {
         const data = await response.json(); // Parse the error response as JSON

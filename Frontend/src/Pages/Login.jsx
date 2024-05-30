@@ -37,6 +37,9 @@ export default function Login({ onLogin }) {
         console.log("data: ", data);
         localStorage.setItem('token', data.token);
         localStorage.setItem('profile', data.user.name);
+        localStorage.setItem('username', data.user.username);
+        localStorage.setItem('profilePicture', data.user.profilePicture);
+        console.log('login pfp: ', data.user.profilePicture);
         onLogin(data.user.name, data.token);
         alert('User logged in!');
         console.log("Logged In!");

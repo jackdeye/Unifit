@@ -20,19 +20,23 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-// Get a single post by id
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+// Get posts by username
+router.get("/user/:username", async (req, res) => {
+  const { username } = req.params;
 
   try {
-      const post = await db.collection('posts').findOne({ _id: new ObjectId(id) });
-      if (!post) return res.status(404).json({ message: "Post not found" });
-      res.status(200).json(post);
-  } catch (error) {
-      res.status(404).json({ message: error.message });
+    const collection = await db.collection("posts");
+    const results = await collection.find({ username }).toArray();
+    if (!results.length) {
+      return res.status(404).send("No posts found for this user");
+    }
+    res.status(200).json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching posts by username");
   }
 });
+
 
 router.get("/:id/availability", async (req, res) => {
   try {
@@ -54,7 +58,7 @@ router.get("/:id/availability", async (req, res) => {
 // Create a new post
 router.post("/upload", auth, upload.any(), async (req, res) => {
   try {
-    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability } = req.body;
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability, username } = req.body;
     if (!name || !desc || !req.files || !req.files.length) {
       return res.status(400).send("Name, description, and image are required.");
     }
@@ -75,6 +79,7 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
+      username,
     };
 
     let collection = db.collection("posts");
