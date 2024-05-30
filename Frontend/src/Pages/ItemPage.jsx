@@ -133,13 +133,15 @@ const ItemPage = () => {
       <div className='comment-section'>
         <h3>Reviews</h3>
         <div className='comment-input'>
+        <form onSubmit={handleCommentSubmit}>
           <textarea
             type='text'
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder='Add a comment'
           />
-          <button type='button' onClick={handleCommentSubmit}>Post</button>
+          <button type='submit'>Post</button>
+          </form> 
         </div>
           <div className='comments-list'>
             {comments.map((comment, index) => (
