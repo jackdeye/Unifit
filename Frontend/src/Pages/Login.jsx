@@ -36,14 +36,6 @@ export default function Login() {
     e.preventDefault();
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
   const handleSubmission = async (event) => {
     event.preventDefault(); 
 
