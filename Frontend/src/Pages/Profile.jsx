@@ -8,6 +8,7 @@ import "../styles/Gallery.css";
 export default function Profile() {
   const [products, setProducts] = useState([]);
   const [school] = useState(localStorage.getItem('school'));
+  // const [picture] = useState(localStorage.getItem('profilePicture'));
 
   useEffect(() => {
     const fetchProducts = async () => {
