@@ -210,14 +210,15 @@ router.patch("/:id/likePost", auth, async (req, res) => {
 
     const post = await PostMessage.findById(id);
 
-    const index = post.likes.findIndex((id) => id === String(req.userId));
-    if (index === -1) {
-      //like the post
-      post.likes.push(req.userId);
-    } else {
-      //dislike a post
-      post.likes = post.likes.filter((id) => id !== String(req.userId));
-    }
+    
+    // const index = post.likes.findIndex((id) => id === String(req.userId));
+    // if (index === -1) {
+    //   //like the post
+    //   post.likes.push(req.userId);
+    // } else {
+    //   //dislike a post
+    //   post.likes = post.likes.filter((id) => id !== String(req.userId));
+    // }
     let collection = await db.collection("posts");
 
     const updatedPost = await PostMessage.findByIdAndUpdate(id, { likeCount: post.likeCount + 1 }, { mew: true});

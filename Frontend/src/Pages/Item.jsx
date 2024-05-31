@@ -5,13 +5,13 @@ import '../styles/Item.css'; // Assuming you have a CSS file for styling
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     setLike(!like);
     console.log(`set favorite to ${!like}`);
-    // const favorite = await fetch('http://localhost:5050/:id/likePost', {
-    //   method: 'POST',
-    //   body: formDataToSend
-    // })
+    const favorite = await fetch('http://localhost:5050/:id/likePost', {
+      method: 'POST',
+      body: formDataToSend
+    })
   };
 
   return (
