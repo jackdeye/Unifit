@@ -104,8 +104,6 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
               {getProfileInitial(name)}
             </div>
           )}
-          <h5 className='button'>Welcome, {name}</h5>
-          <h5><button onClick={handleLogout}>Logout</button></h5>
         </div>
       ) : (
         <Button href="/login" variant="contained" color="secondary">Login</Button>
