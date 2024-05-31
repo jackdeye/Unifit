@@ -99,7 +99,10 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
         <Divider/>
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           {pages.map((item) => (
-            <Button key={item.name} href={item.location} sx={{ color: '#fff' }}>
+            <Button key={item.name} href={item.location} sx={{     ':hover': {
+      bgcolor: 'primary.light', // theme.palette.primary.main
+      color: 'white',
+    }, color: '#fff', marginRight: '5px' }}>
               {item.name}
             </Button>
           ))}

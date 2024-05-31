@@ -22,9 +22,13 @@ export default function App() {
       mode: 'light',
       primary: {
         main: '#367765',
+        light: '#5E9283',
+        dark: '#255346',
       },
       secondary: {
         main: '#c84a5a',
+        light: '#D36E7B',
+        dark: '#8C333E',
       },
       error: {
         main: '#cc2b3c',
