@@ -111,7 +111,7 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
       {isAuthenticated ? (
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar  alt="Profile" src={`data:image/jpeg;base64,${profilePicture}`}>{getProfileInitial(name)}</Avatar>
+            <Avatar  alt="Profile" src={`data:image/jpeg;base64,${localProfilePicture}`}>{getProfileInitial(name)}</Avatar>
           </IconButton>
           <Menu
             sx={{ mt: '45px' }}

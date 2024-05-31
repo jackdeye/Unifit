@@ -62,7 +62,7 @@ router.post("/signin", upload.none(), async (req, res) => {
 });
 
 router.post("/editprofile", upload.single('profilePicture'), async (req, res) => {
-  const { username, name, bio, password } = req.body;
+  const { username, name, bio, password, school } = req.body;
 
   try {
     const collection = db.collection("users");
@@ -75,6 +75,8 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     const updates = {};
     if (name) updates.name = name;
     if (bio) updates.bio = bio;
+    if (school) updates.school = school;
+
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 12);
       updates.password = hashedPassword;
@@ -82,6 +84,8 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     if (req.file) {
       const base64Image = req.file.buffer.toString("base64");
       updates.profilePicture = base64Image;
+    } else {
+      updates.profilePicture = null;
     }
 
     const result = await collection.updateOne(
@@ -98,6 +102,7 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
       profilePicture: updatedUser.profilePicture,
       name: updatedUser.name,
       bio: updatedUser.bio,
+      school: updatedUser.school,
     });
   } catch (err) {
     console.error(err);

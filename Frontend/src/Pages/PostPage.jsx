@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import "../styles/Login.css";
+import "../styles/PostPage.css"
+import "../styles/Login.css"
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -60,6 +61,7 @@ const PostPage = () => {
         throw new Error('No token found. Please log in again.');
       }
       const username = localStorage.getItem('username');
+      const school = localStorage.getItem('school');
       console.log("username: ", username);
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
@@ -73,6 +75,7 @@ const PostPage = () => {
       formDataToSend.append('username', username);
       formDataToSend.append('quality', formData.quality); // Append quality to formData
       formDataToSend.append('size', formData.size); 
+      formDataToSend.append('school', school);
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
