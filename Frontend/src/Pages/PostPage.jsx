@@ -152,7 +152,8 @@ const PostPage = () => {
             </label>
           </div>
         )}
-        <div>
+        {formData.isForRent && ( 
+          <div>
           <label>
             Start Date:
             <DatePicker
@@ -164,18 +165,22 @@ const PostPage = () => {
             />
           </label>
         </div>
+        )}
+        {formData.isForRent && ( 
         <div>
-          <label>
-            End Date:
-            <DatePicker
-              selected={formData.availability[1]}
-              onChange={handleEndDateChange}
-              dateFormat="yyyy-MM-dd"
-              placeholderText="Select End Date"
-              className="date-input"
-            />
-          </label>
-        </div>
+        <label>
+          End Date:
+          <DatePicker
+            selected={formData.availability[1]}
+            onChange={handleEndDateChange}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select End Date"
+            className="date-input"
+          />
+        </label>
+      </div>
+        )}
+
         <button type="submit">Submit</button>
       </form>
     </div>
