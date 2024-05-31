@@ -1,31 +1,52 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Login.css"
+import "../styles/PostPage.css"
+import {
+  Button,
+  IconButton,
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  FormControl,
+  TextField,
+  ButtonGroup,
+  Paper,
+  Grid,
+} from '@mui/material';
+import {
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
+
 
 export default function Login({ onLogin }) {    
 
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
+  var username = "";
+  var password = "";
 
-  const navigate = useNavigate(); 
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
   };
 
   const handleSubmission = async (event) => {
+    console.log("we are getting run");
+    console.log(username);
+    console.log(password);
     event.preventDefault(); 
     const formDataToSend = new FormData();
-    formDataToSend.append('username', formData.username);
-    formDataToSend.append('password', formData.password);
+    formDataToSend.append('username', username);
+    formDataToSend.append('password', password);
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('username', username);
+      formDataToSend.append('password', password);
+
       const response = await fetch('http://localhost:5050/user/signin', {
         method: 'POST',
         credentials: 'include',
@@ -55,39 +76,57 @@ export default function Login({ onLogin }) {
     }
   };
   return(
-    <div className='container'>
-    <div className='header'>
-      <h1>Login</h1>
-    </div>
-    <div className='input'>
-      <form onSubmit={handleSubmission}>
-        <label htmlFor='username'>Username:</label>
-        <input
-            type='text'
-            id='username'
-            name='username'
-            placeholder='Enter your Username'
-            value={formData.username}
-            onChange={handleChange}
-            required
+    <div style={{height:"80vh", alignItems: "center", display: "flex"}}>
+    <Paper sx={{ borderRadius:10, width:400, height:400, margin:"auto" }}>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        height="400px"
+      >
+        <Grid item>
+          <h1>Login To <span style={{color:"#367765"}}>UNIFIT</span></h1>
+        </Grid>
+        <Grid item>
+        <TextField
+          sx={{ m: 1, width: '25ch' }}
+          id="outlined-required"
+          label="Username"
+          onChange={(e)=>username=e.target.value}
         />
-        <label htmlFor='password'>Password:</label>
-        <input
-            type='password'
-            id='password'
-            name='password'
-            placeholder='Enter your password'
-            value={formData.password}
-            onChange={handleChange}
-            required
+        </Grid>
+        <Grid item>
+      <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+          onChange={(e)=>password=e.target.value}
         />
-        <button type='submit'>Login</button>
-      </form>
+      </FormControl>
+        </Grid>
+        <Grid item>
+      <ButtonGroup size="large" aria-label="Basic button group">
+        <Button variant='contained' onClick={handleSubmission}>Login</Button>
+        <Button href='/signup' variant='outlined'>Sign Up</Button>
+      </ButtonGroup>
+    </Grid>
+  </Grid>
+    </Paper>
     </div>
-    <div>
-      <h6>Don't Have An Account? </h6>
-      <Link to="/signup">Sign Up</Link>
-    </div>
-  </div>
 );
 }

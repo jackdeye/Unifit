@@ -12,8 +12,26 @@ import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
 import ProtectedRoute from './Components/ProtectedRoute';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export default function App() {
+  //const theme = createTheme(themeData.schemes.light);
+  const theme = createTheme({
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#367765',
+      },
+      secondary: {
+        main: '#c84a5a',
+      },
+      error: {
+        main: '#cc2b3c',
+      },
+    },
+  });
+
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
   const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture') || '');
@@ -61,10 +79,11 @@ export default function App() {
     const event = new Event('localStorageUpdated');
     window.dispatchEvent(event);
   };
-
   return (
-    <BrowserRouter>
-      <div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <BrowserRouter>
+        <div style={{padding:5}}>
         <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
         <Routes>
           <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
@@ -78,7 +97,8 @@ export default function App() {
           <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
-      </div>
-    </BrowserRouter>
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
