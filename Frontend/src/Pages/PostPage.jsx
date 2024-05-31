@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import "../styles/Login.css"
+import "../styles/Login.css";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    desc: '',
     name: '',
     desc: '',
     image: null,
@@ -15,7 +13,7 @@ const PostPage = () => {
     buyPrice: '',
     rentPrice: '',
     availability: [null, null],
-    availability: [null, null],
+    quality: 'New', // Add quality to formData with default value
   });
 
   const handleChange = (event) => {
@@ -46,17 +44,8 @@ const PostPage = () => {
   };
 
   const handleEndDateChange = (date) => {
-  const handleStartDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [date, prev.availability[1]]
-    }));
-  };
-
-  const handleEndDateChange = (date) => {
-    setFormData(prev => ({
-      ...prev,
-      availability: [prev.availability[0], date]
       availability: [prev.availability[0], date]
     }));
   };
@@ -81,13 +70,13 @@ const PostPage = () => {
       formDataToSend.append('rentPrice', formData.rentPrice);
       formDataToSend.append('availability', JSON.stringify(formData.availability));
       formDataToSend.append('username', username);
+      formDataToSend.append('quality', formData.quality); // Append quality to formData
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
         credentials: 'include',
         body: formDataToSend,
         headers: {
-          'Authorization': `Bearer ${token}` // Must include token in Authorization header!
           'Authorization': `Bearer ${token}` // Must include token in Authorization header!
         },
       });
@@ -102,17 +91,8 @@ const PostPage = () => {
           isForRent: false,
           buyPrice: '',
           rentPrice: '',
-          availability: [null, null]
-        }); // Reset form
-        setFormData({
-          name: '',
-          desc: '',
-          image: null,
-          isForSale: false,
-          isForRent: false,
-          buyPrice: '',
-          rentPrice: '',
-          availability: [null, null]
+          availability: [null, null],
+          quality: 'New', // Reset quality to default value
         }); // Reset form
       } else {
         const errorText = await response.text();
@@ -175,41 +155,50 @@ const PostPage = () => {
             </label>
           </div>
         )}
-        {formData.isForRent && ( 
-          <div>
+        {formData.isForRent && (
+          <>
+            <div>
+              <label>
+                Start Date:
+                <DatePicker
+                  selected={formData.availability[0]}
+                  onChange={handleStartDateChange}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select Start Date"
+                  className="date-input"
+                  required={formData.isForRent}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                End Date:
+                <DatePicker
+                  selected={formData.availability[1]}
+                  onChange={handleEndDateChange}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select End Date"
+                  className="date-input"
+                  required={formData.isForRent}
+                />
+              </label>
+            </div>
+          </>
+        )}
+        <div>
           <label>
-            Start Date:
-            Start Date:
-            <DatePicker
-              selected={formData.availability[0]}
-              onChange={handleStartDateChange}
-              dateFormat="yyyy-MM-dd"
-              placeholderText="Select Start Date"
-              className="date-input"
-            />
+            Quality:
+            <select name="quality" value={formData.quality} onChange={handleChange} required>
+              <option value="New">New</option>
+              <option value="Like New">Like New</option>
+              <option value="Used">Used</option>
+              <option value="Lightly Used">Lightly Used</option>
+            </select>
           </label>
         </div>
-        )}
-        {formData.isForRent && ( 
-        <div>
-        <label>
-          End Date:
-          <DatePicker
-            selected={formData.availability[1]}
-            onChange={handleEndDateChange}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Select End Date"
-            className="date-input"
-          />
-        </label>
-      </div>
-        )}
-
         <button type="submit">Submit</button>
       </form>
     </div>
   );
 };
-
 export default PostPage;
-

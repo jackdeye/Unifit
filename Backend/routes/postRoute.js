@@ -96,6 +96,8 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       isForRent: isForRent === 'true', 
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
+      quality,
+      size,
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
     };
