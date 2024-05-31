@@ -27,6 +27,8 @@ export default function Login({ onLogin }) {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const navigate = useNavigate();
+  
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (e) => {

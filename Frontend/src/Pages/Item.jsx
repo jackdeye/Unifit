@@ -8,6 +8,10 @@ const Item = ({ product }) => {
   const handleLike = () => {
     setLike(!like);
     console.log(`set favorite to ${!like}`);
+    // const favorite = await fetch('http://localhost:5050/:id/likePost', {
+    //   method: 'POST',
+    //   body: formDataToSend
+    // })
   };
 
   return (
@@ -29,7 +33,6 @@ const Item = ({ product }) => {
           <span className="heart"></span>
         </button>
       </div>
-
     </div>
   );
 };
