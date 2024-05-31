@@ -13,6 +13,7 @@ import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
 import ProtectedRoute from './Components/ProtectedRoute';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export default function App() {
   //const theme = createTheme(themeData.schemes.light);
@@ -79,9 +80,10 @@ export default function App() {
     window.dispatchEvent(event);
   };
   return (
-    <BrowserRouter>
-      {/* <h1>{message}</h1> */}
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <BrowserRouter>
+        <div style={{padding:5}}>
         <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
         <Routes>
           <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
@@ -95,7 +97,8 @@ export default function App() {
           <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
-      </ThemeProvider>
-    </BrowserRouter>
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
