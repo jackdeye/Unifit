@@ -19,7 +19,7 @@ const Gallery = () => {
       const school = localStorage.getItem('school');
       if (showSchoolPosts && school){
         try {
-          const response = await fetch(`http://localhost:5050/post/user/${school}`);
+          const response = await fetch(`http://localhost:5050/post/school/${school}`);
           if (response.ok) {
             const data = await response.json();
             setProducts(data);
@@ -157,7 +157,7 @@ const Gallery = () => {
         <ul>
           <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
           <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
-          <li><input type="checkbox" checked={showSchoolPosts} onChange={setShowSchoolPosts(true)} /> Posts from my School</li>
+          <li><input type="checkbox" checked={showSchoolPosts} onChange={() => setShowSchoolPosts(!showSchoolPosts)} /> Posts from my School</li>
         </ul>
         <div className="price-filter">
           <div className="price-input">
