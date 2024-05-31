@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 import Homepage from './Pages/Homepage';
 import PostPage from './Pages/PostPage';
 import Profile from './Pages/Profile';
@@ -10,27 +11,94 @@ import NavBar from './Components/NavBar';
 import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
+import ProtectedRoute from './Components/ProtectedRoute';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export default function App() {
+  //const theme = createTheme(themeData.schemes.light);
+  const theme = createTheme({
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#367765',
+      },
+      secondary: {
+        main: '#c84a5a',
+      },
+      error: {
+        main: '#cc2b3c',
+      },
+    },
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
+  const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture') || '');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000; // Convert to seconds
+        const timeUntilExpiration = decodedToken.exp - currentTime;
+
+        if (timeUntilExpiration <= 0) {
+          handleLogout();
+        } else {
+          const timeoutId = setTimeout(handleLogout, timeUntilExpiration * 1000);
+          return () => clearTimeout(timeoutId); // Cleanup timeout on component unmount or token change
+        }
+      } catch (error) {
+        handleLogout(); // In case of any error in decoding the token
+      }
+    }
+  }, [isAuthenticated]);
+
+  const handleLogin = (profile, token, profilePicture) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('profile', profile);
+    localStorage.setItem('profilePicture', profilePicture || ''); // Set profile picture
+    setIsAuthenticated(true);
+    setProfile(profile);
+    setProfilePicture(profilePicture || '');
+    // Dispatch custom event
+    const event = new Event('localStorageUpdated');
+    window.dispatchEvent(event);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('profile');
+    localStorage.removeItem('profilePicture');
+    setIsAuthenticated(false);
+    setProfile('');
+    setProfilePicture('');
+    // Dispatch custom event
+    const event = new Event('localStorageUpdated');
+    window.dispatchEvent(event);
+  };
   return (
-    <BrowserRouter>
-      {/* <h1>{message}</h1> */}
-      <div>
-        <NavBar/>
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <BrowserRouter>
+        <div style={{padding:5}}>
+        <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
         <Routes>
-          <Route path="/homepage" element={<Homepage />} />
-          
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/postpage" element={<PostPage />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/editprofile" element={<EditProfile />} />
-          <Route path="/item/:id" element={<ItemPage />} />
+          <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Profile /></ProtectedRoute>} />
+          <Route path="/gallery" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Gallery /></ProtectedRoute>} />
+          <Route path="/favorites" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Favorites /></ProtectedRoute>} />
+          <Route path="/postpage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><PostPage /></ProtectedRoute>} />
+          <Route path="/signup" element={<SignUp onSignup={handleLogin} />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/editprofile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditProfile /></ProtectedRoute>} />
+          <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
-      </div>
-    </BrowserRouter>
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
