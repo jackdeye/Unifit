@@ -11,7 +11,7 @@ const Gallery = () => {
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [schoolPosts, setSchoolPosts] = useState([]);
+  // const [schoolPosts, setSchoolPosts] = useState([]);
   const [showSchoolPosts, setShowSchoolPosts] = useState(false);
 
   useEffect(() => {
@@ -71,34 +71,33 @@ const Gallery = () => {
     setMaxPrice(event.target.value);
   };
 
-  const handleShowSchoolPosts = async () => {
-    try {
-      const token = localStorage.getItem('token'); // Retrieve the token from local storage
-      if (!token) {
-        throw new Error('No token found. Please log in again.');
-      }
+  // const handleShowSchoolPosts = async () => {
+  //   try {
+  //     const token = localStorage.getItem('token'); // Retrieve the token from local storage
+  //     if (!token) {
+  //       throw new Error('No token found. Please log in again.');
+  //     }
+  //     const response = await fetch('http://localhost:5050/post/school/posts', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //     });
 
-      const response = await fetch('http://localhost:5050/post/school/posts', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSchoolPosts(data);
-        setShowSchoolPosts(true);
-      } else {
-        const errorText = await response.text();
-        console.error('Failed to fetch school posts:', errorText);
-        throw new Error('Failed to fetch school posts.');
-      }
-    } catch (error) {
-      console.error('Error fetching school posts:', error);
-      alert('Failed to fetch school posts.');
-    }
-  };
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setSchoolPosts(data);
+  //       setShowSchoolPosts(true);
+  //     } else {
+  //       const errorText = await response.text();
+  //       console.error('Failed to fetch school posts:', errorText);
+  //       throw new Error('Failed to fetch school posts.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching school posts:', error);
+  //     alert('Failed to fetch school posts.');
+  //   }
+  // };
 
   const filterProducts = (p) => p.filter(product => {
     const matchesSaleFilter = showForSale ? product.isForSale : true;
@@ -115,36 +114,36 @@ const Gallery = () => {
 
   const getFilteredAsItems = () => {
     var ret = []
-    if (showSchoolPosts) {
-      ret = schoolPosts.map((post) => (
-        <Item key={post._id} product={post} />
-      ));
-    }else {
-      let filteredProducts = products;
-      if (searchQuery !== "") {
-        filteredProducts = fuse.search(searchQuery).map(obj => obj.item);
-      }
-      filteredProducts = filterProducts(filteredProducts);
-      ret = filteredProducts.map((product) => (
-        <Item key={product._id} product={product} />
-      ));
-    }
-    // if(searchQuery === "") {
-    //   ret = products;
-    // } else {
-    //   // const username = obj.username;
-
-    //   ret = fuse.search(searchQuery).map(
-    //     obj => {
-    //     console.log(obj);
-    //     return obj.item;
-    //   });
-      
-    //   ret += fuse.search(searchQuery).map(obj => obj.school) //TODO: ADD SEARCHING FOR SCHOOL
+    // if (showSchoolPosts) {
+    //   ret = schoolPosts.map((post) => (
+    //     <Item key={post._id} product={post} />
+    //   ));
+    // }else {
+    //   let filteredProducts = products;
+    //   if (searchQuery !== "") {
+    //     filteredProducts = fuse.search(searchQuery).map(obj => obj.item);
+    //   }
+    //   filteredProducts = filterProducts(filteredProducts);
+    //   ret = filteredProducts.map((product) => (
+    //     <Item key={product._id} product={product} />
+    //   ));
     // }
-    // ret = filterProducts(ret).map((product) => (
-    //   <Item key={product._id} product={product} />
-    // ));
+    if(searchQuery === "") {
+      ret = products;
+    } else {
+      // const username = obj.username;
+
+      ret = fuse.search(searchQuery).map(
+        obj => {
+        console.log(obj);
+        return obj.item;
+      });
+      
+      ret += fuse.search(searchQuery).map(obj => obj.school) //TODO: ADD SEARCHING FOR SCHOOL
+    }
+    ret = filterProducts(ret).map((product) => (
+      <Item key={product._id} product={product} />
+    ));
     if(ret.length === 0) {
       ret = <div>No Products Found</div>;
     }
@@ -158,7 +157,7 @@ const Gallery = () => {
         <ul>
           <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
           <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
-          <li><input type="checkbox" checked={showSchoolPosts} onChange={handleShowSchoolPosts} /> Posts from my School</li>
+          <li><input type="checkbox" checked={showSchoolPosts} onChange={setShowSchoolPosts(true)} /> Posts from my School</li>
         </ul>
         <div className="price-filter">
           <div className="price-input">
