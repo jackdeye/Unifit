@@ -34,6 +34,7 @@ function EditProfile() {
     formDataToSend.append('bio', formData.bio);
     formDataToSend.append('password', formData.password);
     if (formData.profilePicture) {
+      console.log("formData.profilePicture: ", formData.profilePicture);
       formDataToSend.append('profilePicture', formData.profilePicture);
     }
   
@@ -45,6 +46,7 @@ function EditProfile() {
   
       if (response.ok) {
         const data = await response.json();
+        console.log("pfp: ", data.profilePicture);
         localStorage.setItem('profilePicture', data.profilePicture || null);
         localStorage.setItem('profile', data.name);
   

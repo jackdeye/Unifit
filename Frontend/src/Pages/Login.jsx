@@ -61,7 +61,7 @@ export default function Login({ onLogin }) {
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('profilePicture', data.user.profilePicture);
         console.log('login pfp: ', data.user.profilePicture);
-        onLogin(data.user.name, data.token);
+        onLogin(data.user.name, data.token, data.user.profilePicture);
         alert('User logged in!');
         console.log("Logged In!");
         navigate('/homepage');

@@ -12,15 +12,17 @@ import {
   Avatar
 } from '@mui/material';
 
-export default function Navbar({ profile, isAuthenticated, onLogout }) {
-
+export default function Navbar({ profile, profilePicture, isAuthenticated, onLogout }) {
   const navigate = useNavigate();
-  const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture'));
+  const [localProfilePicture, setLocalProfilePicture] = useState(profilePicture);
   const [name, setName] = useState(profile);
 
   const handleLogout = () => {
     onLogout();
     navigate('/login'); // Redirect to login page
+    // Dispatch custom event
+    const event = new Event('localStorageUpdated');
+    window.dispatchEvent(event);
   };
 
   const getProfileInitial = (name) => {
@@ -29,15 +31,19 @@ export default function Navbar({ profile, isAuthenticated, onLogout }) {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setProfilePicture(localStorage.getItem('profilePicture'));
+      setLocalProfilePicture(localStorage.getItem('profilePicture'));
       setName(localStorage.getItem('profile'));
     };
 
+    window.addEventListener('storage', handleStorageChange);
     window.addEventListener('localStorageUpdated', handleStorageChange);
+
+    handleStorageChange();
 
     // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener('localStorageUpdated', handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
@@ -47,6 +53,11 @@ export default function Navbar({ profile, isAuthenticated, onLogout }) {
     {name: 'Favorites', location: 'favorites'},
     {name: 'Posts', location: 'postpage'},
   ];
+
+  useEffect(() => {
+    setLocalProfilePicture(profilePicture);
+    setName(profile);
+  }, [profilePicture, profile]);
 
   return (
     <AppBar position="static" sx={{borderRadius:5}}>
@@ -81,7 +92,7 @@ export default function Navbar({ profile, isAuthenticated, onLogout }) {
         <Divider/>
       {isAuthenticated ? (
         <div className="profile-container">
-          {profilePicture && profilePicture !== 'null' ? (
+          {localProfilePicture && localProfilePicture !== 'null' ? (
             <div onClick={() => navigate('/profile')}>
               <Avatar  alt="Profile" src={`data:image/jpeg;base64,${profilePicture}`}/>
             </div>
@@ -93,7 +104,7 @@ export default function Navbar({ profile, isAuthenticated, onLogout }) {
               {getProfileInitial(name)}
             </div>
           )}
-          <h5 className='button'>Welcome, {name}</h5> {/* Changed profile to name */}
+          <h5 className='button'>Welcome, {name}</h5>
           <h5><button onClick={handleLogout}>Logout</button></h5>
         </div>
       ) : (

@@ -17,8 +17,10 @@ router.post("/signup", upload.none(), async (req, res) => {
     if (!username || !password || !firstName || !lastName) {
       return res.status(400).json({ message: "All fields are required" });
     }
+
     const collection = db.collection("users");
     const existingUser = await collection.findOne({ username });
+
     if (existingUser) {
       return res.status(400).json({ message: "User already exists." });
     }
@@ -27,8 +29,8 @@ router.post("/signup", upload.none(), async (req, res) => {
     const result = await collection.insertOne({ username, password: hashedPassword, name: `${firstName} ${lastName}`, profilePicture: null, bio: null });
 
     if (result.insertedId) {
-      const token = jwt.sign({ username: result.username, id: result.insertedId }, process.env.JWT_SECRET, { expiresIn: "1h" }); 
-      return res.status(201).json({ message: "User created successfully", user: { username, id: result.insertedId, name: `${firstName} ${lastName}`, profilePicture }, token });
+      const token = jwt.sign({ username, id: result.insertedId }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      return res.status(201).json({ message: "User created successfully", user: { username, id: result.insertedId, name: `${firstName} ${lastName}`, profilePicture: null }, token });
     } else {
       return res.status(500).json({ message: "Something went wrong" });
     }
@@ -67,7 +69,7 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     const user = await collection.findOne({ username });
 
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     const updates = {};
@@ -88,7 +90,7 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     );
 
     if (result.matchedCount === 0) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     const updatedUser = await collection.findOne({ _id: new ObjectId(user._id) });
@@ -99,7 +101,7 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error updating profile");
+    res.status(500).json({ message: "Error updating profile" });
   }
 });
 
