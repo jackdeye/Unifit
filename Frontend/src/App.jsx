@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import Homepage from './Pages/Homepage';
 import PostPage from './Pages/PostPage';
 import Profile from './Pages/Profile';
@@ -12,6 +12,7 @@ import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
 import ProtectedRoute from './Components/ProtectedRoute';
+import EditPosts from './Pages/EditPosts.jsx'
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/editprofile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditProfile /></ProtectedRoute>} />
           <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
+          <Route path="/edititem/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditPosts /></ProtectedRoute>} /> 
         </Routes>
       </div>
     </BrowserRouter>

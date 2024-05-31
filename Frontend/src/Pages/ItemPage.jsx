@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ItemPage.css';
@@ -17,6 +17,7 @@ const ItemPage = () => {
           const data = await response.json();
           setProduct(data);
         } else {
+          console.log(response);
           console.error('Failed to fetch product');
         }
       } catch (error) {
@@ -70,6 +71,7 @@ const ItemPage = () => {
           <p>{product.desc}</p>
           {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
           {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
+          <Link to={`/edititem/${product._id}`}> EDIT POST </Link>
         </div>
       </div>
       <div className='comment-section'>
