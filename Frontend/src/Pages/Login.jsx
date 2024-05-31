@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Login.css"
 import "../styles/PostPage.css"
 import {
@@ -19,7 +19,8 @@ import {
   VisibilityOff,
 } from '@mui/icons-material';
 
-export default function Login() {     
+
+export default function Login({ onLogin }) {    
 
   var username = "";
   var password = "";
@@ -37,6 +38,9 @@ export default function Login() {
     console.log(username);
     console.log(password);
     event.preventDefault(); 
+    const formDataToSend = new FormData();
+    formDataToSend.append('username', username);
+    formDataToSend.append('password', password);
 
     try {
       const formDataToSend = new FormData();
@@ -46,21 +50,29 @@ export default function Login() {
       const response = await fetch('http://localhost:5050/user/signin', {
         method: 'POST',
         credentials: 'include',
-        body: formDataToSend 
+        body: formDataToSend
       });
 
-      console.log(response);
       if (response.ok) {
-        alert('User has logged in successfully!');
-        login();
+        const data = await response.json();
+        console.log("data: ", data);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('profile', data.user.name);
+        localStorage.setItem('username', data.user.username);
+        localStorage.setItem('profilePicture', data.user.profilePicture);
+        console.log('login pfp: ', data.user.profilePicture);
+        onLogin(data.user.name, data.token);
+        alert('User logged in!');
+        console.log("Logged In!");
+        navigate('/homepage');
       } else {
-        const errorText = await response.text();
-        console.error('Error 3: ', errorText);
-        throw new Error('Failed to login user: ');
+        const errorText = await response.json();
+        console.error('Login Error: ', errorText);
+        alert('Failed to log in: ' + errorText.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to login user.');
+      console.error('Network Error:', error);
+      alert('Failed to log in.');
     }
   };
   return(
