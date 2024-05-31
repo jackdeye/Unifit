@@ -47,3 +47,46 @@
     background-color: #d4edda !important; /* light green for available dates */
     color: #155724 !important; /* dark green for text */
   }
+
+  .comment-input form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+.comment-input textarea {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  width: 100%;
+  resize: vertical; /* Allow vertical resizing */
+}
+
+  
+  .comment-input button {
+    padding: 10px 20px;
+    background-color: #419292;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .comment-input button:hover {
+    opacity: 0.7;
+  }
+  .comments-list .comment {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .comments-list .comment p {
+    margin: 0;
+  }
+  
+  .comments-list .comment p strong {
+    display: block;
+    margin-right: 10px;
+  }
