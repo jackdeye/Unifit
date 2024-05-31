@@ -6,7 +6,7 @@
   }
   
 .product-item h3 {
-  margin: 0 0 10px 0;
+  margin: 2px 0 2px 0;
 }
 
 .product-item img {
@@ -70,8 +70,41 @@
 .price-info {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .price-info p {
-  margin: 0.5em 0; 
+  margin: 0px 0; 
+}
+
+.button-container {
+  flex-direction: 'row';
+}
+
+.buy-button,
+.rent-button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 5px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.buy-button:hover,
+.rent-button:hover {
+  background-color: #0056b3;
+}
+
+.product-interact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }

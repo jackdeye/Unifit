@@ -99,6 +99,7 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
       school,
+      sold: false,
     };
 
     let collection = db.collection("posts");
@@ -183,5 +184,42 @@ router.patch("/:id/likePost", auth, async (req, res) => {
   }
 });
 
+// Buy a post
+router.patch("/:id/buy", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userId;
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    if (post.sold) {
+      return res.status(400).send("Post is already sold");
+    }
+
+    // mark the post as sold
+    await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { sold: true } }
+    );
+
+    //add post to user's purchased posts
+    await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { purchasedPosts: new ObjectId(postId) } }
+    );
+
+    res.status(200).send("Post purchased successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error buying post");
+  }
+});
 
 export default router;

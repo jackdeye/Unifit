@@ -18,7 +18,7 @@ const Gallery = () => {
         const response = await fetch('http://localhost:5050/post');
         if (response.ok) {
           const data = await response.json();
-          const productsWithImages = data.filter(product => product.image);
+          const productsWithImages = data.filter(product => product.image && !product.sold);
           setProducts(productsWithImages);
         } else {
           console.error('Failed to fetch products');

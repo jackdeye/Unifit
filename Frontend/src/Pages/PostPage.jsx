@@ -177,7 +177,6 @@ const PostPage = () => {
               placeholderText="Select End Date"
               className="date-input"
             />
-            </div>
           </label>
         </div>
         <button type="submit">Submit</button>
