@@ -77,17 +77,16 @@ export default function Login({ onLogin }) {
   };
   return(
     <div style={{height:"80vh", alignItems: "center", display: "flex"}}>
-    <Paper sx={{ width:400, height:400, margin:"auto" }}>
+    <Paper sx={{ borderRadius:10, width:400, height:400, margin:"auto" }}>
       <Grid
         container
         direction="column"
         alignItems="center"
         justifyContent="center"
+        height="400px"
       >
         <Grid item>
-            <div className='header'>
-              <h1>Login</h1>
-            </div>
+          <h1>Login To <span style={{color:"#367765"}}>UNIFIT</span></h1>
         </Grid>
         <Grid item>
         <TextField
