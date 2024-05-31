@@ -11,7 +11,7 @@ const Homepage = () => {
         </div>
         <div className='item'>
         <p>
-          blurb blurb blurb!!
+          Swap Sustainably
         </p>
         </div>
         <div className='item'>
