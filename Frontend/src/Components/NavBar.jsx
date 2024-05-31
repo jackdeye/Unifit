@@ -8,8 +8,11 @@ import {
   Typography,
   Box,
   Button,
+  IconButton,
   Divider,
-  Avatar
+  Avatar,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 
 export default function Navbar({ profile, profilePicture, isAuthenticated, onLogout }) {
@@ -48,16 +51,28 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
   }, []);
 
   const pages = [
-    {name: 'Profile', location: 'profile'},
     {name: 'Gallery', location: 'gallery'},
     {name: 'Favorites', location: 'favorites'},
     {name: 'Posts', location: 'postpage'},
   ];
 
+  const settings = [ 'Profile', 'Logout' ];
+
   useEffect(() => {
     setLocalProfilePicture(profilePicture);
     setName(profile);
   }, [profilePicture, profile]);
+
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const handleOpenUserMenu = (e) => {
+    setAnchorElUser(e.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
 
   return (
     <AppBar position="static" sx={{borderRadius:5}}>
@@ -91,20 +106,40 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
         </Box>
         <Divider/>
       {isAuthenticated ? (
-        <div className="profile-container">
-          {localProfilePicture && localProfilePicture !== 'null' ? (
-            <div onClick={() => navigate('/profile')}>
-              <Avatar  alt="Profile" src={`data:image/jpeg;base64,${profilePicture}`}/>
-            </div>
-          ) : (
-            <div
-              className="profile-initial"
-              onClick={() => navigate('/profile')}
-            >
-              {getProfileInitial(name)}
-            </div>
-          )}
-        </div>
+        <Box sx={{ flexGrow: 0 }}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <Avatar  alt="Profile" src={`data:image/jpeg;base64,${profilePicture}`}>{getProfileInitial(name)}</Avatar>
+          </IconButton>
+          <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            {settings.map((setting) => (
+              <MenuItem key={setting} onClick={ () => {
+                handleCloseUserMenu();
+                if(setting === "Profile") {
+                  navigate('/profile');
+                } else if (setting === "Logout") {
+                  handleLogout();
+                }
+              }}>
+                <Typography textAlign="center">{setting}</Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
       ) : (
         <Button href="/login" variant="contained" color="secondary">Login</Button>
       )}
@@ -113,3 +148,5 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
   </AppBar>
   );
 }
+            //<div onClick={() => navigate('/profile')}>
+
