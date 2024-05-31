@@ -20,6 +20,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get post by id
+router.get("/:id", async (req, res) => {
+  try {
+    const collection = await db.collection("posts");
+    const query = { _id: new ObjectId(req.params.id) };
+    const post = await collection.findOne(query);
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    res.status(200).json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching post");
+  }
+});
+
 // Get posts by username
 router.get("/user/:username", async (req, res) => {
   const { username } = req.params;

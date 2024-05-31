@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import "../styles/PostPage.css"
-
+import "../styles/Login.css"
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
-    name: ' ',
-    desc: ' ',
+    name: '',
+    desc: '',
     image: null,
     isForSale: false,
     isForRent: false,
     buyPrice: '',
     rentPrice: '',
-    availability: [],
+    availability: [null, null],
   });
 
   const handleChange = (event) => {
@@ -36,11 +36,17 @@ const PostPage = () => {
     }
   };
 
-  const handleDateChange = (dates) => {
-    const [start, end] = dates;
+  const handleStartDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [start, end]
+      availability: [date, prev.availability[1]]
+    }));
+  };
+
+  const handleEndDateChange = (date) => {
+    setFormData(prev => ({
+      ...prev,
+      availability: [prev.availability[0], date]
     }));
   };
 
@@ -48,7 +54,6 @@ const PostPage = () => {
     event.preventDefault();
 
     try {
-
       const token = localStorage.getItem('token'); // Retrieve the token from local storage
       if (!token) {
         throw new Error('No token found. Please log in again.');
@@ -73,20 +78,22 @@ const PostPage = () => {
         credentials: 'include',
         body: formDataToSend,
         headers: {
-          'Authorization': `Bearer ${token}` //must include token in Authorization header!
+          'Authorization': `Bearer ${token}` // Must include token in Authorization header!
         },
       });
 
       if (response.ok) {
         alert('Post saved successfully!');
-        setFormData({ name: ' ',
-        desc: ' ',
-        image: null,
-        isForSale: false,
-        isForRent: false,
-        buyPrice: '',
-        rentPrice: '',
-        availability: []}); // reset form
+        setFormData({
+          name: '',
+          desc: '',
+          image: null,
+          isForSale: false,
+          isForRent: false,
+          buyPrice: '',
+          rentPrice: '',
+          availability: [null, null]
+        }); // Reset form
       } else {
         const errorText = await response.text();
         console.error('Failed to save post:', errorText);
@@ -150,14 +157,25 @@ const PostPage = () => {
         )}
         <div>
           <label>
-            <h3>Availability:</h3>
-            <div> <DatePicker
+            Start Date:
+            <DatePicker
               selected={formData.availability[0]}
-              onChange={handleDateChange}
-              startDate={formData.availability[0]}
-              endDate={formData.availability[1]}
-              selectsRange
-              inline
+              onChange={handleStartDateChange}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Select Start Date"
+              className="date-input"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            End Date:
+            <DatePicker
+              selected={formData.availability[1]}
+              onChange={handleEndDateChange}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Select End Date"
+              className="date-input"
             />
             </div>
           </label>
