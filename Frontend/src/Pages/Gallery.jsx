@@ -132,13 +132,11 @@ const Gallery = () => {
       ret = products;
     } else {
       // const username = obj.username;
-
       ret = fuse.search(searchQuery).map(
         obj => {
         console.log(obj);
         return obj.item;
       });
-      
       ret += fuse.search(searchQuery).map(obj => obj.school) //TODO: ADD SEARCHING FOR SCHOOL
     }
     ret = filterProducts(ret).map((product) => (
