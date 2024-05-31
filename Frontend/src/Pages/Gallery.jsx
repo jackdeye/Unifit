@@ -24,7 +24,7 @@ const Gallery = () => {
             const data = await response.json();
             setProducts(data);
           } else {
-            console.error("Error fetching user's products");
+            console.error("Error fetching school's products");
           }
         } catch (error) {
           console.error("Error:", error);
