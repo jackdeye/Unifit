@@ -76,7 +76,7 @@ router.get("/:id/availability", async (req, res) => {
 // Create a new post
 router.post("/upload", auth, upload.any(), async (req, res) => {
   try {
-    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability, username, school } = req.body;
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability, quality, size, username, school } = req.body;
     if (!name || !desc || !req.files || !req.files.length) {
       return res.status(400).send("Name, description, and image are required.");
     }
@@ -96,6 +96,8 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       isForRent: isForRent === 'true', 
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
+      quality,
+      size,
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
       school,
