@@ -7,11 +7,14 @@ const PostPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     desc: '',
+    name: '',
+    desc: '',
     image: null,
     isForSale: false,
     isForRent: false,
     buyPrice: '',
     rentPrice: '',
+    availability: [null, null],
     availability: [null, null],
   });
 
@@ -43,8 +46,17 @@ const PostPage = () => {
   };
 
   const handleEndDateChange = (date) => {
+  const handleStartDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
+      availability: [date, prev.availability[1]]
+    }));
+  };
+
+  const handleEndDateChange = (date) => {
+    setFormData(prev => ({
+      ...prev,
+      availability: [prev.availability[0], date]
       availability: [prev.availability[0], date]
     }));
   };
@@ -76,11 +88,22 @@ const PostPage = () => {
         body: formDataToSend,
         headers: {
           'Authorization': `Bearer ${token}` // Must include token in Authorization header!
+          'Authorization': `Bearer ${token}` // Must include token in Authorization header!
         },
       });
 
       if (response.ok) {
         alert('Post saved successfully!');
+        setFormData({
+          name: '',
+          desc: '',
+          image: null,
+          isForSale: false,
+          isForRent: false,
+          buyPrice: '',
+          rentPrice: '',
+          availability: [null, null]
+        }); // Reset form
         setFormData({
           name: '',
           desc: '',
@@ -156,6 +179,7 @@ const PostPage = () => {
           <div>
           <label>
             Start Date:
+            Start Date:
             <DatePicker
               selected={formData.availability[0]}
               onChange={handleStartDateChange}
@@ -188,3 +212,4 @@ const PostPage = () => {
 };
 
 export default PostPage;
+
