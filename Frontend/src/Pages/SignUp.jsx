@@ -109,16 +109,21 @@ export default function SignUp({ onSignup }) {
         <label htmlFor='school'>School:</label>
         <div></div>
         <select
-          type='school'
+          //type='school'
           id='school'
           name='school'
           value={formData.school}
           onChange={handleChange}
           >
-            <option>university of eggert</option>
-            <option>oocla</option>
-            <option>eggertarians</option>
-            <option>eggertian</option>
+            <option value=''>Select a school</option>
+            <option value='UCLA'>UCLA</option>
+            <option value='University of Maryland'>University of Maryland, College Park</option>
+            <option value='oocla'>oocla</option>
+            <option value='UC Berkeley'>UC Berkeley</option>
+            <option value='Florida State University, School of Circustry'>Florida State University, School of Circustry</option>
+            <option value='University of Spoiled Children'>University of Spoiled Children</option>
+            <option value='Stanford University'>Stanford University</option>
+            <option value='Some school in the midwest (love u eggert)'>Some school in the midwest (love u eggert)</option>
         </select>
         <div></div>
         

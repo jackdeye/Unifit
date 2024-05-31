@@ -17,7 +17,14 @@ function EditProfile() {
         ...prevState,
         profilePicture: files[0]
       }));
-    } else {
+    } 
+    // else if (name === 'school'){
+    //   setFormData(prevState => ({
+    //     ...prevState,
+    //     school: value
+    //   }));
+    // } 
+    else {
       setFormData(prevState => ({
         ...prevState,
         [name]: value
@@ -48,8 +55,11 @@ function EditProfile() {
   
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('profilePicture', formData.profilePicture || null);
+        localStorage.setItem('profilePicture', data.profilePicture || null);
         localStorage.setItem('profile', data.name);
+        localStorage.setItem('school', data.school);
+        localStorage.setItem('bio', data.bio);
+        localStorage.setItem('password', data.password);
 
         // Dispatch custom event
         const event = new Event('localStorageUpdated');
@@ -105,15 +115,19 @@ function EditProfile() {
         <h4>School:
           <select
             type='school'
-            id='school'
             name='school'
             value={formData.school}
             onChange={handleChange}
             >
-              <option>university of eggert</option>
-              <option>oocla</option>
-              <option>eggertarians</option>
-              <option>eggertian</option>
+            <option value=''>Select a school</option>
+            <option value='UCLA'>UCLA</option>
+            <option value='University of Maryland'>University of Maryland, College Park</option>
+            <option value='oocla'>oocla</option>
+            <option value='UC Berkeley'>UC Berkeley</option>
+            <option value='Florida State University, School of Circustry'>Florida State University, School of Circustry</option>
+            <option value='University of Spoiled Children'>University of Spoiled Children</option>
+            <option value='Stanford University'>Stanford University</option>
+            <option value='Some school in the midwest (love u eggert)'>Some school in the midwest (love u eggert)</option>
           </select>
         </h4>
 

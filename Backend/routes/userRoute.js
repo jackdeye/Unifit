@@ -73,7 +73,7 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     const updates = {};
     if (name) updates.name = name;
     if (bio) updates.bio = bio;
-    if (school) updates.bio = school;
+    if (school) updates.school = school;
 
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 12);
@@ -82,6 +82,8 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     if (req.file) {
       const base64Image = req.file.buffer.toString("base64");
       updates.profilePicture = base64Image;
+    } else {
+      updates.profilePicture = null;
     }
 
     const result = await collection.updateOne(
