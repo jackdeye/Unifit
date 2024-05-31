@@ -50,6 +50,12 @@
   .products-gallery h2 {
     margin-bottom: 10px;
   }
+
+  .search-bar {
+    border-radius: 20px;
+    border: 1px solid lightgray;
+    padding: 5px;
+  }
   
   .products-grid {
     display: grid;
