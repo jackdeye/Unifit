@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gallery.css'; 
-import Item from './Item.jsx';
 import Fuse from 'fuse.js';
+import Item from '../Components/Item.jsx';
 
 const Favorites = () => {
   const [products, setProducts] = useState([]);
