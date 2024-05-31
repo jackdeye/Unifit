@@ -14,6 +14,7 @@ const PostPage = () => {
     rentPrice: '',
     availability: [null, null],
     quality: 'New', // Add quality to formData with default value
+    size: 'XS',
   });
 
   const handleChange = (event) => {
@@ -71,6 +72,7 @@ const PostPage = () => {
       formDataToSend.append('availability', JSON.stringify(formData.availability));
       formDataToSend.append('username', username);
       formDataToSend.append('quality', formData.quality); // Append quality to formData
+      formDataToSend.append('size', formData.size); 
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
@@ -93,6 +95,7 @@ const PostPage = () => {
           rentPrice: '',
           availability: [null, null],
           quality: 'New', // Reset quality to default value
+          size: 'XS',
         }); // Reset form
       } else {
         const errorText = await response.text();
@@ -193,6 +196,17 @@ const PostPage = () => {
               <option value="Like New">Like New</option>
               <option value="Used">Used</option>
               <option value="Lightly Used">Lightly Used</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Size:
+            <select name="size" value={formData.size} onChange={handleChange} required>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
             </select>
           </label>
         </div>
