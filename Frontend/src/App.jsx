@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import Homepage from './Pages/Homepage';
 import PostPage from './Pages/PostPage';
 import Profile from './Pages/Profile';
@@ -12,48 +12,83 @@ import EditProfile from './Pages/EditProfile';
 import SignUp from './Pages/SignUp.jsx';
 import ItemPage from './Pages/ItemPage';
 import ProtectedRoute from './Components/ProtectedRoute';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export default function App() {
+  //const theme = createTheme(themeData.schemes.light);
+  const theme = createTheme({
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#367765',
+        light: '#5E9283',
+        dark: '#255346',
+      },
+      secondary: {
+        main: '#c84a5a',
+        light: '#D36E7B',
+        dark: '#8C333E',
+      },
+      error: {
+        main: '#cc2b3c',
+      },
+    },
+  });
+
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
+  const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture') || '');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const decodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000; // Convert to seconds
-      console.log("decodedToken.exp: ", decodedToken.exp);
-      console.log("currentTime: ", currentTime);
-      const timeUntilExpiration = decodedToken.exp - currentTime;
-      console.log("time until expiration", timeUntilExpiration);
-      
-      if (timeUntilExpiration <= 0) {
-        handleLogout();
-      } else {
-        const timeoutId = setTimeout(handleLogout, timeUntilExpiration * 1000);
-        return () => clearTimeout(timeoutId); // cleanup timeout on component unmount or token change
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000; // Convert to seconds
+        const timeUntilExpiration = decodedToken.exp - currentTime;
+
+        if (timeUntilExpiration <= 0) {
+          handleLogout();
+        } else {
+          const timeoutId = setTimeout(handleLogout, timeUntilExpiration * 1000);
+          return () => clearTimeout(timeoutId); // Cleanup timeout on component unmount or token change
+        }
+      } catch (error) {
+        handleLogout(); // In case of any error in decoding the token
       }
     }
   }, [isAuthenticated]);
 
-  const handleLogin = (profile, token) => {
+  const handleLogin = (profile, token, profilePicture) => {
     localStorage.setItem('token', token);
     localStorage.setItem('profile', profile);
+    localStorage.setItem('profilePicture', profilePicture || ''); // Set profile picture
     setIsAuthenticated(true);
     setProfile(profile);
+    setProfilePicture(profilePicture || '');
+    // Dispatch custom event
+    const event = new Event('localStorageUpdated');
+    window.dispatchEvent(event);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('profile');
+    localStorage.removeItem('profilePicture');
     setIsAuthenticated(false);
     setProfile('');
+    setProfilePicture('');
+    // Dispatch custom event
+    const event = new Event('localStorageUpdated');
+    window.dispatchEvent(event);
   };
-
   return (
-    <BrowserRouter>
-      <div>
-        <NavBar profile={profile} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <BrowserRouter>
+        <div style={{padding:5}}>
+        <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
         <Routes>
           <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Profile /></ProtectedRoute>} />
@@ -66,7 +101,8 @@ export default function App() {
           <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
         </Routes>
-      </div>
-    </BrowserRouter>
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

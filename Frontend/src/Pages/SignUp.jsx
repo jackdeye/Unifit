@@ -51,8 +51,12 @@ export default function SignUp({ onSignup }) {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to create user.');
-    }
+      if (error.message) {
+        alert('Failed to create user: ' + error.message);
+      } else {
+        alert('Failed to create user.');
+      }
+    }    
   };
 
   return(
