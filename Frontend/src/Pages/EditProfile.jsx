@@ -6,7 +6,8 @@ function EditProfile() {
     name: '',
     bio: '',
     password: '',
-    profilePicture: null
+    profilePicture: null,
+    school: ''
   });
 
   const handleChange = (event) => {
@@ -33,6 +34,8 @@ function EditProfile() {
     formDataToSend.append('name', formData.name);
     formDataToSend.append('bio', formData.bio);
     formDataToSend.append('password', formData.password);
+    formDataToSend.append('school', formData.school);
+
     if (formData.profilePicture) {
       formDataToSend.append('profilePicture', formData.profilePicture);
     }
@@ -45,15 +48,16 @@ function EditProfile() {
   
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('profilePicture', data.profilePicture || null);
+        localStorage.setItem('profilePicture', formData.profilePicture || null);
         localStorage.setItem('profile', data.name);
-  
+
         // Dispatch custom event
         const event = new Event('localStorageUpdated');
         window.dispatchEvent(event);
   
         alert('Profile updated successfully!');
       } else {
+        // alert("entered else");
         const errorText = await response.text();
         console.error('Failed to update profile:', errorText);
         alert('Failed to update profile.');
@@ -96,6 +100,21 @@ function EditProfile() {
             onChange={handleChange}
             placeholder="Enter your new password"
           />
+        </h4>
+
+        <h4>School:
+          <select
+            type='school'
+            id='school'
+            name='school'
+            value={formData.school}
+            onChange={handleChange}
+            >
+              <option>university of eggert</option>
+              <option>oocla</option>
+              <option>eggertarians</option>
+              <option>eggertian</option>
+          </select>
         </h4>
 
         <h4>Profile Picture:

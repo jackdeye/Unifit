@@ -54,6 +54,7 @@ const PostPage = () => {
         throw new Error('No token found. Please log in again.');
       }
       const username = localStorage.getItem('username');
+      const school = localStorage.getItem('school');
       console.log("username: ", username);
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
@@ -65,6 +66,7 @@ const PostPage = () => {
       formDataToSend.append('rentPrice', formData.rentPrice);
       formDataToSend.append('availability', JSON.stringify(formData.availability));
       formDataToSend.append('username', username);
+      formDataToSend.append('school', school);
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',

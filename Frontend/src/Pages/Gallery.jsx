@@ -74,6 +74,7 @@ const Gallery = () => {
       ret = products;
     } else {
       ret = fuse.search(searchQuery).map(obj => obj.item);
+      ret += fuse.search(searchQuery).map(obj => obj.school) //TODO: ADD SEARCHING FOR SCHOOL
     }
     ret = filterProducts(ret).map((product) => (
       <Item key={product._id} product={product} />

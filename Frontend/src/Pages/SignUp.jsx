@@ -8,7 +8,8 @@ export default function SignUp({ onSignup }) {
     firstName: '',
     lastName: '',
     username: '',
-    password: ''
+    password: '',
+    school: '',
   });
 
   const navigate = useNavigate(); 
@@ -30,6 +31,7 @@ export default function SignUp({ onSignup }) {
       formDataToSend.append('lastName', formData.lastName);
       formDataToSend.append('username', formData.username);
       formDataToSend.append('password', formData.password);
+      formDataToSend.append('school', formData.school);
 
       const response = await fetch('http://localhost:5050/user/signup', {
         method: 'POST',
@@ -44,6 +46,8 @@ export default function SignUp({ onSignup }) {
         localStorage.setItem('profile', data.user.name);
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('profilePicture', null);
+        localStorage.setItem('school', data.user.school);
+        localStorage.setItem('bio', null);
         navigate('/homepage'); // Redirect to homepage after signup
       } else {
         const data = await response.json(); // Parse the error response as JSON
@@ -102,6 +106,22 @@ export default function SignUp({ onSignup }) {
             onChange={handleChange}
             required
         />
+        <label htmlFor='school'>School:</label>
+        <div></div>
+        <select
+          type='school'
+          id='school'
+          name='school'
+          value={formData.school}
+          onChange={handleChange}
+          >
+            <option>university of eggert</option>
+            <option>oocla</option>
+            <option>eggertarians</option>
+            <option>eggertian</option>
+        </select>
+        <div></div>
+        
         <button type='submit'>Signup</button>
       </form>
     </div>
