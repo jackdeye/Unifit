@@ -55,6 +55,22 @@ router.get("/user/:username", async (req, res) => {
   }
 });
 
+// Get posts by user's school
+router.get("/school/:school", async (req, res) => {
+  const { schoolName } = req.params;
+
+  try {
+    const collection = await db.collection("posts");
+    const results = await collection.find({ school : schoolName }).toArray();
+    if (!results.length) {
+      return res.status(404).send("No posts found for this school");
+    }
+    res.status(200).json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching posts by school");
+  }
+});
 
 router.get("/:id/availability", async (req, res) => {
   try {
