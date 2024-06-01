@@ -119,9 +119,9 @@ const ItemPage = () => {
         <div className='item-info'>
           <h3>{product.name}</h3>
           <p>{product.desc}</p>
-          {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
+          {product.isForSale && <p>Buy: {product.buyPrice}</p>}
           {product.isForRent && 
-          <p>Rent Price: {product.rentPrice}</p> && 
+          <p>Rent: {product.rentPrice}</p> && 
           <DatePicker
           inline
           readOnly

@@ -28,20 +28,30 @@
       color: #ccc;
   }
   
-  .header img {
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-  } 
   
   .header {
-      font-size: 35px;
+    display: flex;
+    align-items: center;
   }
   
+  .avatar-container {
+    padding: 20px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.username {
+  display: inline-block;
+  position: relative;
+  font-size: 16px; 
+}
+
   .products-gallery {
     display: grid;
     width: 75%;
     padding: 20px;
+    
   }
   
   .products-gallery h2 {
@@ -49,7 +59,8 @@
   }
   
   .products-grid {
-    /* flex-wrap: wrap; */
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 20px;
   }
