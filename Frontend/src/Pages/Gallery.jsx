@@ -16,32 +16,17 @@ const Gallery = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const school = localStorage.getItem('school');
-      if (showSchoolPosts && school){
-        try {
-          const response = await fetch(`http://localhost:5050/post/school/${school}`);
-          if (response.ok) {
-            const data = await response.json();
-            setProducts(data);
-          } else {
-            console.error("Error fetching school's products");
-          }
-        } catch (error) {
-          console.error("Error:", error);
+      try {
+        const response = await fetch('http://localhost:5050/post');
+        if (response.ok) {
+          const data = await response.json();
+          const productsWithImages = data.filter(product => product.image && !product.sold && product.username != localStorage.getItem('username'));
+          setProducts(productsWithImages);
+        } else {
+          console.error('Failed to fetch products');
         }
-      }else{
-        try {
-          const response = await fetch('http://localhost:5050/post');
-          if (response.ok) {
-            const data = await response.json();
-            const productsWithImages = data.filter(product => product.image);
-            setProducts(productsWithImages);
-          } else {
-            console.error('Failed to fetch products');
-          }
-        } catch (error) {
-          console.error('Error fetching products:', error);
-        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
       }
     };
     fetchProducts();
