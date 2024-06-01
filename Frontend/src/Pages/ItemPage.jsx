@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ItemPage.css';
@@ -8,6 +8,7 @@ const ItemPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [availability, setAvailability] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -55,6 +56,28 @@ const ItemPage = () => {
     return <div>Loading...</div>;
   }
 
+  const handleDelete = async (event) => {
+    event.preventDefault();
+    try {
+      const token = localStorage.getItem('token'); // Retrieve the token from local storage
+      if (!token) {
+        throw new Error('No token found. Please log in again.');
+      }
+      const deleteResponse = await fetch(`http://localhost:5050/post/${id}`,{
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}` //must include token in Authorization header!
+        }, 
+      });
+      navigate('/profile');
+    } catch{
+      alert("Failed to delete post");
+      navigate('/profile');
+    }
+  };
+
+
   const isDateAvailable = (date) => {
     const { start, end } = availability;
     return start && end && date >= start && date <= end;
@@ -72,6 +95,7 @@ const ItemPage = () => {
           {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
           {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
           <Link to={`/edititem/${product._id}`}> EDIT POST </Link>
+          <h5><button onClick={handleDelete}>Delete Post</button></h5>
         </div>
       </div>
       <div className='comment-section'>
