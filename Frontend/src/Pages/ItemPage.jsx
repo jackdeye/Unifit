@@ -11,6 +11,8 @@ const ItemPage = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const navigate = useNavigate();
+  
+  const curUsername = localStorage.getItem('username');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -153,8 +155,16 @@ const ItemPage = () => {
         />}
 
           {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
-          <Link to={`/edititem/${product._id}`}> EDIT POST </Link>
-          <h5><button onClick={handleDelete}>Delete Post</button></h5>
+          <div>
+            {curUsername === product.username && (
+              <>
+                <Link to={`/edititem/${product._id}`} onClick={() => localStorage.setItem('EditPageButton', 'true')}> EDIT POST </Link>
+              <h5>
+                <button onClick={handleDelete}>Delete Post</button>
+              </h5>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className='comment-section'>
