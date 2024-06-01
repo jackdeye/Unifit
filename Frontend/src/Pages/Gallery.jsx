@@ -45,7 +45,7 @@ const Gallery = () => {
       }
     };
     fetchProducts();
-  }, []);
+  }, [showSchoolPosts]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -57,6 +57,9 @@ const Gallery = () => {
 
   const handleToggleForRent = () => {
     setShowForRent(prev => !prev);
+  };
+  const handleToggleSchool = () => {
+    setShowSchoolPosts(prev => !prev);
   };
 
   const handlePriceOrderChange = (event) => {
@@ -113,39 +116,27 @@ const Gallery = () => {
   const fuse = new Fuse(products, {keys: ["name"]});
 
   const getFilteredAsItems = () => {
-    var ret = []
-    // if (showSchoolPosts) {
-    //   ret = schoolPosts.map((post) => (
-    //     <Item key={post._id} product={post} />
-    //   ));
-    // }else {
-    //   let filteredProducts = products;
-    //   if (searchQuery !== "") {
-    //     filteredProducts = fuse.search(searchQuery).map(obj => obj.item);
-    //   }
-    //   filteredProducts = filterProducts(filteredProducts);
-    //   ret = filteredProducts.map((product) => (
-    //     <Item key={product._id} product={product} />
-    //   ));
-    // }
-    if(searchQuery === "") {
-      ret = products;
-    } else {
-      // const username = obj.username;
-      ret = fuse.search(searchQuery).map(
-        obj => {
-        console.log(obj);
-        return obj.item;
-      });
-      ret += fuse.search(searchQuery).map(obj => obj.school) //TODO: ADD SEARCHING FOR SCHOOL
+    let filteredProducts = products;
+
+    if (searchQuery !== "") {
+      filteredProducts = fuse.search(searchQuery).map(result => result.item);
     }
-    ret = filterProducts(ret).map((product) => (
+
+    filteredProducts = filterProducts(filteredProducts);
+
+    if (priceOrder === 'asc') {
+      filteredProducts.sort((a, b) => Math.min(a.buyPrice, a.rentPrice) - Math.min(b.buyPrice, b.rentPrice));
+    } else {
+      filteredProducts.sort((a, b) => Math.min(b.buyPrice, b.rentPrice) - Math.min(a.buyPrice, a.rentPrice));
+    }
+
+    if (filteredProducts.length === 0) {
+      return <div>No Products Found</div>;
+    }
+
+    return filteredProducts.map(product => (
       <Item key={product._id} product={product} />
     ));
-    if(ret.length === 0) {
-      ret = <div>No Products Found</div>;
-    }
-    return ret;
   }
 
   return (
@@ -155,7 +146,7 @@ const Gallery = () => {
         <ul>
           <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
           <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
-          <li><input type="checkbox" checked={showSchoolPosts} onChange={() => setShowSchoolPosts(!showSchoolPosts)} /> Posts from my School</li>
+          <li><input type="checkbox" checked={showSchoolPosts} onChange={handleToggleSchool} /> Posts from my School</li>
         </ul>
         <div className="price-filter">
           <div className="price-input">
@@ -176,8 +167,8 @@ const Gallery = () => {
           <label>
             Sort By Price:
             <select value={priceOrder} onChange={handlePriceOrderChange}>
-              <option value="asc">High to Low</option>
-              <option value="desc">Low to High</option>
+              <option value="desc">High to Low</option>
+              <option value="asc">Low to High</option>
             </select>
           </label>
         </div>
