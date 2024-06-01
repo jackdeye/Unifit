@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../styles/Login.css"
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PostPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: ' ',
     desc: ' ',
@@ -90,6 +93,7 @@ const PostPage = () => {
         console.error('Failed to save post:', errorText);
         throw new Error('Failed to save post.');
       }
+      navigate('/profile');
     } catch (error) {
       console.error('Error submitting post:', error);
       alert('Failed to save post.');
