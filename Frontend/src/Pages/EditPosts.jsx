@@ -162,7 +162,7 @@ const EditPosts = () => {
             console.error('Failed to save post:', errorText);
             throw new Error('Failed to save post.');
           }
-          navigate(`/item/${product._id}`);
+          navigate('/profile');
         } catch (error) {
           console.error('Error submitting post:', error);
           alert('Failed to save post.');
