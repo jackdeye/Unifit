@@ -51,9 +51,9 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
   }, []);
 
   const pages = [
-    {name: 'Gallery', location: 'gallery'},
-    {name: 'Favorites', location: 'favorites'},
-    {name: 'Post', location: 'postpage'},
+    {name: 'Gallery', location: '/gallery'},
+    {name: 'Favorites', location: '/favorites'},
+    {name: 'Post', location: '/postpage'},
   ];
 
   const settings = [ 'Profile', 'Logout' ];

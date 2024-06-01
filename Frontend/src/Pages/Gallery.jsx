@@ -18,7 +18,7 @@ const Gallery = () => {
         const response = await fetch('http://localhost:5050/post');
         if (response.ok) {
           const data = await response.json();
-          const productsWithImages = data.filter(product => product.image && !product.sold);
+          const productsWithImages = data.filter(product => product.image && !product.sold && product.username != localStorage.getItem('username'));
           setProducts(productsWithImages);
         } else {
           console.error('Failed to fetch products');
@@ -73,7 +73,14 @@ const Gallery = () => {
     if(searchQuery === "") {
       ret = products;
     } else {
-      ret = fuse.search(searchQuery).map(obj => obj.item);
+      // const username = obj.username;
+
+      ret = fuse.search(searchQuery).map(
+        obj => {
+        console.log(obj);
+        return obj.item;
+      });
+      
       ret += fuse.search(searchQuery).map(obj => obj.school) //TODO: ADD SEARCHING FOR SCHOOL
     }
     ret = filterProducts(ret).map((product) => (

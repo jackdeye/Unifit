@@ -1,20 +1,24 @@
-
 .product-item {
-    border: 1px solid #ccc;
-    padding: 20px;
-    text-align: center;
-  }
-  
+  border: 1px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
 .product-item h3 {
-  margin: 2px 0 2px 0;
+  margin: 2px 0;
+  font-size: 16px; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .product-item img {
-    height: 70%;
-    width: 90%;
-    object-fit: cover;
-    border-radius: 8px;
-  }
+  height: 70%;
+  width: 90%;
+  object-fit: cover;
+  border-radius: 8px;
+}
 
 .heart-button {
   background: none;
@@ -22,7 +26,9 @@
   cursor: pointer;
   padding: 0;
   outline: none;
-  position: relative;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .heart-button .heart {
@@ -62,23 +68,33 @@
 .heart-button.liked .heart::after {
   background-color: red;
 }
+
 .product-interact {
   display: flex;
-  gap: 20px;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 }
+
 .price-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .price-info p {
-  margin: 0px 0; 
+  margin: 0px 0;
+  font-size: 12px;
 }
 
 .button-container {
-  flex-direction: 'row';
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.button-container button {
+  margin: 0 3px; 
 }
 
 .buy-button,
@@ -86,12 +102,11 @@
   background-color: #007bff;
   border: none;
   color: white;
-  padding: 5px 20px;
+  padding: 5px 11px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 14px;
-  margin: 5px 2px;
+  font-size: 10px;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s ease;
@@ -100,11 +115,4 @@
 .buy-button:hover,
 .rent-button:hover {
   background-color: #0056b3;
-}
-
-.product-interact {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
 }
