@@ -103,8 +103,6 @@ const ItemPage = () => {
     }
   };
 
-
-
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -130,6 +128,14 @@ const ItemPage = () => {
     }
   };
 
+  function ButtonLink({ to, children, onClick }) {
+    return (
+      <Link to={to}> 
+        <button onClick={onClick}>
+          {children} </button>
+      </Link>
+    );
+  }
 
   const isDateAvailable = (date) => {
     const { start, end } = availability;
@@ -158,7 +164,7 @@ const ItemPage = () => {
           <div>
             {curUsername === product.username && (
               <>
-                <Link to={`/edititem/${product._id}`} onClick={() => localStorage.setItem('EditPageButton', 'true')}> EDIT POST </Link>
+                <ButtonLink to={`/edititem/${product._id}`} onClick={() => localStorage.setItem('EditPageButton', 'true')}> Edit Post </ButtonLink>
               <h5>
                 <button onClick={handleDelete}>Delete Post</button>
               </h5>
