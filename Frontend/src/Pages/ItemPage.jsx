@@ -8,6 +8,7 @@ const ItemPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [availability, setAvailability] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const navigate = useNavigate();
@@ -127,6 +128,39 @@ const ItemPage = () => {
     }
   };
 
+  const handleRent = async () => {
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
+      if (!token) {
+        throw new Error('No token found. Please log in again.');
+      }
+    if (!selectedDate) {
+      alert('Please select a date to rent');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:5050/post/${product._id}/rent`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // Assuming you store token in localStorage
+        },
+        body: JSON.stringify({ date: selectedDate.toISOString().split('T')[0] })
+      });
+
+      if (response.ok) {
+        alert('Item rented successfully!');
+        setAvailability(availability.filter(date => date !== selectedDate.toISOString().split('T')[0]));
+        setSelectedDate(null);
+      } else {
+        console.error('Failed to rent the item');
+      }
+    } catch (error) {
+      console.error('Error renting the item:', error);
+    }
+  };
+
   function ButtonLink({ to, children, onClick }) {
     return (
       <Link to={to}> 
@@ -150,17 +184,21 @@ const ItemPage = () => {
         <div className='item-info'>
           <h3>{product.name}</h3>
           <p>{product.desc}</p>
-          {product.isForSale && <p>Buy: {product.buyPrice}</p>}
-          {product.isForRent && 
-          <p>Rent: {product.rentPrice}</p> && 
-          <DatePicker
-          inline
-          readOnly
-          dayClassName={date => isDateAvailable(date) ? 'available' : undefined}
-        />}
-
+      
           {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
           {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
+          {product.isForRent && (
+            <>
+              <DatePicker
+                inline
+                selected={selectedDate}
+                onChange={date => setSelectedDate(date)}
+                dayClassName={date => 
+                  selectedDate && date.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0] ? 'selected' : isDateAvailable(date) ? 'available' : 'unavailable'}
+              />
+              <button onClick={handleRent}>Confirm Rental</button>
+            </>
+          )}
           <div>
             {curUsername === product.username && (
               <>

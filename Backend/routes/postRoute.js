@@ -89,6 +89,43 @@ router.get("/:id/availability", async (req, res) => {
   }
 });
 
+
+router.patch("/:id/rent", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { date } = req.body;
+
+    console.log('Received rental request for post:', postId, 'and date:', date);
+
+    if (!date) {
+      return res.status(400).send("Date is required");
+    }
+    console.log('date good');
+
+    const collection = db.collection("posts");
+    console.log('enter posts');
+    const post = await collection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    if (!post.availability || !post.availability.includes(date)) {
+      return res.status(400).send("Date not available for rental");
+    }
+
+    await collection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $pull: { availability: date } }
+    );
+
+    res.status(200).send("Rental confirmed successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error confirming rental");
+  }
+});
+
 // Create a new post
 router.post("/upload", auth, upload.any(), async (req, res) => {
   try {
