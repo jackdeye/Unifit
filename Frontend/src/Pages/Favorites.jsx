@@ -14,29 +14,32 @@ const Favorites = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const username = localStorage.getItem('username');
-      if (username){
-        try {
-          // const response = await fetch('http://localhost:5050/post');
-          const response = await fetch(`http://localhost:5050/user/${username}/likedpost`);
-          alert("fetched");
+      try {
+        const posts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+
+        // Function to fetch post details by ID
+        const fetchPostById = async (id) => {
+          const response = await fetch(`http://localhost:5050/post/${id}`);
           if (response.ok) {
-            alert("yay");
-            // const data = await response.json();
-            // const productsWithImages = data.filter(product => product.image);
-            // setProducts(productsWithImages);
-            const data = await response.json();
-            setProducts(data);
+            return response.json();
           } else {
-            console.error('Failed to fetch products');
-            alert("failed");
+            console.error('Failed to fetch post:', id);
+            return null;
           }
-        } catch (error) {
-          alert("failed 2");
-          console.error('Error fetching products:', error);
-        }
+        };
+
+        // Fetch all posts in parallel
+        const postsData = await Promise.all(posts.map(fetchPostById));
+        // Filter out any null responses (in case of fetch failures)
+        setProducts(postsData.filter(post => post !== null));
+
+        alert("fetched favorited posts");
+      } catch (error) {
+        alert("failed 2");
+        console.error('Error fetching liked posts:', error);
       }
     };
+
     fetchProducts();
   }, []);
 

@@ -19,17 +19,14 @@ const Item = ({ product }) => {
         }
       });
 
-      alert("fetched");
+      // alert("fetched");
 
       if (response.ok) {
-        // const likedPosts = [];
-        // localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-
-        // const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+        const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
   
-        // likedPosts.push(product._id);
+        likedPosts.push(product._id);
   
-        // localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
         alert("liked post");
 
       } else {

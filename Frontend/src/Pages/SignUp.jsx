@@ -42,7 +42,7 @@ export default function SignUp({ onSignup }) {
         const data = await response.json();
         onSignup(data.user.name, data.token);
         alert('User created and logged in successfully!');
-        const [likedPosts] = [];
+        // const [likedPosts] = [];
 
         localStorage.setItem('token', data.token);
         localStorage.setItem('profile', data.user.name);
@@ -50,7 +50,7 @@ export default function SignUp({ onSignup }) {
         localStorage.setItem('profilePicture', null);
         localStorage.setItem('school', data.user.school);
         localStorage.setItem('bio', null);
-        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        // localStorage.setItem('likedPosts', null);
         navigate('/homepage'); // Redirect to homepage after signup
       } else {
         const data = await response.json(); // Parse the error response as JSON
