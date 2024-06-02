@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gallery.css'; 
-import Item from './Item.jsx';
+import Item from '../Components/Item.jsx';
 import Fuse from 'fuse.js';
 
 const Gallery = () => {
@@ -11,6 +11,8 @@ const Gallery = () => {
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  // const [schoolPosts, setSchoolPosts] = useState([]);
+  const [showSchoolPosts, setShowSchoolPosts] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,8 +20,13 @@ const Gallery = () => {
         const response = await fetch('http://localhost:5050/post');
         if (response.ok) {
           const data = await response.json();
-          const productsWithImages = data.filter(product => product.image);
-          setProducts(productsWithImages);
+          const filteredProducts = data.filter(product => product.image && !product.sold && product.username !== localStorage.getItem('username'));
+          if (showSchoolPosts) {
+            const schoolPosts = filteredProducts.filter(product => product.school === localStorage.getItem('school'));
+            setProducts(schoolPosts);
+          } else {
+            setProducts(filteredProducts);
+          }
         } else {
           console.error('Failed to fetch products');
         }
@@ -27,9 +34,8 @@ const Gallery = () => {
         console.error('Error fetching products:', error);
       }
     };
-
     fetchProducts();
-  }, []);
+  }, [showSchoolPosts]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -41,6 +47,9 @@ const Gallery = () => {
 
   const handleToggleForRent = () => {
     setShowForRent(prev => !prev);
+  };
+  const handleToggleSchool = () => {
+    setShowSchoolPosts(prev => !prev);
   };
 
   const handlePriceOrderChange = (event) => {
@@ -54,6 +63,34 @@ const Gallery = () => {
   const handleMaxPriceChange = (event) => {
     setMaxPrice(event.target.value);
   };
+
+  // const handleShowSchoolPosts = async () => {
+  //   try {
+  //     const token = localStorage.getItem('token'); // Retrieve the token from local storage
+  //     if (!token) {
+  //       throw new Error('No token found. Please log in again.');
+  //     }
+  //     const response = await fetch('http://localhost:5050/post/school/posts', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setSchoolPosts(data);
+  //       setShowSchoolPosts(true);
+  //     } else {
+  //       const errorText = await response.text();
+  //       console.error('Failed to fetch school posts:', errorText);
+  //       throw new Error('Failed to fetch school posts.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching school posts:', error);
+  //     alert('Failed to fetch school posts.');
+  //   }
+  // };
 
   const filterProducts = (p) => p.filter(product => {
     const matchesSaleFilter = showForSale ? product.isForSale : true;
@@ -69,19 +106,27 @@ const Gallery = () => {
   const fuse = new Fuse(products, {keys: ["name"]});
 
   const getFilteredAsItems = () => {
-    var ret = []
-    if(searchQuery === "") {
-      ret = products;
-    } else {
-      ret = fuse.search(searchQuery).map(obj => obj.item);
+    let filteredProducts = products;
+
+    if (searchQuery !== "") {
+      filteredProducts = fuse.search(searchQuery).map(result => result.item);
     }
-    ret = filterProducts(ret).map((product) => (
+
+    filteredProducts = filterProducts(filteredProducts);
+
+    if (priceOrder === 'asc') {
+      filteredProducts.sort((a, b) => Math.min(a.buyPrice, a.rentPrice) - Math.min(b.buyPrice, b.rentPrice));
+    } else {
+      filteredProducts.sort((a, b) => Math.min(b.buyPrice, b.rentPrice) - Math.min(a.buyPrice, a.rentPrice));
+    }
+
+    if (filteredProducts.length === 0) {
+      return <div>No Products Found</div>;
+    }
+
+    return filteredProducts.map(product => (
       <Item key={product._id} product={product} />
     ));
-    if(ret.length === 0) {
-      ret = <div>No Products Found</div>;
-    }
-    return ret;
   }
 
   return (
@@ -91,6 +136,7 @@ const Gallery = () => {
         <ul>
           <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
           <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
+          <li><input type="checkbox" checked={showSchoolPosts} onChange={handleToggleSchool} /> Posts from my School</li>
         </ul>
         <div className="price-filter">
           <div className="price-input">
@@ -111,8 +157,8 @@ const Gallery = () => {
           <label>
             Sort By Price:
             <select value={priceOrder} onChange={handlePriceOrderChange}>
-              <option value="asc">High to Low</option>
-              <option value="desc">Low to High</option>
+              <option value="desc">High to Low</option>
+              <option value="asc">Low to High</option>
             </select>
           </label>
         </div>

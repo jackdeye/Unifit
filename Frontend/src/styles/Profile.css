@@ -1,13 +1,12 @@
 .all {
     display: flex;
-    /* gap: 20px; */
   }
   
   .info {
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 10px; /* Adjust the space between buttons */
+      gap: 10px; 
       align-items: flex-start;
   
   }
@@ -17,8 +16,8 @@
       padding: 20px 30px;
       font-size: 25px;
       background-color: #eff0eb;
-      color: black; /* Change the text color as per your requirement */
-      border-radius: 30px; /* Adjust the border radius for rounded corners */
+      color: black; 
+      border-radius: 30px; 
       text-align: center;
       text-decoration: none;
       transition: background-color 0.3s ease;
@@ -28,20 +27,30 @@
       color: #ccc;
   }
   
-  .header img {
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-  } 
   
   .header {
-      font-size: 35px;
+    display: flex;
+    align-items: center;
   }
   
+  .avatar-container {
+    padding: 20px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.username {
+  display: inline-block;
+  position: relative;
+  font-size: 16px; 
+}
+
   .products-gallery {
     display: grid;
     width: 75%;
     padding: 20px;
+    
   }
   
   .products-gallery h2 {
@@ -49,7 +58,8 @@
   }
   
   .products-grid {
-    /* flex-wrap: wrap; */
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 20px;
   }

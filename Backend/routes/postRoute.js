@@ -55,6 +55,22 @@ router.get("/user/:username", async (req, res) => {
   }
 });
 
+// Get posts by user's school
+router.get("/school/:school", async (req, res) => {
+  const { schoolName } = req.params;
+
+  try {
+    const collection = await db.collection("posts");
+    const results = await collection.find({ school : schoolName }).toArray();
+    if (!results.length) {
+      return res.status(404).send("No posts found for this school");
+    }
+    res.status(200).json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching posts by school");
+  }
+});
 
 router.get("/:id/availability", async (req, res) => {
   try {
@@ -76,7 +92,7 @@ router.get("/:id/availability", async (req, res) => {
 // Create a new post
 router.post("/upload", auth, upload.any(), async (req, res) => {
   try {
-    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability, username } = req.body;
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability, quality, size, username, school } = req.body;
     if (!name || !desc || !req.files || !req.files.length) {
       return res.status(400).send("Name, description, and image are required.");
     }
@@ -96,8 +112,13 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       isForRent: isForRent === 'true', 
       buyPrice: isForSale === 'true' ? buyPrice : null,
       rentPrice: isForRent === 'true' ? rentPrice : null,
+      quality,
+      size,
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
+      school,
+      sold: false,
+      comments: [],
     };
 
     let collection = db.collection("posts");
@@ -154,6 +175,49 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const collection = await db.collection("posts");
+    const query = { _id: new ObjectId(req.params.id) };
+    const post = await collection.findOne(query, { projection: { comments: 1 } });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    res.status(200).json(post.comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching comments");
+  }
+});
+router.post("/:id/comments", async (req, res) => {
+  try { 
+    const { username, comment } = req.body;
+    if (!username || !comment){
+      return res.status(400).send("Missing either username or comment")
+    }
+    const query = { _id: new ObjectId(req.params.id) };
+    const update = { 
+      $push: {
+        comments: {
+          username, 
+          comment
+        }
+      }
+    };
+    const collection = await db.collection("posts");
+    const result = await collection.updateOne(query, update);
+
+    }
+    catch(err) {
+      console.error(err);
+      res.status(500).send("Unable to add comment");
+    }
+  }
+);
+
+
 // Like a post by id
 router.patch("/:id/likePost", auth, async (req, res) => {
   try {
@@ -182,5 +246,42 @@ router.patch("/:id/likePost", auth, async (req, res) => {
   }
 });
 
+// Buy a post
+router.patch("/:id/buy", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userId;
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    if (post.sold) {
+      return res.status(400).send("Post is already sold");
+    }
+
+    // mark the post as sold
+    await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { sold: true } }
+    );
+
+    //add post to user's purchased posts
+    await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { purchasedPosts: new ObjectId(postId) } }
+    );
+
+    res.status(200).send("Post purchased successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error buying post");
+  }
+});
 
 export default router;

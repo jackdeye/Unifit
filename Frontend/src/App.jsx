@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useMemo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import Homepage from './Pages/Homepage';
 import PostPage from './Pages/PostPage';
 import Profile from './Pages/Profile';
@@ -14,6 +14,7 @@ import ItemPage from './Pages/ItemPage';
 import ProtectedRoute from './Components/ProtectedRoute';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import EditPosts from './Pages/EditPosts.jsx'
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -52,6 +53,8 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
   const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture') || '');
+
+  localStorage.setItem('EditPageButton', 'false');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -114,6 +117,7 @@ export default function App() {
             <Route path="/editprofile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditProfile /></ProtectedRoute>} />
             <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
             <Route path="/" element={<Navigate to="/homepage" replace />} />
+            <Route path="/edititem/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditPosts /></ProtectedRoute>} /> 
           </Routes>
           </div>
         </BrowserRouter>
