@@ -9,14 +9,14 @@ const EditPosts = () => {
     const [product, setProduct] = useState();
     const [availability, setAvailability] = useState([]);
     const navigate = useNavigate();
-  
+    
     useEffect(() => {
       const gotHereCorrectly = localStorage.getItem('EditPageButton');
-      if (!gotHereCorrectly) {
+      if (gotHereCorrectly === 'false') {
         navigate('/profile');
       }
     }, []);
-     
+
     useEffect(() => {
       const fetchProduct = async () => {
         try {
