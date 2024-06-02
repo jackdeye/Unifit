@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
+import "../styles/PostPage.css"
 import "../styles/Login.css"
-
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
-    name: ' ',
-    desc: ' ',
+    name: '',
+    desc: '',
     image: null,
     isForSale: false,
     isForRent: false,
     buyPrice: '',
     rentPrice: '',
-    availability: [],
+    availability: [null, null],
+    quality: 'New', // Add quality to formData with default value
+    size: 'XS',
   });
 
   const handleChange = (event) => {
@@ -36,11 +38,17 @@ const PostPage = () => {
     }
   };
 
-  const handleDateChange = (dates) => {
-    const [start, end] = dates;
+  const handleStartDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [start, end]
+      availability: [date, prev.availability[1]]
+    }));
+  };
+
+  const handleEndDateChange = (date) => {
+    setFormData(prev => ({
+      ...prev,
+      availability: [prev.availability[0], date]
     }));
   };
 
@@ -48,12 +56,12 @@ const PostPage = () => {
     event.preventDefault();
 
     try {
-
       const token = localStorage.getItem('token'); // Retrieve the token from local storage
       if (!token) {
         throw new Error('No token found. Please log in again.');
       }
       const username = localStorage.getItem('username');
+      const school = localStorage.getItem('school');
       console.log("username: ", username);
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
@@ -65,26 +73,33 @@ const PostPage = () => {
       formDataToSend.append('rentPrice', formData.rentPrice);
       formDataToSend.append('availability', JSON.stringify(formData.availability));
       formDataToSend.append('username', username);
+      formDataToSend.append('quality', formData.quality); // Append quality to formData
+      formDataToSend.append('size', formData.size); 
+      formDataToSend.append('school', school);
 
       const response = await fetch('http://localhost:5050/post/upload', {
         method: 'POST',
         credentials: 'include',
         body: formDataToSend,
         headers: {
-          'Authorization': `Bearer ${token}` //must include token in Authorization header!
+          'Authorization': `Bearer ${token}` // Must include token in Authorization header!
         },
       });
 
       if (response.ok) {
         alert('Post saved successfully!');
-        setFormData({ name: ' ',
-        desc: ' ',
-        image: null,
-        isForSale: false,
-        isForRent: false,
-        buyPrice: '',
-        rentPrice: '',
-        availability: []}); // reset form
+        setFormData({
+          name: '',
+          desc: '',
+          image: null,
+          isForSale: false,
+          isForRent: false,
+          buyPrice: '',
+          rentPrice: '',
+          availability: [null, null],
+          quality: 'New', // Reset quality to default value
+          size: 'XS',
+        }); // Reset form
       } else {
         const errorText = await response.text();
         console.error('Failed to save post:', errorText);
@@ -146,17 +161,56 @@ const PostPage = () => {
             </label>
           </div>
         )}
+        {formData.isForRent && (
+          <>
+            <div>
+              <label>
+                Start Date:
+                <DatePicker
+                  selected={formData.availability[0]}
+                  onChange={handleStartDateChange}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select Start Date"
+                  className="date-input"
+                  required={formData.isForRent}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                End Date:
+                <DatePicker
+                  selected={formData.availability[1]}
+                  onChange={handleEndDateChange}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select End Date"
+                  className="date-input"
+                  required={formData.isForRent}
+                />
+              </label>
+            </div>
+          </>
+        )}
         <div>
           <label>
-            Availability:
-            <DatePicker
-              selected={formData.availability[0]}
-              onChange={handleDateChange}
-              startDate={formData.availability[0]}
-              endDate={formData.availability[1]}
-              selectsRange
-              inline
-            />
+            Quality:
+            <select name="quality" value={formData.quality} onChange={handleChange} required>
+              <option value="New">New</option>
+              <option value="Like New">Like New</option>
+              <option value="Used">Used</option>
+              <option value="Lightly Used">Lightly Used</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Size:
+            <select name="size" value={formData.size} onChange={handleChange} required>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+            </select>
           </label>
         </div>
         <button type="submit">Submit</button>
@@ -164,5 +218,4 @@ const PostPage = () => {
     </div>
   );
 };
-
 export default PostPage;

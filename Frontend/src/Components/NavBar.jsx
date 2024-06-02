@@ -1,6 +1,19 @@
-import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import "../styles/NavBar.css";
+import { Link, useNavigate } from 'react-router-dom';
+import "../styles/NavBar.css"
+import {
+  AppBar,
+  Container,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  Divider,
+  Avatar,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 
 export default function Navbar({ profile, profilePicture, isAuthenticated, onLogout }) {
   const navigate = useNavigate();
@@ -37,46 +50,106 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
     };
   }, []);
 
+  const pages = [
+    {name: 'Gallery', location: '/gallery'},
+    {name: 'Favorites', location: '/favorites'},
+    {name: 'Post', location: '/postpage'},
+  ];
+
+  const settings = [ 'Profile', 'Logout' ];
+
   useEffect(() => {
     setLocalProfilePicture(profilePicture);
     setName(profile);
   }, [profilePicture, profile]);
 
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const handleOpenUserMenu = (e) => {
+    setAnchorElUser(e.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+
   return (
-    <div className='navbar'>
-      <h1><Link to="/homepage">Unifits</Link></h1>
-      <div className='link-container'>
-        <Link to="/homepage">Home</Link>
-        <Link to="/profile">Profile</Link>
-        <Link to="/gallery">Gallery</Link>
-        <Link to="/favorites">Favorites</Link>
-        <Link to="/postpage">Posts</Link>
-      </div>
+    <AppBar position="static" sx={{borderRadius:5}}>
+    <Container maxWidth="xl">
+      <Toolbar disableGutters>
+        <Typography
+          variant="h5"
+          noWrap
+          component="a"
+          href="/homepage"
+          sx={{
+            mr: 2,
+            display: { xs: 'flex' },
+            flexGrow: 1,
+            fontFamily: 'monospace',
+            fontWeight: 700,
+            letterSpacing: '.3rem',
+            color: 'inherit',
+            textDecoration: 'none',
+          }}
+        >
+          UNIFIT
+        </Typography>
+        <Divider/>
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          {pages.map((item) => (
+            <Button key={item.name} href={item.location} sx={{     ':hover': {
+      bgcolor: 'primary.light', // theme.palette.primary.main
+      color: 'white',
+    }, color: '#fff', marginRight: '5px' }}>
+              {item.name}
+            </Button>
+          ))}
+        </Box>
+        <Divider/>
       {isAuthenticated ? (
-        <div className="profile-container">
-          {localProfilePicture && localProfilePicture !== 'null' ? (
-            <img
-              src={`data:image/jpeg;base64,${localProfilePicture}`}
-              alt="Profile"
-              className="profile-picture"
-              onClick={() => navigate('/profile')}
-            />
-          ) : (
-            <div
-              className="profile-initial"
-              onClick={() => navigate('/profile')}
-            >
-              {getProfileInitial(name)}
-            </div>
-          )}
-          <h5 className='button'>Welcome, {name}</h5>
-          <h5><button onClick={handleLogout}>Logout</button></h5>
-        </div>
+        <Box sx={{ flexGrow: 0 }}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <Avatar  alt="Profile" src={`data:image/jpeg;base64,${localProfilePicture}`}>{getProfileInitial(name)}</Avatar>
+          </IconButton>
+          <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            {settings.map((setting) => (
+              <MenuItem key={setting} onClick={ () => {
+                handleCloseUserMenu();
+                if(setting === "Profile") {
+                  navigate('/profile');
+                } else if (setting === "Logout") {
+                  handleLogout();
+                }
+              }}>
+                <Typography textAlign="center">{setting}</Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
       ) : (
-        <div className='button'>
-          <Link to="/login">Login</Link>
-        </div>
+        <Button href="/login" variant="contained" color="secondary">Login</Button>
       )}
-    </div>
+      </Toolbar>
+    </Container>
+  </AppBar>
   );
 }
+            //<div onClick={() => navigate('/profile')}>
+
