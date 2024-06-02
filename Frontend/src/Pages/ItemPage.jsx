@@ -151,7 +151,6 @@ const ItemPage = () => {
 
       if (response.ok) {
         alert('Item rented successfully!');
-        setAvailability(availability.filter(date => date !== selectedDate.toISOString().split('T')[0]));
         setSelectedDate(null);
       } else {
         console.error('Failed to rent the item');
