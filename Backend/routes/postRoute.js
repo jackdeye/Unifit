@@ -101,6 +101,7 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
       comments: [],
+      liked: true,
       school
     };
 
@@ -200,35 +201,36 @@ router.post("/:id/comments", async (req, res) => {
   }
 );
 
-
-// Like a post by id
-router.patch("/:id/likePost", auth, async (req, res) => {
+router.patch("/:id/likepost", auth, async (req, res) => {
   try {
-    const query = { _id: new ObjectId(req.params.id) };
+    const postId = req.params.id;
+    const userId = req.userId;
 
-    if (!req.userId) return res.json({ message: 'Unauthenticated' });
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
 
-    const post = await PostMessage.findById(id);
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
 
-    
-    // const index = post.likes.findIndex((id) => id === String(req.userId));
-    // if (index === -1) {
-    //   //like the post
-    //   post.likes.push(req.userId);
-    // } else {
-    //   //dislike a post
-    //   post.likes = post.likes.filter((id) => id !== String(req.userId));
-    // }
-    let collection = await db.collection("posts");
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
 
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, { likeCount: post.likeCount + 1 }, { mew: true});
-    let result = await collection.updateOne(query, updatedPost);
-    res.send(result).status(200);
+    await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { likedPosts: new ObjectId(postId) } }
+    );
+
+    await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { liked: true } }
+    );
+
+
+    res.status(200).send("Post liked successfully");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error liking/disliking post");
+    res.status(500).send("Error liking post");
   }
 });
-
 
 export default router;

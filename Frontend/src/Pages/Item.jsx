@@ -4,15 +4,46 @@ import '../styles/Item.css'; // Assuming you have a CSS file for styling
 
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
+  // const [likedPost, setLikedPosts] = useState([]);
+  // const [newLike, setNewLike] = useState('');
 
   const handleLike = async () => {
     setLike(!like);
-    console.log(`set favorite to ${!like}`);
-    const favorite = await fetch('http://localhost:5050/:id/likePost', {
-      method: 'POST',
-      body: formDataToSend
-    })
+
+    try {
+      console.log(`set favorite to ${!like}`);
+
+      const response = await fetch(`http://localhost:5050/post/${product._id}/likepost`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
+        }
+      });
+
+      alert("fetched");
+
+      if (response.ok) {
+        // const likedPosts = [];
+        // localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+
+        // const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+  
+        // likedPosts.push(product._id);
+  
+        // localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        alert("liked post");
+
+      } else {
+        alert("Failed to like post");
+      }
+
+  } catch(error) {
+      console.error("Error on liking post");
+      alert("error on liking post");
+  }
   };
+
 
   return (
     <div className="product-item">

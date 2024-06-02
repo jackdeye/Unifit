@@ -26,7 +26,14 @@ router.post("/signup", upload.none(), async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const result = await collection.insertOne({ username, password: hashedPassword, name: `${firstName} ${lastName}`, profilePicture: null, bio: null });
+    const result = await collection.insertOne({ 
+      username, 
+      password: hashedPassword, 
+      name: `${firstName} ${lastName}`, 
+      profilePicture: null, 
+      bio: null,
+      likedPosts: [],
+    });
 
     if (result.insertedId) {
       const token = jwt.sign({ username, id: result.insertedId }, process.env.JWT_SECRET, { expiresIn: "1h" });
