@@ -19,7 +19,7 @@ export default function App() {
   //const theme = createTheme(themeData.schemes.light);
   const theme = createTheme({
     palette: {
-      mode: 'light',
+      mode: 'dark',
       primary: {
         main: '#367765',
         light: '#5E9283',

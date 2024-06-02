@@ -1,15 +1,44 @@
 import React, { useState } from 'react';
 import "../styles/Login.css"
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+//import DatePicker from 'react-datepicker';
+//import 'react-datepicker/dist/react-datepicker.css';
+import {
+  TextField,
+  Grid,
+  Button,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { CloudUpload, Send } from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const PostPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     desc: '',
     image: null,
-    isForSale: false,
-    isForRent: false,
+    isForSale: true,
+    isForRent: true,
     buyPrice: '',
     rentPrice: '',
     availability: [null, null],
@@ -33,19 +62,20 @@ const PostPage = () => {
         [name]: value,
       }));
     }
+    console.log(formData);
   };
 
   const handleStartDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [date, prev.availability[1]]
+      availability: [date.toDate(), prev.availability[1]]
     }));
   };
 
   const handleEndDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [prev.availability[0], date]
+      availability: [prev.availability[0], date.toDate()]
     }));
   };
 
@@ -85,8 +115,8 @@ const PostPage = () => {
           name: '',
           desc: '',
           image: null,
-          isForSale: false,
-          isForRent: false,
+          isForSale: true,
+          isForRent: true,
           buyPrice: '',
           rentPrice: '',
           availability: [null, null]
@@ -103,6 +133,114 @@ const PostPage = () => {
   };
 
   return (
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      width = "80vh"
+      height="80vh"
+      margin="auto"
+    >
+      <Grid item xs={6} display="flex" flexDirection="column">
+        <TextField
+          sx={{ m: 1, width: '25ch' }}
+          id="outlined-required"
+          label="Title"
+          value={formData.name}
+          name="name"
+          onChange={handleChange}
+        />
+        <TextField
+          sx={{ m: 1, width: '25ch' }}
+          id="outlined-required"
+          label="Description"
+          value={formData.desc}
+          name="desc"
+          onChange={handleChange}
+        />
+      { formData.isForSale ? 
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Buy Price</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            name="buyPrice"
+            value={formData.buyPrice}
+            label="Buy Price"
+            onChange={handleChange}
+          />
+        </FormControl>
+        :
+        <div/>
+      }
+      { formData.isForRent ? 
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Rent Price</InputLabel>
+          
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            name="rentPrice"
+            value={formData.rentPrice}
+            label="Rent Price"
+            onChange={handleChange}
+          />
+        </FormControl>
+        :
+        <div/>
+      }
+      </Grid>
+      <Grid item xs={4} display="flex" flexDirection="column" alignItems="center">
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUpload/>}
+          sx={{ m: 1, width: '25ch' }}
+        >
+          Upload file
+          <VisuallyHiddenInput type="file" name="image" onChange={handleChange} />
+        </Button>
+        <FormGroup>
+          <FormControlLabel 
+            onChange={handleChange}
+            control={<Checkbox defaultChecked />}
+            label="For Sale"
+            value={formData.isForSale}
+            name="isForSale"
+          />
+          <FormControlLabel 
+            onChange={handleChange}
+            control={<Checkbox defaultChecked />}
+            label="For Rent"
+            value={formData.isForRent}
+            name="isForRent"
+          />
+        </FormGroup>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date" 
+            onChange={handleStartDateChange}
+            sx={{ m: 1, width: '25ch' }}
+          />
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="End Date" 
+            onChange={handleEndDateChange}
+            sx={{ m: 1, width: '25ch' }}
+          />
+        </LocalizationProvider>
+        <Button variant="contained" onClick={handleSubmit} endIcon={<Send/>}>
+          Post
+        </Button>
+      </Grid>
+    </Grid>
+  );
+
+  /*return (
     <div className='container'>
       <h1 className='header'>Create a New Post</h1>
       <form onSubmit={handleSubmit}>
@@ -179,7 +317,7 @@ const PostPage = () => {
         <button type="submit">Submit</button>
       </form>
     </div>
-  );
+  );*/
 };
 
 export default PostPage;
