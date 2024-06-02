@@ -153,7 +153,7 @@ const ItemPage = () => {
         alert('Item rented successfully!');
         setSelectedDate(null);
       } else {
-        console.error('Failed to rent the item');
+        alert('Item is not available. Please select another date.');
       }
     } catch (error) {
       console.error('Error renting the item:', error);
@@ -174,6 +174,12 @@ const ItemPage = () => {
     return start && end && date >= start && date <= end;
   };
 
+  const isDateRented = (date) => {
+    // Check if the date is in product.rented
+    const dateString = date.toISOString().split('T')[0].slice(0, 10); // Get the first 10 characters (YYYY-MM-DD)
+    return product.rented && product.rented.some(rentedDate => rentedDate.startsWith(dateString));
+  };
+
   return (
     <div className='item-page'>
       <div className='item-display'>
@@ -192,8 +198,15 @@ const ItemPage = () => {
                 inline
                 selected={selectedDate}
                 onChange={date => setSelectedDate(date)}
-                dayClassName={date => 
-                  selectedDate && date.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0] ? 'selected' : isDateAvailable(date) ? 'available' : 'unavailable'}
+                dayClassName={date => {
+                  const dateString = date.toISOString().split('T')[0];
+                  if (selectedDate && dateString === selectedDate.toISOString().split('T')[0]) 
+                    return 'selected';
+                  if (!isDateAvailable(date) || isDateRented(date)) 
+                    return 'unavailable';
+                  console.log("Date available:", date);
+                  return 'available';
+                }}
               />
               <button onClick={handleRent}>Confirm Rental</button>
             </>
