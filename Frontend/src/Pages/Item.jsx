@@ -4,8 +4,6 @@ import '../styles/Item.css'; // Assuming you have a CSS file for styling
 
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
-  // const [likedPost, setLikedPosts] = useState([]);
-  // const [newLike, setNewLike] = useState('');
 
   const handleLike = async () => {
     setLike(!like);

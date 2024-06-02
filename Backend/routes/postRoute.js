@@ -225,7 +225,6 @@ router.patch("/:id/likepost", auth, async (req, res) => {
       { $set: { liked: true } }
     );
 
-
     res.status(200).send("Post liked successfully");
   } catch (err) {
     console.error(err);

@@ -14,20 +14,29 @@ const Favorites = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        const response = await fetch('http://localhost:5050/post'); //TODO: change to reflect favorited items
-        if (response.ok) {
-          const data = await response.json();
-          const productsWithImages = data.filter(product => product.image);
-          setProducts(productsWithImages);
-        } else {
-          console.error('Failed to fetch products');
+      const username = localStorage.getItem('username');
+      if (username){
+        try {
+          // const response = await fetch('http://localhost:5050/post');
+          const response = await fetch(`http://localhost:5050/user/${username}/likedpost`);
+          alert("fetched");
+          if (response.ok) {
+            alert("yay");
+            // const data = await response.json();
+            // const productsWithImages = data.filter(product => product.image);
+            // setProducts(productsWithImages);
+            const data = await response.json();
+            setProducts(data);
+          } else {
+            console.error('Failed to fetch products');
+            alert("failed");
+          }
+        } catch (error) {
+          alert("failed 2");
+          console.error('Error fetching products:', error);
         }
-      } catch (error) {
-        console.error('Error fetching products:', error);
       }
     };
-
     fetchProducts();
   }, []);
 
