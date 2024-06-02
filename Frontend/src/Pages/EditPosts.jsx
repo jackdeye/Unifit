@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Navigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ItemPage.css';
@@ -8,8 +8,15 @@ const EditPosts = () => {
     const { id } = useParams();
     const [product, setProduct] = useState();
     const [availability, setAvailability] = useState([]);
-  
-    const navigate = useNavigate();``
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+      const gotHereCorrectly = localStorage.getItem('EditPageButton');
+      if (gotHereCorrectly === 'false') {
+        navigate('/profile');
+      }
+    }, []);
+
     useEffect(() => {
       const fetchProduct = async () => {
         try {
@@ -104,7 +111,7 @@ const EditPosts = () => {
           availability: [start, end]
         }));
       };
-    
+      
       const handleSubmit = async (event) => {
         event.preventDefault();
     
@@ -121,9 +128,6 @@ const EditPosts = () => {
               'Authorization': `Bearer ${token}` //must include token in Authorization header!
             }, 
           });
-          if(deleteResponse.ok){
-            alert("Saving!")
-          }
 
           const username = localStorage.getItem('username');
           console.log("username: ", username);
@@ -162,7 +166,8 @@ const EditPosts = () => {
             console.error('Failed to save post:', errorText);
             throw new Error('Failed to save post.');
           }
-          navigate(`/item/${product._id}`);
+          localStorage.setItem('EditPageButton', 'false');
+          navigate('/profile');
         } catch (error) {
           console.error('Error submitting post:', error);
           alert('Failed to save post.');

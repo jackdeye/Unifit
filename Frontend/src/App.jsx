@@ -41,6 +41,8 @@ export default function App() {
   const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
   const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture') || '');
 
+  localStorage.setItem('EditPageButton', 'false');
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
