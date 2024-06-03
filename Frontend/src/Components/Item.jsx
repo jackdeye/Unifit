@@ -5,7 +5,7 @@ import '../styles/Item.css'; // Assuming you have a CSS file for styling
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     setLike(!like); 
     try {
       console.log(`set favorite to ${!like}`);
@@ -32,7 +32,6 @@ const Item = ({ product }) => {
       console.error("Error on liking post");
       alert("error on liking post");
   }
-  };
   };
 
   const handleBuy = async () => {
@@ -64,7 +63,7 @@ const Item = ({ product }) => {
     } catch (error) {
       console.error('Error buying the item:', error);
     }
-
+  };
   return (
     <div className="product-item">
       <Link to={`/item/${product._id}`}>

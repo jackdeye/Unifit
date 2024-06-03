@@ -195,11 +195,9 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
       school,
-      sold: false,
       rented: [],
       comments: [],
       liked: true,
-      school,
       sold: false,
     };
 
