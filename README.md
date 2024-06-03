@@ -10,6 +10,8 @@ Unifit: a platform that allows university students to effortlessly buy, sell, an
 - User Authentication
 - Gallery:
   - Filters: For Rent, For Buy, Fuzzy Find for searching through posts
+- Favorites Page
+- Product Pages
 - Profile
 - Likes
 - Comments
