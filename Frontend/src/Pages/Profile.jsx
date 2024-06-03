@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/Profile.css";
-import cat from "../Assets/cat.jpg";
 import Item from '../Components/Item.jsx';
 import "../styles/Gallery.css";
 import {Avatar} from '@mui/material';
