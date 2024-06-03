@@ -9,9 +9,10 @@ export default function Profile() {
   const [products, setProducts] = useState([]);
   const [purchasedPosts, setPurchasedPosts] = useState([]);
   const [rentedPosts, setRentedPosts] = useState([]);
-  const [school] = useState(localStorage.getItem('school'));
+  // const [school] = useState(localStorage.getItem('school'));
 
   useEffect(() => {
+    // alert(localStorage.getItem("school"));
     const fetchProducts = async () => {
       const username = localStorage.getItem('username');
       if (username) {
@@ -91,7 +92,8 @@ export default function Profile() {
 
       <div className='all'>
         <div className='info'>
-           {school && <div> {school}</div>}
+          <div>{localStorage.getItem("school")}</div>
+           {/* {school && <div> {school}</div>} */}
           <div><Link to="/EditProfile">EditProfile</Link></div>
           <div><Link to="/postpage">Create Post</Link></div>
         </div>
