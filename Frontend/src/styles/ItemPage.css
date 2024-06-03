@@ -37,10 +37,14 @@
     margin: 10px 0;
   }
 
+  .selected {
+    background-color: yellow !important;
+    color: black;
+  }
+
   .unavailable {
-    background-color: #ffcccc;
-    color: #d9534f;
-    pointer-events: none; /*date unselectable */
+    background-color: grey !important;
+    color: white;
   }
 
   .available {
