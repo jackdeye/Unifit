@@ -45,10 +45,6 @@ const Item = ({ product }) => {
     }
   };
 
-  const handleRent = () => {
-    Navigate(ItemPage);
-  };
-
   return (
     <div className="product-item">
       <Link to={`/item/${product._id}`}>
@@ -65,7 +61,11 @@ const Item = ({ product }) => {
       <div className='product-interact'>
       <div className='button-container'>
           {product.isForSale && <button className="buy-button" onClick={handleBuy}>Buy</button>}
-          {product.isForRent && <button className="rent-button" onClick={handleRent}>Rent</button>}
+          {product.isForRent && (
+            <Link to={`/item/${product._id}`} className="rent-button">
+              Rent
+            </Link>
+          )}
         </div>
         <div className='price-info'>
           {product.isForSale && <p>Buy: ${product.buyPrice}</p>}
