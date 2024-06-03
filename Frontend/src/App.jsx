@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useMemo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Homepage from './Pages/Homepage';
@@ -16,11 +16,24 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import EditPosts from './Pages/EditPosts.jsx'
 
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+
 export default function App() {
+
   //const theme = createTheme(themeData.schemes.light);
-  const theme = createTheme({
+  const [mode, setMode] = useState('light');
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    [],
+  );
+  const theme = useMemo(
+    () => createTheme({
     palette: {
-      mode: 'light',
+      mode,
       primary: {
         main: '#367765',
         light: '#5E9283',
@@ -35,7 +48,7 @@ export default function App() {
         main: '#cc2b3c',
       },
     },
-  });
+  }), [mode]);
 
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
@@ -76,9 +89,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('profile');
-    localStorage.removeItem('profilePicture');
+    localStorage.clear();
     setIsAuthenticated(false);
     setProfile('');
     setProfilePicture('');
@@ -87,27 +98,28 @@ export default function App() {
     window.dispatchEvent(event);
   };
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline/>
-      <BrowserRouter>
-        <div style={{padding:5}}>
-        <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-        <Routes>
-          <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Profile /></ProtectedRoute>} />
-          {/* <Route path="/gallery" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Gallery /></ProtectedRoute>} /> */}
-          <Route path="/gallery" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Gallery /></ProtectedRoute>} />
-          <Route path="/favorites" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Favorites /></ProtectedRoute>} />
-          <Route path="/postpage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><PostPage /></ProtectedRoute>} />
-          <Route path="/signup" element={<SignUp onSignup={handleLogin} />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
-          <Route path="/editprofile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditProfile /></ProtectedRoute>} />
-          <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
-          <Route path="/" element={<Navigate to="/homepage" replace />} />
-          <Route path="/edititem/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditPosts /></ProtectedRoute>} /> 
-        </Routes>
-        </div>
-      </BrowserRouter>
-    </ThemeProvider>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        <BrowserRouter>
+          <div style={{padding:5}}>
+          <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+          <Routes>
+            <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Profile /></ProtectedRoute>} />
+            <Route path="/gallery" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Gallery /></ProtectedRoute>} />
+            <Route path="/favorites" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Favorites /></ProtectedRoute>} />
+            <Route path="/postpage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><PostPage /></ProtectedRoute>} />
+            <Route path="/signup" element={<SignUp onSignup={handleLogin} />} />
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route path="/editprofile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditProfile /></ProtectedRoute>} />
+            <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
+            <Route path="/" element={<Navigate to="/homepage" replace />} />
+            <Route path="/edititem/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditPosts /></ProtectedRoute>} /> 
+          </Routes>
+          </div>
+        </BrowserRouter>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
