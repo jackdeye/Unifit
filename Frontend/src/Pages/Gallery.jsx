@@ -11,22 +11,26 @@ const Gallery = () => {
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  // const [schoolPosts, setSchoolPosts] = useState([]);
   const [showSchoolPosts, setShowSchoolPosts] = useState(false);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
+      const school = localStorage.getItem('school');
+      const username = localStorage.getItem('username');
+      let url = 'http://localhost:5050/post';
+      if (showSchoolPosts && school) {
+        url = `http://localhost:5050/post/school/${school}`;
+      }
       try {
-        const response = await fetch('http://localhost:5050/post');
+        const response = await fetch(url);
         if (response.ok) {
-          const data = await response.json();
-          const filteredProducts = data.filter(product => product.image && !product.sold && product.username !== localStorage.getItem('username'));
+          let data = await response.json();
+          data = data.filter(product => product.image && !product.sold && product.username !== username);
           if (showSchoolPosts) {
-            const schoolPosts = filteredProducts.filter(product => product.school === localStorage.getItem('school'));
-            setProducts(schoolPosts);
-          } else {
-            setProducts(filteredProducts);
+            data = data.filter(product => product.school === school);
           }
+          setProducts(data);
         } else {
           console.error('Failed to fetch products');
         }

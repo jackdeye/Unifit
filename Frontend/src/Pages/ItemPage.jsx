@@ -3,11 +3,13 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ItemPage.css';
+import {Avatar} from '@mui/material';
 
 const ItemPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [availability, setAvailability] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const navigate = useNavigate();
@@ -72,12 +74,16 @@ const ItemPage = () => {
 
     fetchComments();
   }, [id]);
+  const getProfileInitial = (name) => {
+    return name.charAt(0).toUpperCase();
+  };
 
   const handleCommentSubmit = async () => {
     if (!newComment) return;
-
+    const pfp = localStorage.getItem('profilePicture');
     const commentData = {
-      username: 'Paul \'penguin\' Eggert', 
+      profPicture: pfp,
+      username: curUsername,
       comment: newComment,
     };
 
@@ -92,6 +98,7 @@ const ItemPage = () => {
 
       if (response.ok) {
         const createdComment = await response.json();
+        alert(createdComment);
         setComments([...comments, createdComment]);
         setNewComment('');
       } else {
@@ -127,6 +134,46 @@ const ItemPage = () => {
     }
   };
 
+  const handleRent = async () => {
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
+      if (!token) {
+        throw new Error('No token found. Please log in again.');
+      }
+    if (!selectedDate) {
+      alert('Please select a date to rent');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:5050/post/${product._id}/rent`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // Assuming you store token in localStorage
+        },
+        body: JSON.stringify({ date: selectedDate.toISOString().split('T')[0] })
+      });
+
+      if (response.ok) {
+        alert('Item rented successfully!');
+        setSelectedDate(null);
+        // Fetch the current rentedPosts from localStorage
+        const rentedPosts = JSON.parse(localStorage.getItem('rentedPosts')) || [];
+
+        // Append the new product ID to the array
+        rentedPosts.push(product._id);
+
+        // Save the updated array back to localStorage
+        localStorage.setItem('rentedPosts', JSON.stringify(rentedPosts));
+      } else {
+        alert('Item is not available. Please select another date.');
+      }
+    } catch (error) {
+      console.error('Error renting the item:', error);
+    }
+  };
+
   function ButtonLink({ to, children, onClick }) {
     return (
       <Link to={to}> 
@@ -141,6 +188,12 @@ const ItemPage = () => {
     return start && end && date >= start && date <= end;
   };
 
+  const isDateRented = (date) => {
+    // Check if the date is in product.rented
+    const dateString = date.toISOString().split('T')[0].slice(0, 10); // Get the first 10 characters (YYYY-MM-DD)
+    return product.rented && product.rented.some(rentedDate => rentedDate.startsWith(dateString));
+  };
+
   return (
     <div className='item-page'>
       <div className='item-display'>
@@ -150,17 +203,27 @@ const ItemPage = () => {
         <div className='item-info'>
           <h3>{product.name}</h3>
           <p>{product.desc}</p>
-          {product.isForSale && <p>Buy: {product.buyPrice}</p>}
-          {product.isForRent && 
-          <p>Rent: {product.rentPrice}</p> && 
-          <DatePicker
-          inline
-          readOnly
-          dayClassName={date => isDateAvailable(date) ? 'available' : undefined}
-        />}
-
+      
           {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
           {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
+          {product.isForRent && (
+            <>
+              <DatePicker
+                inline
+                selected={selectedDate}
+                onChange={date => setSelectedDate(date)}
+                dayClassName={date => {
+                  const dateString = date.toISOString().split('T')[0];
+                  if (selectedDate && dateString === selectedDate.toISOString().split('T')[0]) 
+                    return 'selected';
+                  if (!isDateAvailable(date) || isDateRented(date)) 
+                    return 'unavailable';
+                  return 'available';
+                }}
+              />
+              <button onClick={handleRent}>Confirm Rental</button>
+            </>
+          )}
           <div>
             {curUsername === product.username && (
               <>
@@ -189,7 +252,18 @@ const ItemPage = () => {
           <div className='comments-list'>
             {comments.map((comment, index) => (
               <div key={index} className='comment'>
-                <p><strong>{comment.username}</strong>
+                <p>
+
+                  <div className='userinfo'>
+                  <Avatar 
+                    alt="Profile" 
+                    src={`data:image/jpeg;base64,${comment.profPicture}`}
+                    sx={{ width: 30, height: 30 }} // Adjust the size as needed
+                  >
+                    {getProfileInitial(comment.username)}
+                  </Avatar>
+                <strong>{comment.username}</strong>
+                </div>
                  {comment.comment}</p>
               </div>
             ))}
