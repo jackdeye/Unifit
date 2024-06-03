@@ -13,6 +13,8 @@ import {
   Checkbox,
   FormControl,
   InputLabel,
+  Select,
+  MenuItem,
   OutlinedInput,
   InputAdornment,
 } from '@mui/material';
@@ -68,7 +70,6 @@ const PostPage = () => {
         [name]: value,
       }));
     }
-    console.log(formData);
   };
 
   const handleStartDateChange = (date) => {
@@ -203,8 +204,40 @@ const PostPage = () => {
         :
         <div/>
       }
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel id="quality-select-label">Quality</InputLabel>
+          <Select
+            labelId="quality-select-label"
+            id="quality-simple-select"
+            value={formData.quality}
+            label="Quality"
+            name="quality"
+            onChange={handleChange}
+          >
+            <MenuItem value="New">New</MenuItem>
+            <MenuItem value="Like New">Like New</MenuItem>
+            <MenuItem value="Used">Used</MenuItem>
+            <MenuItem value="Lightly Used">Lightly Used</MenuItem>
+          </Select>
+        </FormControl>
       </Grid>
       <Grid item xs={4} display="flex" flexDirection="column" alignItems="center">
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel id="size-select-label">Size</InputLabel>
+          <Select
+            labelId="size-select-label"
+            id="size-simple-select"
+            value={formData.size}
+            label="Size"
+            name="size"
+            onChange={handleChange}
+          >
+            <MenuItem value="XS">XS</MenuItem>
+            <MenuItem value="S">S</MenuItem>
+            <MenuItem value="M">M</MenuItem>
+            <MenuItem value="L">L</MenuItem>
+          </Select>
+        </FormControl>
         <Button
           component="label"
           role={undefined}

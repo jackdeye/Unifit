@@ -27,7 +27,6 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
   const theme = useTheme();
 
   const colorMode = useContext(ColorModeContext);
-  console.log(ColorModeContext);
 
   const handleLogout = () => {
     onLogout();
