@@ -273,7 +273,7 @@ router.get("/:id/comments", async (req, res) => {
 });
 router.post("/:id/comments", async (req, res) => {
   try { 
-    const { username, comment } = req.body;
+    const { profPicture, username, comment } = req.body;
     if (!username || !comment){
       return res.status(400).send("Missing either username or comment")
     }
@@ -281,6 +281,7 @@ router.post("/:id/comments", async (req, res) => {
     const update = { 
       $push: {
         comments: {
+          profPicture,
           username, 
           comment
         }
