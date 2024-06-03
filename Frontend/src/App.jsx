@@ -50,7 +50,7 @@ export default function App() {
     },
   }), [mode]);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);//!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const [profile, setProfile] = useState(localStorage.getItem('profile') || '');
   const [profilePicture, setProfilePicture] = useState(localStorage.getItem('profilePicture') || '');
 
