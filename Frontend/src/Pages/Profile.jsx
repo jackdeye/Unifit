@@ -86,6 +86,9 @@ export default function Profile() {
         <Typography variant='h5' >
           @{localStorage.getItem("username")}
         </Typography>
+        {localStorage.getItem("bio")!=null && <Typography>
+          {localStorage.getItem("bio")}
+        </Typography>}
         {school && <Typography variant='h6'>
           {school}
         </Typography>}
