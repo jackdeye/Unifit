@@ -89,6 +89,84 @@ router.get("/:id/availability", async (req, res) => {
   }
 });
 
+//rent post for a day
+router.patch("/:id/rent", auth, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const postId = req.params.id;
+    const { date } = req.body;
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    if (!date) {
+      console.log('Date is required');
+      return res.status(400).send("Date is required");
+    }
+    
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      console.log('Post not found');
+      return res.status(404).send("Post not found");
+    }
+
+    // Parse start and end dates
+    const startDate = new Date(post.availability[0]);
+    const endDate = new Date(post.availability[1]);
+
+    // Parse selected date
+    const selectedDate = new Date(date);
+    // Check if selected date falls within the availability range
+
+    if (selectedDate >= startDate && selectedDate <= endDate) {
+      // Check if posts.rented is not empty and selectedDate is not in posts.rented
+      if (post.rented && post.rented.length > 0) {
+        const rentedDates = post.rented.map(date => new Date(date));
+        if (!rentedDates.some(rentedDate => rentedDate.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0])) {
+          
+          // add the selected date to posts.rented
+          await postCollection.updateOne(
+            { _id: new ObjectId(postId) },
+            { $push: { rented: selectedDate } }
+          );
+
+          // add post to user's rented posts
+          await userCollection.updateOne(
+            { _id: new ObjectId(userId) },
+            { $push: { rentedPosts: new ObjectId(postId) } }
+          );
+          return res.status(200).send("Rental confirmed successfully");
+        } else {
+          return res.status(400).send("Date already rented");
+        }
+      } else {
+        // If posts.rented is empty, proceed with the rental
+        // add the selected date to posts.rented
+        await postCollection.updateOne(
+          { _id: new ObjectId(postId) },
+          { $push: { rented: selectedDate } }
+        );
+
+        // add post to user's rented posts
+        await userCollection.updateOne(
+          { _id: new ObjectId(userId) },
+          { $push: { rentedPosts: new ObjectId(postId) } }
+        );
+        console.log('Rental confirmed successfully');
+        return res.status(200).send("Rental confirmed successfully");
+      }
+    } else {
+      console.log('Date not available for rental');
+      return res.status(400).send("Date not available for rental");
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error confirming rental");
+  }
+});
+
+
 // Create a new post
 router.post("/upload", auth, upload.any(), async (req, res) => {
   try {
@@ -117,8 +195,10 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
       school,
-      sold: false,
+      rented: [],
       comments: [],
+      liked: true,
+      sold: false,
     };
 
     let collection = db.collection("posts");
@@ -193,7 +273,7 @@ router.get("/:id/comments", async (req, res) => {
 });
 router.post("/:id/comments", async (req, res) => {
   try { 
-    const { username, comment } = req.body;
+    const { profPicture, username, comment } = req.body;
     if (!username || !comment){
       return res.status(400).send("Missing either username or comment")
     }
@@ -201,6 +281,7 @@ router.post("/:id/comments", async (req, res) => {
     const update = { 
       $push: {
         comments: {
+          profPicture,
           username, 
           comment
         }
@@ -217,32 +298,72 @@ router.post("/:id/comments", async (req, res) => {
   }
 );
 
-
-// Like a post by id
-router.patch("/:id/likePost", auth, async (req, res) => {
+router.patch("/:id/likepost", auth, async (req, res) => {
   try {
-    const query = { _id: new ObjectId(req.params.id) };
+    const postId = req.params.id;
+    const userId = req.userId;
 
-    if (!req.userId) return res.json({ message: 'Unauthenticated' });
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
 
-    const post = await PostMessage.findById(id);
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
 
-    const index = post.likes.findIndex((id) => id === String(req.userId));
-    if (index === -1) {
-      //like the post
-      post.likes.push(req.userId);
-    } else {
-      //dislike a post
-      post.likes = post.likes.filter((id) => id !== String(req.userId));
+    if (!post) {
+      return res.status(404).send("Post not found");
     }
-    let collection = await db.collection("posts");
 
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, { likeCount: post.likeCount + 1 }, { mew: true});
-    let result = await collection.updateOne(query, updatedPost);
-    res.send(result).status(200);
+    await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { likedPosts: new ObjectId(postId) } }
+    );
+
+    await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { liked: true } }
+    );
+
+    res.status(200).send("Post liked successfully");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error liking/disliking post");
+    res.status(500).send("Error liking post");
+  }
+});
+
+// Buy a post
+router.patch("/:id/buy", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userId;
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    if (post.sold) {
+      return res.status(400).send("Post is already sold");
+    }
+
+    // mark the post as sold
+    await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { sold: true } }
+    );
+
+    //add post to user's purchased posts
+    await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { purchasedPosts: new ObjectId(postId) } }
+    );
+
+    res.status(200).send("Post purchased successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error buying post");
   }
 });
 

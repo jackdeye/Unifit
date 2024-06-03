@@ -37,10 +37,14 @@
     margin: 10px 0;
   }
 
+  .selected {
+    background-color: yellow !important;
+    color: black;
+  }
+
   .unavailable {
-    background-color: #ffcccc;
-    color: #d9534f;
-    pointer-events: none; /*date unselectable */
+    background-color: grey !important;
+    color: white;
   }
 
   .available {
@@ -79,6 +83,7 @@
   }
   .comments-list .comment {
     padding: 10px;
+    gap: 10px;
     border-bottom: 1px solid #ddd;
   }
   
@@ -89,4 +94,9 @@
   .comments-list .comment p strong {
     display: block;
     margin-right: 10px;
+  }
+  .comments-list .comment p .userinfo {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
   }

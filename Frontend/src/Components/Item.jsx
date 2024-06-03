@@ -5,13 +5,33 @@ import '../styles/Item.css'; // Assuming you have a CSS file for styling
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
 
-  const handleLike = () => {
-    setLike(!like);
-    console.log(`set favorite to ${!like}`);
-    // const favorite = await fetch('http://localhost:5050/:id/likePost', {
-    //   method: 'POST',
-    //   body: formDataToSend
-    // })
+  const handleLike = async () => {
+    setLike(!like); 
+    try {
+      console.log(`set favorite to ${!like}`);
+      const response = await fetch(`http://localhost:5050/post/${product._id}/likepost`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
+        }
+      });
+      if (response.ok) {
+        const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+  
+        likedPosts.push(product._id);
+  
+        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        alert("liked post");
+
+      } else {
+        alert("Failed to like post");
+      }
+
+  } catch(error) {
+      console.error("Error on liking post");
+      alert("error on liking post");
+  }
   };
 
   const handleBuy = async () => {
@@ -44,12 +64,6 @@ const Item = ({ product }) => {
       console.error('Error buying the item:', error);
     }
   };
-
-  const handleRent = () => {
-    alert('Rent feature not implemented yet');
-    // implement rent logic 
-  };
-
   return (
     <div className="product-item">
       <Link to={`/item/${product._id}`}>
@@ -66,7 +80,11 @@ const Item = ({ product }) => {
       <div className='product-interact'>
       <div className='button-container'>
           {product.isForSale && <button className="buy-button" onClick={handleBuy}>Buy</button>}
-          {product.isForRent && <button className="rent-button" onClick={handleRent}>Rent</button>}
+          {product.isForRent && (
+            <Link to={`/item/${product._id}`} className="rent-button">
+              Rent
+            </Link>
+          )}
         </div>
         <div className='price-info'>
           {product.isForSale && <p>Buy: ${product.buyPrice}</p>}

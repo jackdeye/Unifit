@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/Profile.css";
-import cat from "../Assets/cat.jpg";
 import Item from '../Components/Item.jsx';
 import "../styles/Gallery.css";
 import {Avatar} from '@mui/material';
@@ -9,6 +8,7 @@ import {Avatar} from '@mui/material';
 export default function Profile() {
   const [products, setProducts] = useState([]);
   const [purchasedPosts, setPurchasedPosts] = useState([]);
+  const [rentedPosts, setRentedPosts] = useState([]);
   const [school] = useState(localStorage.getItem('school'));
 
   useEffect(() => {
@@ -42,9 +42,25 @@ export default function Profile() {
         }
       }
     };
+    const fetchRentedProducts = async () => {
+      const rentedProductIds = JSON.parse(localStorage.getItem('rentedPosts')) || [];
+      console.log("rentedProductIds", rentedProductIds);
+      if (rentedProductIds.length > 0) {
+        try {
+          const responses = await Promise.all(
+            rentedProductIds.map(id => fetch(`http://localhost:5050/post/${id}`))
+          );
+          const data = await Promise.all(responses.map(res => res.json()));
+          setRentedPosts(data);
+        } catch (error) {
+          console.error("Error fetching rented products:", error);
+        }
+      }
+    };
 
     fetchProducts();
     fetchPurchasedProducts();
+    fetchRentedProducts();
   }, []);
 
   const getProfileInitial = (name) => {
@@ -75,7 +91,7 @@ export default function Profile() {
 
       <div className='all'>
         <div className='info'>
-          <div>{school}</div>
+           {school && <div> {school}</div>}
           <div><Link to="/EditProfile">EditProfile</Link></div>
           <div><Link to="/postpage">Create Post</Link></div>
         </div>
@@ -99,6 +115,18 @@ export default function Profile() {
                   <p>No items bought yet.</p>
                 ) : (
                   purchasedPosts.map((product) => (
+                    <Item key={product._id} product={product} />
+                  ))
+              )}
+            </div>
+          </div>
+          <div className="products-gallery">
+          <h2>Rentals</h2>
+            <div className="products-grid">
+              {rentedPosts.length === 0 ? (
+                  <p>No items rented yet.</p>
+                ) : (
+                  rentedPosts.map((product) => (
                     <Item key={product._id} product={product} />
                   ))
               )}
