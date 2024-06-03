@@ -46,8 +46,7 @@ const Item = ({ product }) => {
   };
 
   const handleRent = () => {
-    alert('Rent feature not implemented yet');
-    // implement rent logic 
+    Navigate(ItemPage);
   };
 
   return (

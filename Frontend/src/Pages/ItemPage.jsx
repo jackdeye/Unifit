@@ -152,6 +152,14 @@ const ItemPage = () => {
       if (response.ok) {
         alert('Item rented successfully!');
         setSelectedDate(null);
+        // Fetch the current rentedPosts from localStorage
+        const rentedPosts = JSON.parse(localStorage.getItem('rentedPosts')) || [];
+
+        // Append the new product ID to the array
+        rentedPosts.push(product._id);
+
+        // Save the updated array back to localStorage
+        localStorage.setItem('rentedPosts', JSON.stringify(rentedPosts));
       } else {
         alert('Item is not available. Please select another date.');
       }
@@ -204,7 +212,6 @@ const ItemPage = () => {
                     return 'selected';
                   if (!isDateAvailable(date) || isDateRented(date)) 
                     return 'unavailable';
-                  console.log("Date available:", date);
                   return 'available';
                 }}
               />

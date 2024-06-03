@@ -99,14 +99,11 @@ router.patch("/:id/rent", auth, async (req, res) => {
     const postCollection = db.collection("posts");
     const userCollection = db.collection("users");
 
-    console.log('Received rental request for post:', postId, 'and date:', date);
-
     if (!date) {
       console.log('Date is required');
       return res.status(400).send("Date is required");
     }
-
-    console.log('Attempting to find post with ID:', postId);
+    
     const post = await postCollection.findOne({ _id: new ObjectId(postId) });
 
     if (!post) {
@@ -114,15 +111,12 @@ router.patch("/:id/rent", auth, async (req, res) => {
       return res.status(404).send("Post not found");
     }
 
-    console.log('Post found. Checking availability...');
-
     // Parse start and end dates
     const startDate = new Date(post.availability[0]);
     const endDate = new Date(post.availability[1]);
 
     // Parse selected date
     const selectedDate = new Date(date);
-    console.log('selectedDates', startDate, selectedDate, endDate);
     // Check if selected date falls within the availability range
 
     if (selectedDate >= startDate && selectedDate <= endDate) {
@@ -130,7 +124,7 @@ router.patch("/:id/rent", auth, async (req, res) => {
       if (post.rented && post.rented.length > 0) {
         const rentedDates = post.rented.map(date => new Date(date));
         if (!rentedDates.some(rentedDate => rentedDate.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0])) {
-          console.log('Date available for rental. Updating availability...');
+          
           // add the selected date to posts.rented
           await postCollection.updateOne(
             { _id: new ObjectId(postId) },
@@ -142,15 +136,12 @@ router.patch("/:id/rent", auth, async (req, res) => {
             { _id: new ObjectId(userId) },
             { $push: { rentedPosts: new ObjectId(postId) } }
           );
-          console.log('Rental confirmed successfully');
           return res.status(200).send("Rental confirmed successfully");
         } else {
-          console.log('Date already rented');
           return res.status(400).send("Date already rented");
         }
       } else {
         // If posts.rented is empty, proceed with the rental
-        console.log('Date available for rental. Updating availability...');
         // add the selected date to posts.rented
         await postCollection.updateOne(
           { _id: new ObjectId(postId) },
