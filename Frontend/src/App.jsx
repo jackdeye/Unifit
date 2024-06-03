@@ -76,9 +76,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('profile');
-    localStorage.removeItem('profilePicture');
+    localStorage.clear();
     setIsAuthenticated(false);
     setProfile('');
     setProfilePicture('');
