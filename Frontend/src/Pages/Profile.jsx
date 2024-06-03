@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Profile.css";
 import Item from '../Components/Item.jsx';
-import "../styles/Gallery.css";
 import {Avatar, Button} from '@mui/material';
 
 export default function Profile() {

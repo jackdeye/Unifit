@@ -328,12 +328,14 @@ const isValidObjectId = (id) => ObjectId.isValid(id) && new ObjectId(id).toStrin
 //     res.status(500).send("Error fetching pending requests");
 //   }
 // });
-
-// Buy a post
-router.patch("/:id/buy", auth, async (req, res) => {
+router.patch("/:id/accept", auth, async (req, res) => {
   try {
     const postId = req.params.id;
-    const userId = req.userId;
+    const sellerId = req.user._id;
+
+    if (!isValidObjectId(postId)) {
+      return res.status(400).json({ message: "Invalid postId" });
+    }
 
     const postCollection = db.collection("posts");
     const userCollection = db.collection("users");
@@ -341,29 +343,96 @@ router.patch("/:id/buy", auth, async (req, res) => {
     const post = await postCollection.findOne({ _id: new ObjectId(postId) });
 
     if (!post) {
-      return res.status(404).send("Post not found");
+      return res.status(404).json({ message: "Post not found" });
     }
 
     if (post.sold) {
-      return res.status(400).send("Post is already sold");
+      return res.status(400).json({ message: "Post is already sold" });
     }
 
-    // mark the post as sold
-    await postCollection.updateOne(
+    const buyerId = post.buyerId;
+
+    console.log("Post found:", post);
+    console.log("Seller ID:", sellerId);
+    console.log("Buyer ID:", buyerId);
+
+    // Mark the post as sold and pending as false
+    const postUpdateResult = await postCollection.updateOne(
       { _id: new ObjectId(postId) },
-      { $set: { sold: true } }
+      { $set: { sold: true, pending: false } }
     );
 
-    //add post to user's purchased posts
-    await userCollection.updateOne(
-      { _id: new ObjectId(userId) },
+    if (postUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the post");
+      return res.status(500).json({ message: "Failed to update the post" });
+    }
+
+    console.log("Post update result:", postUpdateResult);
+
+    // Remove from buyer's pendingPosts
+    const buyerPendingUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
+      { $pull: { pendingPosts: new ObjectId(postId) } }
+    );
+
+    console.log("Buyer pendingPosts update result:", buyerPendingUpdateResult);
+
+    if (buyerPendingUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's pendingPosts");
+      return res.status(500).json({ message: "Failed to update the buyer's pendingPosts" });
+    }
+
+    // Add to buyer's purchasedPosts
+    const buyerPurchasedUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
       { $push: { purchasedPosts: new ObjectId(postId) } }
     );
 
-    res.status(200).send("Post purchased successfully");
+    console.log("Buyer purchasedPosts update result:", buyerPurchasedUpdateResult);
+
+    if (buyerPurchasedUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's purchasedPosts");
+      return res.status(500).json({ message: "Failed to update the buyer's purchasedPosts" });
+    }
+
+    // Add notification to the buyer
+    const buyerNotificationUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
+      { $push: {
+          notifications: {
+            type: "acceptance",
+            message: `${req.user.username} accepted your request for ${post.name}`,
+            postId: postId,
+            sellerUsername: req.user.username,
+          }
+        }
+      }
+    );
+
+    console.log("Buyer notification update result:", buyerNotificationUpdateResult);
+
+    if (buyerNotificationUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's notifications");
+      return res.status(500).json({ message: "Failed to update the buyer's notifications" });
+    }
+
+    // Remove from seller's pendingRequests
+    const sellerUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(sellerId) },
+      { $pull: { pendingRequests: new ObjectId(postId) } }
+    );
+
+    console.log("Seller update result:", sellerUpdateResult);
+
+    if (sellerUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the seller");
+      return res.status(500).json({ message: "Failed to update the seller" });
+    }
+
+    res.status(200).json({ message: "Request accepted and buyer notified" });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error buying post");
+    res.status(500).json({ message: "Error accepting request" });
   }
 });
 
