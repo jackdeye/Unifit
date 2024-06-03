@@ -13,14 +13,14 @@ Unifit: a platform that allows university students to effortlessly buy, sell, an
   - Filters: For Rent, For Buy, Posts from user's School, Fuzzy Find for searching through posts
 - Profile
   - Upload profile picture, school, bio
-  - Displays all purchased, rented posts, and your own listings 
-- Likes
-  - Favorites page lists all the posts you've liked
-- Reviews/Comments
-  - Users submit comments for each post which are listed on ItemPage
-- Interactive Calendar for Rental Availability
-  - On ItemPage, all available dates set by the post author are listed in green
-  - Each time a date is rented out, it becomes unavailable in grey
+  - Displays all purchased, rented posts, and user's own listings 
+- Favorites
+  - Displays all the posts a user has liked
+- Product Page
+  - Comments: Users submit comments for each post which are listed on ItemPage
+  - Interactive Calendar for Rental Availability
+    - On ItemPage, all available dates set by the post author are listed in green
+    - Each time a date is rented out, it becomes unavailable in grey
 
 ## Technologies
 - Frontend: React, Vite
