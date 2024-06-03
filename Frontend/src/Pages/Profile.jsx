@@ -75,7 +75,7 @@ export default function Profile() {
 
       <div className='all'>
         <div className='info'>
-          <div>{school}</div>
+           {school && <div> {school}</div>}
           <div><Link to="/EditProfile">EditProfile</Link></div>
           <div><Link to="/postpage">Create Post</Link></div>
         </div>
