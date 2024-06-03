@@ -19,11 +19,19 @@ Unifit: a platform that allows university students to effortlessly buy, sell, an
 - Frontend: React, Vite
 - Backend: MongoDB, Node.js, Express
 
+## Download the application
+Clone the Repository:
+
+```
+git clone https://github.com/jackdeye/Unifit.git
+cd Unifit
+```
+
 ## Setup
 ### Backend Instructions
 To set up the dependencies for the backend server, run:
 ```
-cd backend
+cd Backend
 npm install
 ```
 Main backend dependencies:
@@ -49,7 +57,9 @@ Main frontend dependencies:
 ### Running
 To start the frontend application, run:
 ```
-cd frontend
+cd Frontend
 npm run dev
 ```
 The frontend will be available on http://localhost:5173
+
+Once frontend and backend are running, the application will be fully usable
