@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ItemPage.css';
+import {Avatar} from '@mui/material';
 
 const ItemPage = () => {
   const { id } = useParams();
@@ -73,12 +74,16 @@ const ItemPage = () => {
 
     fetchComments();
   }, [id]);
+  const getProfileInitial = (name) => {
+    return name.charAt(0).toUpperCase();
+  };
 
   const handleCommentSubmit = async () => {
     if (!newComment) return;
-
+    const pfp = localStorage.getItem('profilePicture');
     const commentData = {
-      username: 'Paul \'penguin\' Eggert', 
+      profPicture: pfp,
+      username: curUsername,
       comment: newComment,
     };
 
@@ -93,6 +98,7 @@ const ItemPage = () => {
 
       if (response.ok) {
         const createdComment = await response.json();
+        alert(createdComment);
         setComments([...comments, createdComment]);
         setNewComment('');
       } else {
@@ -246,7 +252,18 @@ const ItemPage = () => {
           <div className='comments-list'>
             {comments.map((comment, index) => (
               <div key={index} className='comment'>
-                <p><strong>{comment.username}</strong>
+                <p>
+
+                  <div className='userinfo'>
+                  <Avatar 
+                    alt="Profile" 
+                    src={`data:image/jpeg;base64,${comment.profPicture}`}
+                    sx={{ width: 30, height: 30 }} // Adjust the size as needed
+                  >
+                    {getProfileInitial(comment.username)}
+                  </Avatar>
+                <strong>{comment.username}</strong>
+                </div>
                  {comment.comment}</p>
               </div>
             ))}

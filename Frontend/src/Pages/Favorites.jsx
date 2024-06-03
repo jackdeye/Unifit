@@ -33,9 +33,7 @@ const Favorites = () => {
         // Filter out any null responses (in case of fetch failures)
         setProducts(postsData.filter(post => post !== null));
 
-        alert("fetched favorited posts");
       } catch (error) {
-        alert("failed 2");
         console.error('Error fetching liked posts:', error);
       }
     };
