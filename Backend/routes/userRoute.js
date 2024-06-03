@@ -11,10 +11,10 @@ const upload = multer();
 
 // SignUp - create a new user
 router.post("/signup", upload.none(), async (req, res) => {
-  const { username, password, firstName, lastName } = req.body;
+  const { username, password, firstName, lastName, school } = req.body;
 
   try {
-    if (!username || !password || !firstName || !lastName) {
+    if (!username || !password || !firstName || !lastName || !school) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
