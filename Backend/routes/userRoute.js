@@ -33,6 +33,7 @@ router.post("/signup", upload.none(), async (req, res) => {
       profilePicture: null, 
       bio: null, 
       purchasedPosts: [],
+      rentedPosts: [],
     });
 
     if (result.insertedId) {

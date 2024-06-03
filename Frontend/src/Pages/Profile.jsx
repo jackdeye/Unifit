@@ -9,6 +9,7 @@ import {Avatar} from '@mui/material';
 export default function Profile() {
   const [products, setProducts] = useState([]);
   const [purchasedPosts, setPurchasedPosts] = useState([]);
+  const [rentedPosts, setRentedPosts] = useState([]);
   const [school] = useState(localStorage.getItem('school'));
 
   useEffect(() => {
@@ -42,9 +43,25 @@ export default function Profile() {
         }
       }
     };
+    const fetchRentedProducts = async () => {
+      const rentedProductIds = JSON.parse(localStorage.getItem('rentedPosts')) || [];
+      console.log("rentedProductIds", rentedProductIds);
+      if (rentedProductIds.length > 0) {
+        try {
+          const responses = await Promise.all(
+            rentedProductIds.map(id => fetch(`http://localhost:5050/post/${id}`))
+          );
+          const data = await Promise.all(responses.map(res => res.json()));
+          setRentedPosts(data);
+        } catch (error) {
+          console.error("Error fetching rented products:", error);
+        }
+      }
+    };
 
     fetchProducts();
     fetchPurchasedProducts();
+    fetchRentedProducts();
   }, []);
 
   const getProfileInitial = (name) => {
@@ -99,6 +116,18 @@ export default function Profile() {
                   <p>No items bought yet.</p>
                 ) : (
                   purchasedPosts.map((product) => (
+                    <Item key={product._id} product={product} />
+                  ))
+              )}
+            </div>
+          </div>
+          <div className="products-gallery">
+          <h2>Rentals</h2>
+            <div className="products-grid">
+              {rentedPosts.length === 0 ? (
+                  <p>No items rented yet.</p>
+                ) : (
+                  rentedPosts.map((product) => (
                     <Item key={product._id} product={product} />
                   ))
               )}
