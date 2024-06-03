@@ -31,9 +31,10 @@ router.post("/signup", upload.none(), async (req, res) => {
       password: hashedPassword, 
       name: `${firstName} ${lastName}`, 
       profilePicture: null, 
-      bio: null,
-      likedPosts: [],
+      bio: null, 
       purchasedPosts: [],
+      likedPosts: [],
+      rentedPosts: [],
     });
 
     if (result.insertedId) {

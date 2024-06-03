@@ -11,37 +11,31 @@ const Gallery = () => {
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  // const [schoolPosts, setSchoolPosts] = useState([]);
   const [showSchoolPosts, setShowSchoolPosts] = useState(false);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
       const school = localStorage.getItem('school');
-      if (showSchoolPosts && school){
-        try {
-          const response = await fetch(`http://localhost:5050/post/school/${school}`);
-          if (response.ok) {
-            const data = await response.json();
-            setProducts(data);
-          } else {
-            console.error("Error fetching school's products");
+      const username = localStorage.getItem('username');
+      let url = 'http://localhost:5050/post';
+      if (showSchoolPosts && school) {
+        url = `http://localhost:5050/post/school/${school}`;
+      }
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          let data = await response.json();
+          data = data.filter(product => product.image && !product.sold && product.username !== username);
+          if (showSchoolPosts) {
+            data = data.filter(product => product.school === school);
           }
-        } catch (error) {
-          console.error("Error:", error);
+          setProducts(data);
+        } else {
+          console.error('Failed to fetch products');
         }
-      }else{
-        try {
-          const response = await fetch('http://localhost:5050/post');
-          if (response.ok) {
-            const data = await response.json();
-            const productsWithImages = data.filter(product => product.image);
-            setProducts(productsWithImages);
-          } else {
-            console.error('Failed to fetch products');
-          }
-        } catch (error) {
-          console.error('Error fetching products:', error);
-        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
       }
     };
     fetchProducts();
