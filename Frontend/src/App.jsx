@@ -15,6 +15,8 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import EditPosts from './Pages/EditPosts.jsx'
+import PendingPurchases from './Pages/PendingPurchases';
+import Requests from './Pages/Requests';
 
 export default function App() {
   //const theme = createTheme(themeData.schemes.light);
@@ -66,7 +68,7 @@ export default function App() {
   const handleLogin = (profile, token, profilePicture) => {
     localStorage.setItem('token', token);
     localStorage.setItem('profile', profile);
-    localStorage.setItem('profilePicture', profilePicture || ''); // Set profile picture
+    localStorage.setItem('profilePicture', profilePicture || ''); 
     setIsAuthenticated(true);
     setProfile(profile);
     setProfilePicture(profilePicture || '');
@@ -76,9 +78,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('profile');
-    localStorage.removeItem('profilePicture');
+    localStorage.clear();
     setIsAuthenticated(false);
     setProfile('');
     setProfilePicture('');
@@ -105,6 +105,8 @@ export default function App() {
           <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/homepage" replace />} />
           <Route path="/edititem/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditPosts /></ProtectedRoute>} /> 
+          <Route path="/pending-purchases" element={<ProtectedRoute isAuthenticated={isAuthenticated}><PendingPurchases /></ProtectedRoute>} />
+          <Route path="/requests" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Requests /></ProtectedRoute>} />  
         </Routes>
         </div>
       </BrowserRouter>

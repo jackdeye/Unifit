@@ -119,6 +119,8 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       school,
       sold: false,
       comments: [],
+      pending: false,
+      buyerId: null,
     };
 
     let collection = db.collection("posts");
@@ -245,6 +247,87 @@ router.patch("/:id/likePost", auth, async (req, res) => {
     res.status(500).send("Error liking/disliking post");
   }
 });
+
+router.patch("/:id/request", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const buyerId = req.userId;
+
+    if (!ObjectId.isValid(postId) || !ObjectId.isValid(buyerId)) {
+      return res.status(400).send("Invalid postId or buyerId");
+    }
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    if (post.pending) {
+      return res.status(400).send("Post is already pending");
+    }
+
+    await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { pending: true, buyerId: new ObjectId(buyerId) } }
+    );
+
+    await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
+      { $push: { pendingPosts: new ObjectId(postId) } }
+    );
+
+    const seller = await userCollection.findOne({ username: post.username });
+    await userCollection.updateOne(
+      { _id: new ObjectId(seller._id) },
+      { $push: { pendingRequests: new ObjectId(postId) } }
+    );
+
+    res.status(200).send("Post requested successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error requesting post");
+  }
+});
+
+// Utility function to validate ObjectId
+const isValidObjectId = (id) => ObjectId.isValid(id) && new ObjectId(id).toString() === id;
+
+// // Fetch pending requests for a user
+// router.get("/pending-requests", auth, async (req, res) => {
+//   try {
+//     const userId = req.userId;
+
+//     if (!isValidObjectId(userId)) {
+//       return res.status(400).send("Invalid userId");
+//     }
+
+//     const userCollection = db.collection("users");
+//     const postCollection = db.collection("posts");
+
+//     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+
+//     const pendingRequests = user.pendingRequests || [];
+//     const pendingPosts = await postCollection.find({ _id: { $in: pendingRequests } }).toArray();
+
+//     const requestsWithBuyers = await Promise.all(pendingPosts.map(async (post) => {
+//       const buyer = await userCollection.findOne({ _id: new ObjectId(post.buyerId) });
+//       return { ...post, buyerUsername: buyer.username };
+//     }));
+
+//     res.status(200).json(requestsWithBuyers);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Error fetching pending requests");
+//   }
+// });
 
 // Buy a post
 router.patch("/:id/buy", auth, async (req, res) => {

@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Profile.css";
-import cat from "../Assets/cat.jpg";
 import Item from '../Components/Item.jsx';
 import "../styles/Gallery.css";
-import {Avatar} from '@mui/material';
+import {Avatar, Button} from '@mui/material';
 
 export default function Profile() {
   const [products, setProducts] = useState([]);
   const [purchasedPosts, setPurchasedPosts] = useState([]);
+  const [pendingPosts, setPendingPosts] = useState([]);
   const [school] = useState(localStorage.getItem('school'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,7 +30,16 @@ export default function Profile() {
       }
     };
     const fetchPurchasedProducts = async () => {
-      const purchasedProductIds = JSON.parse(localStorage.getItem('purchasedPosts')) || [];
+      const purchasedPosts = localStorage.getItem('purchasedPosts');
+      let purchasedProductIds = [];
+      if (purchasedPosts) {
+        try {
+          purchasedProductIds = JSON.parse(purchasedPosts);
+        } catch (error) {
+          console.error("Error parsing purchasedPosts:", error);
+        }
+      }
+    
       if (purchasedProductIds.length > 0) {
         try {
           const responses = await Promise.all(
@@ -43,12 +53,41 @@ export default function Profile() {
       }
     };
 
+    const fetchPendingProducts = async () => {
+      const pendingPosts = localStorage.getItem('pendingPosts');
+      let pendingProductIds = [];
+      if (pendingPosts) {
+        try {
+          pendingProductIds = JSON.parse(pendingPosts);
+        } catch (error) {
+          console.error("Error parsing pendingPosts:", error);
+        }
+      }
+    
+      if (pendingProductIds.length > 0) {
+        try {
+          const responses = await Promise.all(
+            pendingProductIds.map(id => fetch(`http://localhost:5050/post/${id}`))
+          );
+          const data = await Promise.all(responses.map(res => res.json()));
+          setPendingPosts(data);
+        } catch (error) {
+          console.error("Error fetching pending products:", error);
+        }
+      }
+    };
+
     fetchProducts();
     fetchPurchasedProducts();
+    fetchPendingProducts();
   }, []);
 
   const getProfileInitial = (name) => {
     return name.charAt(0).toUpperCase();
+  };
+
+  const handlePendingPurchasesClick = () => {
+    navigate('/pending-purchases');
   };
 
   return (
@@ -64,11 +103,6 @@ export default function Profile() {
           </Avatar>
       </div>
         <h5>
-          {/* <img
-            src={`data:image/jpeg;base64,${localStorage.getItem("profilePicture")}`}
-            alt="Profile"
-            className="profile-picture"
-          /> */}
           <span className="username">@{localStorage.getItem("username")}</span>
         </h5>
       </div>
@@ -78,6 +112,11 @@ export default function Profile() {
           <div>{school}</div>
           <div><Link to="/EditProfile">EditProfile</Link></div>
           <div><Link to="/postpage">Create Post</Link></div>
+          {pendingPosts.length > 0 && (
+          <Button variant="contained" onClick={handlePendingPurchasesClick}>
+            Pending Purchases: {pendingPosts.length}
+          </Button>
+      )}
         </div>
         <div className='products'>
           <div className="products-gallery">
@@ -87,7 +126,7 @@ export default function Profile() {
                   <p>No items listed yet.</p>
                 ) : (
                   products.map((product) => (
-                    <Item key={product._id} product={product} />
+                    <Item key={product._id} product={product} sold={product.sold} />
                   ))
               )}
             </div>

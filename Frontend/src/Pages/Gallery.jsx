@@ -20,7 +20,7 @@ const Gallery = () => {
         const response = await fetch('http://localhost:5050/post');
         if (response.ok) {
           const data = await response.json();
-          const filteredProducts = data.filter(product => product.image && !product.sold && product.username !== localStorage.getItem('username'));
+          const filteredProducts = data.filter(product => product.image && !product.sold && !product.pending && product.username !== localStorage.getItem('username'));
           if (showSchoolPosts) {
             const schoolPosts = filteredProducts.filter(product => product.school === localStorage.getItem('school'));
             setProducts(schoolPosts);
