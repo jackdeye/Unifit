@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Item.css'; // Assuming you have a CSS file for styling
 
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
 
+  useEffect(() => {
+    if (like === null) {
+      setLike(false);
+    }
+  }, []);
+
   const handleLike = async () => {
     setLike(!like); 
     try {
+
       console.log(`set favorite to ${!like}`);
       const response = await fetch(`http://localhost:5050/post/${product._id}/likepost`, {
         method: 'PATCH',

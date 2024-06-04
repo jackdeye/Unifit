@@ -83,34 +83,6 @@ const Gallery = () => {
     setMaxPrice(event.target.value);
   };
 
-  // const handleShowSchoolPosts = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token'); // Retrieve the token from local storage
-  //     if (!token) {
-  //       throw new Error('No token found. Please log in again.');
-  //     }
-  //     const response = await fetch('http://localhost:5050/post/school/posts', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setSchoolPosts(data);
-  //       setShowSchoolPosts(true);
-  //     } else {
-  //       const errorText = await response.text();
-  //       console.error('Failed to fetch school posts:', errorText);
-  //       throw new Error('Failed to fetch school posts.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching school posts:', error);
-  //     alert('Failed to fetch school posts.');
-  //   }
-  // };
-
   const filterProducts = (p) => p.filter(product => {
     const matchesSaleFilter = showForSale ? product.isForSale : true; //TODO validate suspicions
     const matchesRentFilter = showForRent ? product.isForRent : true;
