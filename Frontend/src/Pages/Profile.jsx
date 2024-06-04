@@ -18,7 +18,6 @@ export default function Profile() {
       const username = localStorage.getItem('username');
       if (username) {
         try {
-          alert(localStorage.getItem('school'));
           const response = await fetch(`http://localhost:5050/post/user/${username}`);
           if (response.ok) {
             const data = await response.json();
@@ -82,16 +81,16 @@ export default function Profile() {
         >
           {getProfileInitial(localStorage.getItem("profile"))}
         </Avatar>
-        <Typography variant='h4' mt={2}>
+        <Typography variant='h3' mt={2}>
           {localStorage.getItem("profile")}
         </Typography>
         <Typography variant='h5' >
           @{localStorage.getItem("username")}
         </Typography>
-        {localStorage.getItem("bio")!=null && <Typography>
+        {localStorage.getItem("bio")!="null" && <Typography>
           {localStorage.getItem("bio")}
-        </Typography>}
-        {school && <Typography variant='h6'>
+        </Typography> }
+        {school!="undefined" && <Typography variant='h6'>
           {school}
         </Typography>}
       </Box>

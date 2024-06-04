@@ -201,7 +201,7 @@ const Gallery = () => {
         </Paper>
       </Grid>
       <Grid item xs={8} sx={{padding: "10px"}}>
-        <Typography variant="h4" padding="10px">Products</Typography>
+        <Typography variant="h3" padding="10px">Products</Typography>
         <FormControl size="medium" fullWidth>
           <InputLabel htmlFor="outlined-adornment">Search</InputLabel>
           <OutlinedInput
