@@ -173,7 +173,7 @@ export default function SignUp({ onSignup }) {
       <Grid item>
       <FormControl  sx={{ m: 1, width: '25ch' }} variant="outlined">
         <InputLabel id="school">School</InputLabel>
-        <NativeSelect
+        <Select
           labelId="school"
           type='school'
           id='school'
@@ -182,7 +182,7 @@ export default function SignUp({ onSignup }) {
           label="School"
           onChange={handleChange}
         >
-          <option value=''>Select a school</option>
+          {/* <option value=''>Select a school</option>
           <option value='UCLA'>UCLA</option>
           <option value='University of Maryland'>University of Maryland, College Park</option>
           <option value='oocla'>oocla</option>
@@ -190,16 +190,16 @@ export default function SignUp({ onSignup }) {
           <option value='Florida State University, School of Circustry'>Florida State University, School of Circustry</option>
           <option value='University of Spoiled Children'>University of Spoiled Children</option>
           <option value='Stanford University'>Stanford University</option>
-          <option value='Some school in the midwest (love u eggert)'>Some school in the midwest (love u eggert)</option>
-{/* <MenuItem value={"UCLA"}>UCLA</MenuItem>
+          <option value='Some school in the midwest (love u eggert)'>Some school in the midwest (love u eggert)</option> */}
+          <MenuItem value={"UCLA"}>UCLA</MenuItem>
           <MenuItem value={'University of Maryland'}>University of Maryland, College Park</MenuItem>
           <MenuItem value={'oocla'}>oocla</MenuItem>
           <MenuItem value={'UC Berkeley'}>UC Berkeley</MenuItem>
           <MenuItem value={'Florida State University, School of Circustry'}>Florida State University, School of Circustry</MenuItem>
           <MenuItem value={'University of Spoiled Children'}>University of Spoiled Children</MenuItem>
           <MenuItem value={'Stanford University'}>Stanford University</MenuItem>
-          <MenuItem value={'Some school in the midwest (love u eggert)'}>Some school in the midwest (love u eggert)</MenuItem> */}
-        </NativeSelect>
+          <MenuItem value={'Some school in the midwest (love u eggert)'}>Some school in the midwest (love u eggert)</MenuItem>
+        </Select>
       </FormControl>
       </Grid>
         <Grid item>
