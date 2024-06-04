@@ -299,7 +299,6 @@ router.post("/:id/comments", async (req, res) => {
 );
 
 router.get("/:id/likepost", auth, async (req, res) => {
-  const {like} = req.body;
   try {
     const postId = req.params.id;
     const userId = req.userId;
@@ -359,6 +358,42 @@ router.get("/:id/likepost", auth, async (req, res) => {
     console.error(err);
     res.status(500).send("Error liking post");
   }
+});
+
+router.get("/:id/currLiked", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userId;
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    const findLike = await userCollection.findOne(
+      { _id: new ObjectId(userId), likedPosts: { $in: [new ObjectId(postId)] } },
+      { projection: { _id: 1 } } // Only return the _id field to make the operation lighter
+    );
+
+    let isLiked;
+
+    if (findLike){
+      isLiked = true;
+    } else {
+      isLiked = false;
+    }
+
+    res.status(200).json({message: "Found liked post", isLiked});
+  
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error finding liked post");
+}
+
 });
 
 // Buy a post
