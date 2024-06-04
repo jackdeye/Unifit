@@ -4,6 +4,7 @@ import multer from "multer";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from "mongodb";
+// import { exist } from "joi";
 
 // Router is an instance of the express router.
 const router = express.Router();
@@ -11,10 +12,10 @@ const upload = multer();
 
 // SignUp - create a new user
 router.post("/signup", upload.none(), async (req, res) => {
-  const { username, password, firstName, lastName } = req.body;
+  const { username, password, firstName, lastName, school } = req.body;
 
   try {
-    if (!username || !password || !firstName || !lastName) {
+    if (!username || !password || !firstName || !lastName || !school) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -35,11 +36,21 @@ router.post("/signup", upload.none(), async (req, res) => {
       purchasedPosts: [],
       likedPosts: [],
       rentedPosts: [],
+      school,
     });
 
     if (result.insertedId) {
       const token = jwt.sign({ username, id: result.insertedId }, process.env.JWT_SECRET, { expiresIn: "1h" });
-      return res.status(201).json({ message: "User created successfully", user: { username, id: result.insertedId, name: `${firstName} ${lastName}`, profilePicture: null }, token });
+      return res.status(201).json({ 
+        message: "User created successfully", 
+        user: { 
+          username, 
+          id: result.insertedId, 
+          name: `${firstName} ${lastName}`, 
+          profilePicture: null }, 
+          school,
+          token 
+        });
     } else {
       return res.status(500).json({ message: "Something went wrong" });
     }
@@ -63,7 +74,15 @@ router.post("/signin", upload.none(), async (req, res) => {
     if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials." });
 
     const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" }); 
-    return res.status(200).json({ user: { username: existingUser.username, name: existingUser.name, profilePicture: existingUser.profilePicture }, token });
+    return res.status(200).json({ 
+      user: { 
+        username: existingUser.username,
+        name: existingUser.name, 
+        profilePicture: existingUser.profilePicture,
+        school: existingUser.school
+      }, 
+      token 
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Something went wrong" });

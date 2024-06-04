@@ -298,7 +298,8 @@ router.post("/:id/comments", async (req, res) => {
   }
 );
 
-router.patch("/:id/likepost", auth, async (req, res) => {
+router.get("/:id/likepost", auth, async (req, res) => {
+  const {like} = req.body;
   try {
     const postId = req.params.id;
     const userId = req.userId;
@@ -312,17 +313,48 @@ router.patch("/:id/likepost", auth, async (req, res) => {
       return res.status(404).send("Post not found");
     }
 
-    await userCollection.updateOne(
-      { _id: new ObjectId(userId) },
-      { $push: { likedPosts: new ObjectId(postId) } }
+    const findLike = await userCollection.findOne(
+      { _id: new ObjectId(userId), likedPosts: { $in: [new ObjectId(postId)] } },
+      { projection: { _id: 1 } } // Only return the _id field to make the operation lighter
     );
 
-    await postCollection.updateOne(
-      { _id: new ObjectId(postId) },
-      { $set: { liked: true } }
-    );
+    let isLiked;
+    
+    if (findLike){ //unlike
+      console.log(findLike);
+      console.log('unliked');
+      // res.status(200).send("unliked");
+      await userCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        { $pull: { likedPosts: new ObjectId(postId) } }
+      );
+  
+      // await postCollection.updateOne(
+      //   { _id: new ObjectId(postId) },
+      //   { $set: { liked: false } }
+      // );
 
-    res.status(200).send("Post liked successfully");
+      isLiked = false;
+    } else { //like
+      console.log(findLike);
+      console.log('liked');
+
+      await userCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        { $push: { likedPosts: new ObjectId(postId) } }
+      );
+  
+      // await postCollection.updateOne(
+      //   { _id: new ObjectId(postId) },
+      //   { $set: { liked: true } }
+      // );
+
+      isLiked = true;
+  
+    }
+
+
+    res.status(200).json({ message: "Post liked successfully", isLiked });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error liking post");
