@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ItemPage.css';
-import {Avatar} from '@mui/material';
+import { Avatar, Button, TextField, Typography, Box, Paper, Grid } from '@mui/material';
 
 const ItemPage = () => {
   const { id } = useParams();
@@ -195,19 +195,38 @@ const ItemPage = () => {
   };
 
   return (
-    <div className='item-page'>
-      <div className='item-display'>
-        <div className='item-image'>
-          <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name} />
-        </div>
-        <div className='item-info'>
-          <h3>{product.name}</h3>
-          <p>{product.desc}</p>
-          <p> Quality: {product.quality}</p>
-          <p> Size: {product.size}</p>
-          <p> School: {product.school}</p>
-          {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
-          {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
+    <Box className='item-page' component={Paper} p={3}>
+        <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name} style={{ width: '100%' }} />
+        </Grid>
+        <Grid item xs={6}>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+            <Typography variant="h3">{product.name}</Typography>
+            <Typography variant="body1">{product.desc}</Typography>
+            <Typography variant="body1">Quality: {product.quality}</Typography>
+            <Typography variant="body1">Size: {product.size}</Typography>
+            <Typography variant="body1">School: {product.school}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+            {curUsername === product.username && (
+            <>
+              <Button variant="contained" component={Link} to={`/edititem/${product._id}`} onClick={() => localStorage.setItem('EditPageButton', 'true')} sx={{ ml: 2 , mt:2}}>
+                Edit Post
+              </Button>
+              <Button variant="contained" color="error" onClick={handleDelete} sx={{ ml: 2 , mt:2}}>
+                Delete Post
+              </Button>
+            </>
+          )}
+             <Button variant="contained" onClick={handleRent} sx={{ ml: 2 , mt:2}} >Confirm Rental</Button>
+
+            </Grid>
+          </Grid>
+          <Grid>
+          {product.isForSale && <Typography variant="body1">Buy Price: {product.buyPrice}</Typography>}
+          {product.isForRent && <Typography variant="body1">Rent Price: {product.rentPrice}</Typography>}
           {product.isForRent && (
             <>
               <DatePicker
@@ -223,56 +242,124 @@ const ItemPage = () => {
                   return 'available';
                 }}
               />
-              <button onClick={handleRent}>Confirm Rental</button>
             </>
           )}
-          <div>
-            {curUsername === product.username && (
-              <>
-                <ButtonLink to={`/edititem/${product._id}`} onClick={() => localStorage.setItem('EditPageButton', 'true')}> Edit Post </ButtonLink>
-              <h5>
-                <button onClick={handleDelete}>Delete Post</button>
-              </h5>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className='comment-section'>
-        <h3>Reviews</h3>
-        <div className='comment-input'>
+          </Grid>
+
+
+        </Grid>
+      </Grid>
+      <Box mt={3}>
+        <Typography variant="h5">Reviews</Typography>
         <form onSubmit={handleCommentSubmit}>
-          <textarea
-            type='text'
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder='Add a comment'
+            placeholder="Add a comment"
           />
-          <button type='submit'>Post</button>
-          </form> 
-        </div>
-          <div className='comments-list'>
-            {comments.map((comment, index) => (
-              <div key={index} className='comment'>
-                <p>
+          <Button type="submit" variant="contained" style={{ marginTop: '10px' }}>
+            Post
+          </Button>
+        </form>
+        <Box mt={3}>
+          {comments.map((comment, index) => (
+            <Box key={index} mb={2} display="flex" alignItems="center">
+              <Avatar
+                alt="Profile"
+                src={`data:image/jpeg;base64,${comment.profPicture}`}
+                sx={{ width: 30, height: 30, marginRight: 1 }}
+              >
+                {getProfileInitial(comment.username)}
+              </Avatar>
+              <Typography variant="body1">
+                <strong>{comment.username}</strong>: {comment.comment}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </Box>
+    // <div className='item-page'>
+    //   <div className='item-display'>
+    //     <div className='item-image'>
+    //       <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name} />
+    //     </div>
+    //     <div className='item-info'>
+    //       <h3>{product.name}</h3>
+    //       <p>{product.desc}</p>
+    //       <p> Quality: {product.quality}</p>
+    //       <p> Size: {product.size}</p>
+    //       <p> School: {product.school}</p>
+    //       {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
+    //       {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
+    //       {product.isForRent && (
+    //         <>
+    //           <DatePicker
+    //             inline
+    //             selected={selectedDate}
+    //             onChange={date => setSelectedDate(date)}
+    //             dayClassName={date => {
+    //               const dateString = date.toISOString().split('T')[0];
+    //               if (selectedDate && dateString === selectedDate.toISOString().split('T')[0]) 
+    //                 return 'selected';
+    //               if (!isDateAvailable(date) || isDateRented(date)) 
+    //                 return 'unavailable';
+    //               return 'available';
+    //             }}
+    //           />
+    //           <button onClick={handleRent}>Confirm Rental</button>
+    //         </>
+    //       )}
+    //       <div>
+    //         {curUsername === product.username && (
+    //           <>
+    //             <ButtonLink to={`/edititem/${product._id}`} onClick={() => localStorage.setItem('EditPageButton', 'true')}> Edit Post </ButtonLink>
+    //           <h5>
+    //             <button onClick={handleDelete}>Delete Post</button>
+    //           </h5>
+    //           </>
+    //         )}
+    //       </div>
+    //     </div>
+    //   </div>
+    //   <div className='comment-section'>
+    //     <h3>Reviews</h3>
+    //     <div className='comment-input'>
+    //     <form onSubmit={handleCommentSubmit}>
+    //       <textarea
+    //         type='text'
+    //         value={newComment}
+    //         onChange={(e) => setNewComment(e.target.value)}
+    //         placeholder='Add a comment'
+    //       />
+    //       <button type='submit'>Post</button>
+    //       </form> 
+    //     </div>
+    //       <div className='comments-list'>
+    //         {comments.map((comment, index) => (
+    //           <div key={index} className='comment'>
+    //             <p>
 
-                  <div className='userinfo'>
-                  <Avatar 
-                    alt="Profile" 
-                    src={`data:image/jpeg;base64,${comment.profPicture}`}
-                    sx={{ width: 30, height: 30 }} // Adjust the size as needed
-                  >
-                    {getProfileInitial(comment.username)}
-                  </Avatar>
-                <strong>{comment.username}</strong>
-                </div>
-                 {comment.comment}</p>
-              </div>
-            ))}
-          </div>
-      </div>
+    //               <div className='userinfo'>
+    //               <Avatar 
+    //                 alt="Profile" 
+    //                 src={`data:image/jpeg;base64,${comment.profPicture}`}
+    //                 sx={{ width: 30, height: 30 }} // Adjust the size as needed
+    //               >
+    //                 {getProfileInitial(comment.username)}
+    //               </Avatar>
+    //             <strong>{comment.username}</strong>
+    //             </div>
+    //              {comment.comment}</p>
+    //           </div>
+    //         ))}
+    //       </div>
+    //   </div>
 
-    </div>
+    // </div>
   );
 };
 
