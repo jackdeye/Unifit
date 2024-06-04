@@ -66,8 +66,13 @@ export default function Login({ onLogin }) {
         localStorage.setItem('purchasedPosts', JSON.stringify(data.user.purchasedPosts || []));
         localStorage.setItem('pendingPosts', JSON.stringify(data.user.pendingPosts || []));
         localStorage.setItem('pendingRequests', JSON.stringify(data.user.pendingRequests || []));
-        console.log("local storage purchasedPosts: ", localStorage.getItem('purchasedPosts'));
-        onLogin(data.user.name, data.token, data.user.profilePicture);
+        // console.log("local storage purchasedPosts: ", localStorage.getItem('purchasedPosts'));
+        onLogin(
+          data.user.name, 
+          data.token, 
+          data.user.profilePicture,
+          data.user.purchasedPosts
+        );
         alert('User logged in!');
         console.log("Logged In!");
         navigate('/homepage');

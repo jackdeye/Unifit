@@ -179,13 +179,17 @@ const Requests = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log(data.message);
+        const {notification, buyerUsername} = await response.json();
+        // const data = await response.json();
+        // console.log(data.message);
 
-        // Update the buyer's local storage with the notification
-        const buyerUsername = requests.find(request => request._id === postId).buyerUsername;
+        // // Update the buyer's local storage with the notification
         let buyerNotifications = JSON.parse(localStorage.getItem(`${buyerUsername}_notifications`)) || [];
-        buyerNotifications.push(data.message);
+        buyerNotifications.push(notification);
+
+        // const buyerUsername = requests.find(request => request._id === postId).buyerUsername;
+        // let buyerNotifications = JSON.parse(localStorage.getItem(`${buyerUsername}_notifications`)) || [];
+        // buyerNotifications.push(data.message);
         localStorage.setItem(`${buyerUsername}_notifications`, JSON.stringify(buyerNotifications));
 
         // Update the UI to remove the accepted request

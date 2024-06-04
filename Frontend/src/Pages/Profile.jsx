@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Profile.css";
 import Item from '../Components/Item.jsx';
-import {Avatar, Button} from '@mui/material';
+import {Avatar, Button, Badge} from '@mui/material';
 
 export default function Profile() {
   const [products, setProducts] = useState([]);
   const [purchasedPosts, setPurchasedPosts] = useState([]);
   const [pendingPosts, setPendingPosts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [school] = useState(localStorage.getItem('school'));
   const navigate = useNavigate();
 
@@ -76,9 +77,16 @@ export default function Profile() {
       }
     };
 
+    const fetchNotifications = () => { //note: this doesn't work because notifications isnt' in local storage anymore - got cleared
+      const username = localStorage.getItem('username');
+      const buyerNotifications = JSON.parse(localStorage.getItem('${username}_notifications')) || [];
+      setNotifications(buyerNotifications);
+    };
+
     fetchProducts();
     fetchPurchasedProducts();
     fetchPendingProducts();
+    fetchNotifications();
   }, []);
 
   const getProfileInitial = (name) => {
@@ -93,17 +101,31 @@ export default function Profile() {
     <div>
       <div className='header'>
       <div className="avatar-container">
-          <Avatar 
-            alt="Profile" 
-            src={`data:image/jpeg;base64,${localStorage.getItem("profilePicture")}`}
-            sx={{ width: 100, height: 100 }} // Adjust the size as needed
+         <Badge
+            color="error"
+            variant="dot"
+            invisible={notifications.length === 0}
           >
-            {getProfileInitial(localStorage.getItem("profile"))}
-          </Avatar>
+            <Avatar
+              alt="Profile"
+              src={`data:image/jpeg;base64,${localStorage.getItem("profilePicture")}`}
+              sx={{ width: 100, height: 100 }}
+            >
+              {getProfileInitial(localStorage.getItem("profile"))}
+            </Avatar>
+          </Badge>
       </div>
         <h5>
           <span className="username">@{localStorage.getItem("username")}</span>
         </h5>
+        {notifications.length > 0 && (
+          <div className="notifications">
+            {notifications.map((notification, index) =>
+            (
+              <p key={index}>{notification}</p>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className='all'>

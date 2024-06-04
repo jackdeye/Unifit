@@ -65,11 +65,13 @@ export default function App() {
     }
   }, [isAuthenticated]);
 
-  const handleLogin = (profile, token, profilePicture) => {
+  const handleLogin = (profile, token, profilePicture, purchasedPosts) => {
     localStorage.setItem('token', token);
     localStorage.setItem('profile', profile);
     localStorage.setItem('profilePicture', profilePicture || ''); 
-    setIsAuthenticated(true);
+    console.log("purchased posts array: ", purchasedPosts);
+    localStorage.setItem('purchasedPosts', JSON.stringify(purchasedPosts) || []);
+    console.log('purchasedPosts: ', localStorage.getItem('purchasedPosts'));
     setProfile(profile);
     setProfilePicture(profilePicture || '');
     // Dispatch custom event
