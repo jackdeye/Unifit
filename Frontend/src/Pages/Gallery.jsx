@@ -69,8 +69,21 @@ const Gallery = () => {
   };
 
   const filterProducts = (p) => p.filter(product => {
-    const matchesSaleFilter = showForSale ? product.isForSale : true;
-    const matchesRentFilter = showForRent ? product.isForRent : true;
+    let matchesSaleFilter = true;
+    let matchesRentFilter = true;
+
+    if (showForSale) {
+        matchesSaleFilter = product.isForSale;
+    }
+
+    if (showForRent) {
+        matchesRentFilter = product.isForRent;
+    }
+
+    if ((showForRent == showForSale)){
+      matchesSaleFilter = true;
+      matchesRentFilter = true;
+    }
     const buyPrice = product.isForSale ? product.buyPrice : Infinity;
     const rentPrice = product.isForRent ? product.rentPrice : Infinity;
     const min = minPrice ? parseFloat(minPrice) : 0;
