@@ -104,6 +104,7 @@ export default function Profile() {
 
     fetchProducts();
     fetchPurchasedProducts();
+    fetchRentedProducts();
     fetchPendingProducts();
     fetchNotifications();
   }, []);

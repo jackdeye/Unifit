@@ -319,12 +319,12 @@ const EditPosts = () => {
         <Button
           component="label"
           role={undefined}
-          variant="contained"
+          variant={formData.image ? "outlined" : "contained"}
           tabIndex={-1}
           startIcon={<CloudUpload />}
           sx={{ m: 1, width: '25ch' }}
         >
-          Upload file
+          {formData.image ? 'File Uploaded' : 'Upload File'}
           <VisuallyHiddenInput type="file" name="image" onChange={handleChange} />
         </Button>
         <FormGroup>
