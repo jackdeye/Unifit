@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Item.css'; 
+import {
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  CardActionArea,
+  Button,
+} from '@mui/material';
 
 const Item = ({ product, sold }) => {
   const [like, setLike] = useState(false);
+  const navigate = useNavigate();
 
   const useEffect = async () => {
     try {
@@ -148,35 +157,40 @@ const Item = ({ product, sold }) => {
       console.error('Error requesting the item:', error);
     }
   };
-  return (
-    <div className="product-item">
-      {sold && <div className="sold-overlay">SOLD</div>}
-      <Link to={`/item/${product._id}`}>
-        <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name} />
-        <h3>{product.name}</h3>
-      </Link>
-      <button
-          className={`heart-button ${like ? 'liked' : ''}`}
-          aria-label="Like"
-          onClick={handleLike}
+  return(
+    <Card sx={{ maxWidth: 345 }}>
+      <CardActionArea onClick={() => {
+        navigate(`/item/${product._id}`);
+      }}>
+        <CardMedia
+          sx={{ height: 200 }}
+          image={`data:image/jpeg;base64,${product.image}`}
         >
-          <span className="heart"></span>
-        </button>
-      <div className='product-interact'>
-      <div className='button-container'>
-          {product.isForSale && <button className="buy-button" onClick={handleBuyRequest}>Buy</button>}
+          <button
+              className={`heart-button ${like ? 'liked' : ''}`}
+              aria-label="Like"
+              onClick={handleLike}
+            >
+              <span className="heart"></span>
+          </button>
+        </CardMedia>
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {product.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {product.isForSale && <p>Buy: ${product.buyPrice}</p>}
+            {product.isForRent && <p>Rent: ${product.rentPrice}</p>}
+          </Typography>
+          {product.isForSale && <Button sx={{marginRight:"10px"}} variant="contained" onClick={handleBuyRequest}>Buy</Button>}
           {product.isForRent && (
-            <Link to={`/item/${product._id}`} className="rent-button">
+            <Button variant="contained" onClick={()=>navigate(`/item/${product._id}`)}>
               Rent
-            </Link>
+            </Button>
           )}
-        </div>
-        <div className='price-info'>
-          {product.isForSale && <p>Buy: ${product.buyPrice}</p>}
-          {product.isForRent && <p>Rent: ${product.rentPrice}</p>}
-        </div>
-      </div>
-    </div>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
 
