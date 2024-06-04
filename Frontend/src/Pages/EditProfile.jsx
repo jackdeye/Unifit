@@ -128,7 +128,7 @@ function EditProfile() {
         direction="column"
         alignItems="center"
         justifyContent="center"
-        height="500px"
+        height="530px"
       >
         <Grid item>
           <h1>Edit Profile</h1>
@@ -153,7 +153,7 @@ function EditProfile() {
           multiline
           value={formData.bio} 
           onChange={handleChange}
-          maxRows={4}
+          maxRows={2}
         />
         </Grid>
         <Grid item>
@@ -212,7 +212,7 @@ function EditProfile() {
               <VisuallyHiddenInput type="file" name="profilePicture" accept="image/*" onChange={handleChange} />
             </Button>
       </Grid>
-      <Grid item mt={4}>
+      <Grid item mt={2}>
       <Button variant="contained" onClick={handleSubmit} endIcon={<Save/>}>
           Save Changes
         </Button>
