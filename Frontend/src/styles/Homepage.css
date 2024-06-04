@@ -29,6 +29,7 @@
 }
 
 .button.button {
+  margin-top: 15px;
   background-color:#367765;
   border: 0;
   border-radius: 12px;

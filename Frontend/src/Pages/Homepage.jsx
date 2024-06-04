@@ -11,7 +11,8 @@ const Homepage = () => {
   return (
     <div>
       <ParallaxSection image={image1}>
-        <h1>Welcome to <span className="highlight">UNIFIT</span></h1>
+        <h1>Welcome to 
+    <span className="highlight">UNIFIT</span></h1>
         <p>Swap Sustainably</p>
       </ParallaxSection>
       <div className='item'>
