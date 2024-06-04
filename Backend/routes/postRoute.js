@@ -195,10 +195,12 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
       availability: availability ? JSON.parse(availability) : [], // Store as an array of dates
       username,
       school,
+      sold: false,
       rented: [],
       comments: [],
+      pending: false,
+      buyerId: null,
       liked: true,
-      sold: false,
     };
 
     let collection = db.collection("posts");
@@ -439,11 +441,14 @@ router.patch("/:id/buy", auth, async (req, res) => {
   }
 });
 
-// Buy a post
-router.patch("/:id/buy", auth, async (req, res) => {
+router.patch("/:id/request", auth, async (req, res) => {
   try {
     const postId = req.params.id;
-    const userId = req.userId;
+    const buyerId = req.userId;
+
+    if (!ObjectId.isValid(postId) || !ObjectId.isValid(buyerId)) {
+      return res.status(400).send("Invalid postId or buyerId");
+    }
 
     const postCollection = db.collection("posts");
     const userCollection = db.collection("users");
@@ -454,26 +459,173 @@ router.patch("/:id/buy", auth, async (req, res) => {
       return res.status(404).send("Post not found");
     }
 
-    if (post.sold) {
-      return res.status(400).send("Post is already sold");
+    if (post.pending) {
+      return res.status(400).send("Post is already pending");
     }
 
-    // mark the post as sold
     await postCollection.updateOne(
       { _id: new ObjectId(postId) },
-      { $set: { sold: true } }
+      { $set: { pending: true, buyerId: new ObjectId(buyerId) } }
     );
 
-    //add post to user's purchased posts
     await userCollection.updateOne(
-      { _id: new ObjectId(userId) },
+      { _id: new ObjectId(buyerId) },
+      { $push: { pendingPosts: new ObjectId(postId) } }
+    );
+
+    const seller = await userCollection.findOne({ username: post.username });
+    await userCollection.updateOne(
+      { _id: new ObjectId(seller._id) },
+      { $push: { pendingRequests: new ObjectId(postId) } }
+    );
+
+    res.status(200).send("Post requested successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error requesting post");
+  }
+});
+
+// Utility function to validate ObjectId
+const isValidObjectId = (id) => ObjectId.isValid(id) && new ObjectId(id).toString() === id;
+
+// // Fetch pending requests for a user
+// router.get("/pending-requests", auth, async (req, res) => {
+//   try {
+//     const userId = req.userId;
+
+//     if (!isValidObjectId(userId)) {
+//       return res.status(400).send("Invalid userId");
+//     }
+
+//     const userCollection = db.collection("users");
+//     const postCollection = db.collection("posts");
+
+//     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+
+//     const pendingRequests = user.pendingRequests || [];
+//     const pendingPosts = await postCollection.find({ _id: { $in: pendingRequests } }).toArray();
+
+//     const requestsWithBuyers = await Promise.all(pendingPosts.map(async (post) => {
+//       const buyer = await userCollection.findOne({ _id: new ObjectId(post.buyerId) });
+//       return { ...post, buyerUsername: buyer.username };
+//     }));
+
+//     res.status(200).json(requestsWithBuyers);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Error fetching pending requests");
+//   }
+// });
+router.patch("/:id/accept", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const sellerId = req.user._id;
+
+    if (!isValidObjectId(postId)) {
+      return res.status(400).json({ message: "Invalid postId" });
+    }
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (post.sold) {
+      return res.status(400).json({ message: "Post is already sold" });
+    }
+
+    const buyerId = post.buyerId;
+
+    console.log("Post found:", post);
+    console.log("Seller ID:", sellerId);
+    console.log("Buyer ID:", buyerId);
+
+    // Mark the post as sold and pending as false
+    const postUpdateResult = await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { sold: true, pending: false } }
+    );
+
+    if (postUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the post");
+      return res.status(500).json({ message: "Failed to update the post" });
+    }
+
+    console.log("Post update result:", postUpdateResult);
+
+    // Remove from buyer's pendingPosts
+    const buyerPendingUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
+      { $pull: { pendingPosts: new ObjectId(postId) } }
+    );
+
+    console.log("Buyer pendingPosts update result:", buyerPendingUpdateResult);
+
+    if (buyerPendingUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's pendingPosts");
+      return res.status(500).json({ message: "Failed to update the buyer's pendingPosts" });
+    }
+
+    // Add to buyer's purchasedPosts
+    const buyerPurchasedUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
       { $push: { purchasedPosts: new ObjectId(postId) } }
     );
 
-    res.status(200).send("Post purchased successfully");
+    console.log("Buyer purchasedPosts update result:", buyerPurchasedUpdateResult);
+
+    if (buyerPurchasedUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's purchasedPosts");
+      return res.status(500).json({ message: "Failed to update the buyer's purchasedPosts" });
+    }
+
+    // Add notification to the buyer
+    const buyerNotificationUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
+      { $push: {
+          notifications: {
+            type: "acceptance",
+            message: `${req.user.username} accepted your request for ${post.name}`,
+            postId: postId,
+            sellerUsername: req.user.username,
+          }
+        }
+      }
+    );
+
+    console.log("Buyer notification update result:", buyerNotificationUpdateResult);
+
+    if (buyerNotificationUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's notifications");
+      return res.status(500).json({ message: "Failed to update the buyer's notifications" });
+    }
+
+    // Remove from seller's pendingRequests
+    const sellerUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(sellerId) },
+      { $pull: { pendingRequests: new ObjectId(postId) } }
+    );
+
+    console.log("Seller update result:", sellerUpdateResult);
+
+    if (sellerUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the seller");
+      return res.status(500).json({ message: "Failed to update the seller" });
+    }
+
+    res.status(200).json({ message: "Request accepted and buyer notified" });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error buying post");
+    res.status(500).json({ message: "Error accepting request" });
   }
 });
 

@@ -13,6 +13,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Badge,
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -23,6 +24,7 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
   const navigate = useNavigate();
   const [localProfilePicture, setLocalProfilePicture] = useState(profilePicture);
   const [name, setName] = useState(profile);
+  const [hasPendingRequests, setHasPendingRequests] = useState(false);
 
   const theme = useTheme();
 
@@ -44,6 +46,11 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
     const handleStorageChange = () => {
       setLocalProfilePicture(localStorage.getItem('profilePicture'));
       setName(localStorage.getItem('profile'));
+      // Check for pending requests
+      const pendingRequests = localStorage.getItem('pendingRequests');
+      console.log("pendingRequests: ", pendingRequests);
+      setHasPendingRequests(pendingRequests && JSON.parse(pendingRequests).length > 0);
+      console.log("setHasPendingRequests", hasPendingRequests);
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -64,7 +71,7 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
     {name: 'Post', location: '/postpage'},
   ];
 
-  const settings = [ 'Profile', 'Logout' ];
+  const settings = [ 'Profile', 'Requests', 'Logout' ];
 
   useEffect(() => {
     setLocalProfilePicture(profilePicture);
@@ -122,7 +129,9 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
       {isAuthenticated ? (
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar  alt="Profile" src={`data:image/jpeg;base64,${localProfilePicture}`}>{getProfileInitial(name)}</Avatar>
+              <Badge color="error" variant="dot" invisible={!hasPendingRequests}>
+                <Avatar alt="Profile" src={`data:image/jpeg;base64,${localProfilePicture}`}>{getProfileInitial(name)}</Avatar>
+              </Badge>
           </IconButton>
           <Menu
             sx={{ mt: '45px' }}
@@ -143,13 +152,20 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
             {settings.map((setting) => (
               <MenuItem key={setting} onClick={ () => {
                 handleCloseUserMenu();
-                if(setting === "Profile") {
+                if (setting === "Profile") {
                   navigate('/profile');
+                } else if (setting === "Requests") {
+                  navigate('/requests');
                 } else if (setting === "Logout") {
                   handleLogout();
                 }
               }}>
                 <Typography textAlign="center">{setting}</Typography>
+                {setting === "Requests" && hasPendingRequests && (
+                  <Badge color="error" variant="dot">
+                    <span></span>
+                  </Badge>
+                )}
               </MenuItem>
             ))}
           </Menu>

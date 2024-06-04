@@ -1,0 +1,13 @@
+/* PendingPurchases.css */
+
+.products-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .products-grid p {
+    text-align: center;
+    width: 100%;
+  }
+  

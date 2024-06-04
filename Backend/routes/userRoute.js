@@ -34,6 +34,8 @@ router.post("/signup", upload.none(), async (req, res) => {
       profilePicture: null, 
       bio: null, 
       purchasedPosts: [],
+      pendingPosts: [], //posts that this user requested to buy
+      pendingRequests: [], //posts that are by this seller that another user requested to buy
       likedPosts: [],
       rentedPosts: [],
       school,
@@ -79,7 +81,10 @@ router.post("/signin", upload.none(), async (req, res) => {
         username: existingUser.username,
         name: existingUser.name, 
         profilePicture: existingUser.profilePicture,
-        school: existingUser.school
+        school: existingUser.school,
+        purchasedPosts: existingUser.purchasedPosts, 
+        pendingPosts: existingUser.pendingPosts,
+        pendingRequests: existingUser.pendingRequests,
       }, 
       token 
     });
@@ -135,6 +140,29 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error updating profile" });
+  }
+});
+
+const isValidObjectId = (id) => ObjectId.isValid(id) && new ObjectId(id).toString() === id;
+
+router.get("/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!isValidObjectId(userId)) {
+      return res.status(400).send("Invalid userId");
+    }
+
+    const userCollection = db.collection("users");
+    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching user");
   }
 });
 

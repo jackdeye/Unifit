@@ -40,12 +40,16 @@ const Gallery = () => {
       try {
         const response = await fetch(url);
         if (response.ok) {
-          let data = await response.json();
-          data = data.filter(product => product.image && !product.sold && product.username !== username);
+          const data = await response.json();
+          const filteredProducts = data.filter(
+            product => product.image 
+            && !product.sold 
+            && !product.pending 
+            && product.username !== localStorage.getItem('username'));
           if (showSchoolPosts) {
-            data = data.filter(product => product.school === school);
+            data = filteredProducts.filter(product => product.school === school);
           }
-          setProducts(data);
+          setProducts(filteredProducts);
         } else {
           console.error('Failed to fetch products');
         }

@@ -15,6 +15,8 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import EditPosts from './Pages/EditPosts.jsx'
+import PendingPurchases from './Pages/PendingPurchases';
+import Requests from './Pages/Requests';
 import { ParallaxProvider } from 'react-scroll-parallax';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
@@ -89,11 +91,13 @@ export default function App() {
     }
   }, [isAuthenticated]);
 
-  const handleLogin = (profile, token, profilePicture) => {
+  const handleLogin = (profile, token, profilePicture, purchasedPosts) => {
     localStorage.setItem('token', token);
     localStorage.setItem('profile', profile);
-    localStorage.setItem('profilePicture', profilePicture || ''); // Set profile picture
-    setIsAuthenticated(true);
+    localStorage.setItem('profilePicture', profilePicture || ''); 
+    console.log("purchased posts array: ", purchasedPosts);
+    localStorage.setItem('purchasedPosts', JSON.stringify(purchasedPosts) || []);
+    console.log('purchasedPosts: ', localStorage.getItem('purchasedPosts'));
     setProfile(profile);
     setProfilePicture(profilePicture || '');
     // Dispatch custom event
@@ -130,6 +134,8 @@ export default function App() {
             <Route path="/item/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><ItemPage /></ProtectedRoute>} />
             <Route path="/" element={<Navigate to="/homepage" replace />} />
             <Route path="/edititem/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><EditPosts /></ProtectedRoute>} /> 
+            <Route path="/pending-purchases" element={<ProtectedRoute isAuthenticated={isAuthenticated}><PendingPurchases /></ProtectedRoute>} />
+            <Route path="/requests" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Requests /></ProtectedRoute>} />  
           </Routes>
           </div>
         </BrowserRouter>

@@ -1,0 +1,27 @@
+.requests-container {
+    padding: 30px;
+    max-width: 400px;
+  }
+  
+  .request-item {
+    border: 1px solid #ccc;
+    margin: 5px 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .request-details {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .request-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .request-buttons button {
+    padding: 5px 10px;
+  }
+  

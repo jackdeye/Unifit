@@ -64,10 +64,19 @@ export default function Login({ onLogin }) {
         localStorage.setItem('profilePicture', data.user.profilePicture);
         localStorage.setItem('school', data.user.school);
         console.log('login pfp: ', data.user.profilePicture);
-        onLogin(data.user.name, data.token, data.user.profilePicture);
+        localStorage.setItem('purchasedPosts', JSON.stringify(data.user.purchasedPosts || []));
+        localStorage.setItem('pendingPosts', JSON.stringify(data.user.pendingPosts || []));
+        localStorage.setItem('pendingRequests', JSON.stringify(data.user.pendingRequests || []));
+        // console.log("local storage purchasedPosts: ", localStorage.getItem('purchasedPosts'));
+        onLogin(
+          data.user.name, 
+          data.token, 
+          data.user.profilePicture,
+          data.user.purchasedPosts
+        );
         alert('User logged in!');
         console.log("Logged In!");
-        navigate('/gallery');
+        navigate('/homepage');
       } else {
         const errorText = await response.json();
         console.error('Login Error: ', errorText);
