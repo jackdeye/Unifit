@@ -25,11 +25,18 @@ export default function App() {
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
+        localStorage.setItem("mode", mode === 'light' ? 'dark' : 'light' )
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
       },
     }),
     [],
   );
+
+  useEffect(()=>{
+    if( localStorage.getItem("mode")){
+      setMode(localStorage.getItem("mode"))
+    }
+  },[])
   const theme = useMemo(
     () => createTheme({
     palette: {
