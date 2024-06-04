@@ -21,8 +21,8 @@ import {
 const Gallery = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showForSale, setShowForSale] = useState(true);
-  const [showForRent, setShowForRent] = useState(true);
+  const [showForSale, setShowForSale] = useState(false);
+  const [showForRent, setShowForRent] = useState(false);
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -84,8 +84,21 @@ const Gallery = () => {
   };
 
   const filterProducts = (p) => p.filter(product => {
-    const matchesSaleFilter = showForSale ? product.isForSale : true; //TODO validate suspicions
-    const matchesRentFilter = showForRent ? product.isForRent : true;
+    let matchesSaleFilter = true;
+    let matchesRentFilter = true;
+
+    if (showForSale) {
+        matchesSaleFilter = product.isForSale;
+    }
+
+    if (showForRent) {
+        matchesRentFilter = product.isForRent;
+    }
+
+    if ((showForRent == showForSale)){
+      matchesSaleFilter = true;
+      matchesRentFilter = true;
+    }
     const buyPrice = product.isForSale ? product.buyPrice : Infinity;
     const rentPrice = product.isForRent ? product.rentPrice : Infinity;
     const min = minPrice ? parseFloat(minPrice) : 0;
