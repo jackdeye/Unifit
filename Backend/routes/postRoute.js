@@ -629,4 +629,78 @@ router.patch("/:id/accept", auth, async (req, res) => {
   }
 });
 
+router.patch("/:id/decline", auth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const sellerId = req.user._id;
+
+    if (!isValidObjectId(postId)) {
+      return res.status(400).json({ message: "Invalid postId" });
+    }
+
+    const postCollection = db.collection("posts");
+    const userCollection = db.collection("users");
+
+    const post = await postCollection.findOne({ _id: new ObjectId(postId) });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (post.sold) {
+      return res.status(400).json({ message: "Post is already sold" });
+    }
+
+    const buyerId = post.buyerId;
+
+    console.log("Post found:", post);
+    console.log("Seller ID:", sellerId);
+    console.log("Buyer ID:", buyerId);
+
+    // Mark the post as sold and pending as false
+    const postUpdateResult = await postCollection.updateOne(
+      { _id: new ObjectId(postId) },
+      { $set: { sold: false, pending: false } }
+    );
+
+    if (postUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the post");
+      return res.status(500).json({ message: "Failed to update the post" });
+    }
+
+    console.log("Post update result:", postUpdateResult);
+
+    // Remove from buyer's pendingPosts
+    const buyerPendingUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(buyerId) },
+      { $pull: { pendingPosts: new ObjectId(postId) } }
+    );
+
+    console.log("Buyer pendingPosts update result:", buyerPendingUpdateResult);
+
+    if (buyerPendingUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the buyer's pendingPosts");
+      return res.status(500).json({ message: "Failed to update the buyer's pendingPosts" });
+    }
+
+    // Remove from seller's pendingRequests
+    const sellerUpdateResult = await userCollection.updateOne(
+      { _id: new ObjectId(sellerId) },
+      { $pull: { pendingRequests: new ObjectId(postId) } }
+    );
+
+    console.log("Seller update result:", sellerUpdateResult);
+
+    if (sellerUpdateResult.matchedCount === 0) {
+      console.error("Failed to update the seller");
+      return res.status(500).json({ message: "Failed to update the seller" });
+    }
+
+    res.status(200).json({ message: "Request accepted and buyer notified" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error accepting request" });
+  }
+});
+
 export default router;
