@@ -298,7 +298,7 @@ router.post("/:id/comments", async (req, res) => {
   }
 );
 
-router.patch("/:id/likepost", auth, async (req, res) => {
+router.get("/:id/likepost", auth, async (req, res) => {
   const {like} = req.body;
   try {
     const postId = req.params.id;
@@ -317,7 +317,9 @@ router.patch("/:id/likepost", auth, async (req, res) => {
       { _id: new ObjectId(userId), likedPosts: { $in: [new ObjectId(postId)] } },
       { projection: { _id: 1 } } // Only return the _id field to make the operation lighter
     );
-      
+
+    let isLiked;
+    
     if (findLike){ //unlike
       console.log(findLike);
       console.log('unliked');
@@ -327,10 +329,12 @@ router.patch("/:id/likepost", auth, async (req, res) => {
         { $pull: { likedPosts: new ObjectId(postId) } }
       );
   
-      await postCollection.updateOne(
-        { _id: new ObjectId(postId) },
-        { $set: { liked: false } }
-      );
+      // await postCollection.updateOne(
+      //   { _id: new ObjectId(postId) },
+      //   { $set: { liked: false } }
+      // );
+
+      isLiked = false;
     } else { //like
       console.log(findLike);
       console.log('liked');
@@ -340,15 +344,17 @@ router.patch("/:id/likepost", auth, async (req, res) => {
         { $push: { likedPosts: new ObjectId(postId) } }
       );
   
-      await postCollection.updateOne(
-        { _id: new ObjectId(postId) },
-        { $set: { liked: true } }
-      );
+      // await postCollection.updateOne(
+      //   { _id: new ObjectId(postId) },
+      //   { $set: { liked: true } }
+      // );
+
+      isLiked = true;
   
     }
 
 
-    res.status(200).send("Post liked successfully");
+    res.status(200).json({ message: "Post liked successfully", isLiked });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error liking post");

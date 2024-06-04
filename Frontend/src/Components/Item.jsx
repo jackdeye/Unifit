@@ -17,7 +17,7 @@ const Item = ({ product }) => {
 
       console.log(`set favorite to ${!like}`);
       const response = await fetch(`http://localhost:5050/post/${product._id}/likepost`, {
-        method: 'PATCH',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
@@ -25,11 +25,25 @@ const Item = ({ product }) => {
       });
       if (response.ok) {
         const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+
+        const result = await response.json();
+        const isLiked = result.isLiked;
+
+        if (isLiked) {
+          //liked
+          likedPosts.push(product._id); //PULL PRODUCT ID FROM LOCAL STORAGE WHEN UNLIKED >:(((((((((((((())))))))))))))
   
-        likedPosts.push(product._id);
-  
-        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-        alert("liked post");
+          localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+          alert("liked post"); 
+        } else {
+          //unliked
+          alert("attempting to unlike post");
+          // likedPosts.pull(product._id);
+          delete likedPosts[product._id];
+
+          localStorage.setItem('likedPosts', JSON.stringify(likedPosts))
+          alert("unliked post");
+        }
 
       } else {
         alert("Failed to like post");
