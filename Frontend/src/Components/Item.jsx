@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Item.css'; 
 
-const Item = ({ product, sold }) => {
+const Item = ({ product, sold, showBuyRentButtons }) => {
   const [like, setLike] = useState(false);
 
   const useEffect = async () => {
@@ -83,39 +83,6 @@ const Item = ({ product, sold }) => {
   }
   };
 
-  // const handleBuy = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5050/post/${product._id}/buy`, {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
-  //       }
-  //     });
-  
-  //     if (response.ok) {
-  //       alert('Item bought successfully!');
-        
-  //       // Fetch the current purchasedPosts from localStorage
-  //       const purchasedPosts = JSON.parse(localStorage.getItem('purchasedPosts')) || [];
-  
-  //       // Append the new product ID to the array
-  //       purchasedPosts.push(product._id);
-  
-  //       // Save the updated array back to localStorage
-  //       localStorage.setItem('purchasedPosts', JSON.stringify(purchasedPosts));
-        
-  //       localStorage.setItem('sold', true);
-  
-  //       // handle post-purchase logic, eg, updating UI
-  //     } else {
-  //       console.error('Failed to buy the item');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error buying the item:', error);
-  //   }
-  // };
-
   const handleBuyRequest = async () => {
     try {
       const response = await fetch(`http://localhost:5050/post/${product._id}/request`, {
@@ -164,8 +131,8 @@ const Item = ({ product, sold }) => {
         </button>
       <div className='product-interact'>
       <div className='button-container'>
-          {product.isForSale && <button className="buy-button" onClick={handleBuyRequest}>Buy</button>}
-          {product.isForRent && (
+          {product.isForSale && showBuyRentButtons && <button className="buy-button" onClick={handleBuyRequest}>Buy</button>}
+          {product.isForRent && showBuyRentButtons && (
             <Link to={`/item/${product._id}`} className="rent-button">
               Rent
             </Link>

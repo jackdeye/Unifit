@@ -133,7 +133,7 @@ const Gallery = () => {
     }
 
     return filteredProducts.map(product => (
-      <Item key={product._id} product={product} />
+      <Item key={product._id} product={product} showBuyRentButtons='true'/>
     ));
   }
 

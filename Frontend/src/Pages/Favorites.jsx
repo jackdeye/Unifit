@@ -86,7 +86,7 @@ const Favorites = () => {
       ret = fuse.search(searchQuery).map(obj => obj.item);
     }
     ret = filterProducts(ret).map((product) => (
-      <Item key={product._id} product={product} />
+      <Item key={product._id} product={product} showBuyRentButtons='true'/>
     ));
     if(ret.length === 0) {
       ret = <div>No Products Found</div>;
