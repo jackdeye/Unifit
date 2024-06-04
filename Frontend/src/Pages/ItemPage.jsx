@@ -203,7 +203,9 @@ const ItemPage = () => {
         <div className='item-info'>
           <h3>{product.name}</h3>
           <p>{product.desc}</p>
-      
+          <p> Quality: {product.quality}</p>
+          <p> Size: {product.size}</p>
+          <p> School: {product.school}</p>
           {product.isForSale && <p>Buy Price: {product.buyPrice}</p>}
           {product.isForRent && <p>Rent Price: {product.rentPrice}</p>}
           {product.isForRent && (

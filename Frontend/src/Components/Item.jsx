@@ -1,16 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Item.css'; // Assuming you have a CSS file for styling
 
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
 
+  const useEffect = async () => {
+    try {
+      const response = await fetch(`http://localhost:5050/post/${product._id}/currLiked`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const isLiked = result.isLiked;
+
+        if (isLiked){
+          setLike(true);
+          // alert("initialized to true");
+        } else {
+          setLike(false);
+          // alert("initialized to false");
+        }
+      } else {
+        console.log("failed to check if liked");
+      }
+    } catch (error) {
+      console.error("Failed in initialize like");
+      alert("did not initialize");
+    }
+  }
+  useEffect();
+
   const handleLike = async () => {
     setLike(!like); 
     try {
+
       console.log(`set favorite to ${!like}`);
       const response = await fetch(`http://localhost:5050/post/${product._id}/likepost`, {
-        method: 'PATCH',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
@@ -18,11 +50,28 @@ const Item = ({ product }) => {
       });
       if (response.ok) {
         const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+
+        const result = await response.json();
+        const isLiked = result.isLiked;
+
+        if (isLiked) {
+          //liked
+          likedPosts.push(product._id); //PULL PRODUCT ID FROM LOCAL STORAGE WHEN UNLIKED >:(((((((((((((())))))))))))))
   
-        likedPosts.push(product._id);
-  
-        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-        alert("liked post");
+          localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+          console.log("liked post"); 
+
+          console.log(localStorage.getItem('likedPosts'));
+        } else {
+          //unliked
+
+          const index = likedPosts.indexOf(product._id);
+          likedPosts.splice(index, 1);
+
+          localStorage.setItem('likedPosts', JSON.stringify(likedPosts))
+          console.log("unliked post");
+          console.log(localStorage.getItem('likedPosts'));
+        }
 
       } else {
         alert("Failed to like post");
