@@ -13,6 +13,7 @@ export default function Profile() {
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
+    // alert(localStorage.getItem("school"));
     const fetchProducts = async () => {
       const username = localStorage.getItem('username');
       if (username) {
@@ -80,16 +81,16 @@ export default function Profile() {
         >
           {getProfileInitial(localStorage.getItem("profile"))}
         </Avatar>
-        <Typography variant='h4' mt={2}>
+        <Typography variant='h3' mt={2}>
           {localStorage.getItem("profile")}
         </Typography>
         <Typography variant='h5' >
           @{localStorage.getItem("username")}
         </Typography>
-        {localStorage.getItem("bio")!=null && <Typography>
+        {localStorage.getItem("bio")!="null" && <Typography>
           {localStorage.getItem("bio")}
-        </Typography>}
-        {school && <Typography variant='h6'>
+        </Typography> }
+        {school!="undefined" && <Typography variant='h6'>
           {school}
         </Typography>}
       </Box>
