@@ -43,8 +43,23 @@ npm install
 ```
 Main backend dependencies:
 - Express.js
+  - Helps with routing, creating HTTP requests, parsing JSON and Form Data, error handling
 - Multer
+  - Used for handling file uploads in the backend, especially form data
+  - Abstracts the complexity involved in handling file uploads, making it easier to integrate into Express routes
+  - Handling images in backend:
+    - Image file is converted to a Base64 string for storage in the database
+
 - JWT (json web token) and Bcrypt
+  - [MERN Auth Youtube Tutorial](https://youtu.be/LKlO8vLvUao?feature=shared)
+  - [MERN User Auth Security](https://www.freecodecamp.org/news/how-to-secure-your-mern-stack-application/)
+  - Bcrypt: Used to hash the password before being stored in the database with the user’s other details when signing up or signing in
+  - JSON Web Tokens (JWT): Generated using the username and the user’s userID, which is signed with a secret key and set to expire in one hour. Used in the response to the client to use the token for authenticated requests.
+  - Authentication middleware: Verifies the JWT token from incoming requests, extracts the user ID, and fetches the user's details from the database, ensuring only authenticated users can access protected routes.
+
+- Local Storage
+  - Used to store temporary data that is persistent across the webpage.
+  - Features used for: Currently liked posts, Requesting posts, Buying posts, Renting, User attributes, URL Injection Protection
 
  To run, you must download the config.env file containing the MongoDB account login and the JWT web token.
  
@@ -62,8 +77,11 @@ npm install
 ```
 Main frontend dependencies:
 - React.js
-- react-router-dom
-- react-datepicker
+- Vite
+- react-router-dom: navigation between webpages
+- react-datepicker: calendar and CSS for rental calendar
+- Material UI
+  - [MUI Tutorial](https://mui.com/material-ui/getting-started/)
 ### Running
 To start the frontend application, run:
 ```
