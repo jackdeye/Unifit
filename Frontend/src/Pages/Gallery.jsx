@@ -40,7 +40,7 @@ const Gallery = () => {
       try {
         const response = await fetch(url);
         if (response.ok) {
-          const data = await response.json();
+          let data = await response.json();
           const filteredProducts = data.filter(
             product => product.image 
             && !product.sold 
