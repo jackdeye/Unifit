@@ -1,9 +1,6 @@
 .parallax-section {
     background-image: url('image.jpg');
-  
     min-height: 700px; 
-  
-    /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -14,5 +11,8 @@
     padding: 15px;
     background-color: rgba(255, 255, 255, 0.6);
     font-size: 24px;
+    font-family: monospace;
+    font-weight: bold;
+
   }
   

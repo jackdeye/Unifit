@@ -66,7 +66,7 @@ export default function Login({ onLogin }) {
         onLogin(data.user.name, data.token, data.user.profilePicture);
         alert('User logged in!');
         console.log("Logged In!");
-        navigate('/homepage');
+        navigate('/gallery');
       } else {
         const errorText = await response.json();
         console.error('Login Error: ', errorText);
