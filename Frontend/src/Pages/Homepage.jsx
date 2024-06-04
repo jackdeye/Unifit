@@ -4,6 +4,8 @@ import '../styles/Homepage.css';
 import image1 from '../Assets/Yoink2.jpg';
 import image2 from '../Assets/Yoink3.jpg';
 
+const isLoggedIn = !!localStorage.getItem('token');
+
 const Homepage = () => (
   <div>
     <ParallaxSection image={image1}>
@@ -16,7 +18,7 @@ const Homepage = () => (
           Browse Collection
         </button>
       </div>
-      <div className='item'>
+      {!isLoggedIn &&<div className='item'>
         <div className="start-button-container">
           <button className="start-button" onClick={() => navigate('/login')}>
             Login
@@ -25,22 +27,22 @@ const Homepage = () => (
             Sign up!
           </button>
         </div>
-      </div>
+      </div>}
     </div>
-    <h3 className="mission-statement">
-      Unifit: a platform that allows university students to effortlessly buy, sell, and rent clothes
-      or other dorm necessities on campus without the hassle of shipping over an item from a stranger.
-      Our goal is to fight against fast fashion, promote sustainability, and cultivate a close-knit community
-      on university campuses.
-    </h3>
+    <div className="mission-statement">
+      <p>A platform that allows university students to effortlessly buy, sell, and rent clothes </p>
+      <p><span style={{textDecoration: "underline"}}>without</span> the hassle of shipping over an item from a stranger.</p>
+      <p>Our goal is to:</p>
+      <ul>
+        <li>Fight against fast fashion</li>
+        <li>Promote sustainability</li>
+        <li>Cultivate a close-knit community on university campuses</li>
+      </ul>
+    </div>
     <ParallaxSection image={image2}>
       <h1>Find Your clothes, in Your Community</h1>
     </ParallaxSection>
-    <div className='item'>
-      <p>Welcome back! To access your profile or view your saved favorites, log in below.</p>
-      <p>New around here? Sign up below to create your account.</p>
-    </div>
-    <p className="footer">UCLA Spring '24 CS 35L project.</p>
+    <p className="footer">UCLA Spring '24 CS 35L project</p>
   </div>
 );
 

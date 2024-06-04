@@ -28,7 +28,7 @@
   margin-top: 20px;
 }
 
-.button {
+.button.button {
   background-color:#367765;
   border: 0;
   border-radius: 12px;
@@ -93,7 +93,7 @@
 }
 
 .start-button-container {
-   display: flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row; 
@@ -101,4 +101,12 @@
 .button,
 .start-button {
   margin: 10px;
+}
+
+.mission-statement {
+  font-size: 20px;
+  font-family: monospace;
+}
+.mission-statement p, ul {
+  margin: 5px;
 }
