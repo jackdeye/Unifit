@@ -31,7 +31,7 @@ const Item = ({ product, sold }) => {
       }
     } catch (error) {
       console.error("Failed in initialize like");
-      alert("did not initialize");
+      //alert("did not initialize");
     }
   }
   useEffect();
