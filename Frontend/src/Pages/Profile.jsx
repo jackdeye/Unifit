@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import "../styles/Profile.css";
 import Item from '../Components/Item.jsx';
 import "../styles/Gallery.css";
-import {Avatar} from '@mui/material';
+import {Avatar, Container, Box, Typography, Button, Tabs, Tab, Grid} from '@mui/material';
 
 export default function Profile() {
   const [products, setProducts] = useState([]);
   const [purchasedPosts, setPurchasedPosts] = useState([]);
   const [rentedPosts, setRentedPosts] = useState([]);
-  // const [school] = useState(localStorage.getItem('school'));
+  const [school] = useState(localStorage.getItem('school'));
+  const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     // alert(localStorage.getItem("school"));
@@ -68,75 +69,92 @@ export default function Profile() {
   const getProfileInitial = (name) => {
     return name.charAt(0).toUpperCase();
   };
-
+  const handleTabChange = (event, newTab) => {
+    setTabIndex(newTab);
+  };
   return (
-    <div>
-      <div className='header'>
-      <div className="avatar-container">
-          <Avatar 
-            alt="Profile" 
-            src={`data:image/jpeg;base64,${localStorage.getItem("profilePicture")}`}
-            sx={{ width: 100, height: 100 }} // Adjust the size as needed
-          >
-            {getProfileInitial(localStorage.getItem("profile"))}
-          </Avatar>
-      </div>
-        <h5>
-          {/* <img
-            src={`data:image/jpeg;base64,${localStorage.getItem("profilePicture")}`}
-            alt="Profile"
-            className="profile-picture"
-          /> */}
-          <span className="username">@{localStorage.getItem("username")}</span>
-        </h5>
-      </div>
-
-      <div className='all'>
-        <div className='info'>
-          <div>{localStorage.getItem("school")}</div>
-           {/* {school && <div> {school}</div>} */}
-          <div><Link to="/EditProfile">EditProfile</Link></div>
-          <div><Link to="/postpage">Create Post</Link></div>
-        </div>
-        <div className='products'>
-          <div className="products-gallery">
-            <h2>Your Shop</h2>
-            <div className="products-grid">
+    <Container>
+      <Box display='flex' alignItems='center' flexDirection='column' mt={4}>
+        <Avatar 
+          alt="Profile" 
+          src={`data:image/jpeg;base64,${localStorage.getItem("profilePicture")}`}
+          sx={{ width: 100, height: 100 }}
+        >
+          {getProfileInitial(localStorage.getItem("profile"))}
+        </Avatar>
+        <Typography variant='h4' mt={2}>
+          {localStorage.getItem("profile")}
+        </Typography>
+        <Typography variant='h5' >
+          @{localStorage.getItem("username")}
+        </Typography>
+        {localStorage.getItem("bio")!=null && <Typography>
+          {localStorage.getItem("bio")}
+        </Typography>}
+        {school && <Typography variant='h6'>
+          {school}
+        </Typography>}
+      </Box>
+       <Box mt={2} textAlign='center'>
+        <Button variant='contained' component={Link} to="/EditProfile">
+          Edit Profile
+        </Button>
+        <Button variant='contained' component={Link} to="/postpage" sx={{ml:2}}>
+          Create Post
+        </Button>
+      </Box>
+      <Box mt={2}>
+        <Tabs value={tabIndex} onChange={handleTabChange} centered>
+          <Tab label='Your Shop'/>
+          <Tab label='Purchases'/>
+          <Tab label='Rentals'/>
+        </Tabs>
+        {tabIndex === 0 && (
+          <Box mt={2}>
+            <Grid container spacing={2}>
               {products.length === 0 ? (
-                  <p>No items listed yet.</p>
-                ) : (
-                  products.map((product) => (
-                    <Item key={product._id} product={product} />
-                  ))
+                <Typography>No items listed yet.</Typography>
+              ) : (
+                products.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+                    <Item product={product} />
+                  </Grid>
+                ))
               )}
-            </div>
-          </div>
-          <div className="products-gallery">
-            <h2>Purchases</h2>
-            <div className="products-grid">
+            </Grid>
+          </Box>
+        )}
+        {tabIndex === 1 && (
+          <Box mt={2}>
+            <Grid container spacing={2}>
               {purchasedPosts.length === 0 ? (
-                  <p>No items bought yet.</p>
-                ) : (
-                  purchasedPosts.map((product) => (
-                    <Item key={product._id} product={product} />
-                  ))
+                <Typography>No items listed yet.</Typography>
+              ) : (
+                purchasedPosts.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                     <Item key={product._id} product={product} />
+                  </Grid>
+                ))
               )}
-            </div>
-          </div>
-          <div className="products-gallery">
-          <h2>Rentals</h2>
-            <div className="products-grid">
+            </Grid>
+          </Box>
+        )}
+        {tabIndex === 2 && (
+          <Box mt={2}>
+            <Grid container spacing={2}>
               {rentedPosts.length === 0 ? (
-                  <p>No items rented yet.</p>
-                ) : (
-                  rentedPosts.map((product) => (
-                    <Item key={product._id} product={product} />
-                  ))
+                <Typography>No items listed yet.</Typography>
+              ) : (
+                rentedPosts.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                     <Item key={product._id} product={product} />
+                  </Grid>
+                ))
               )}
-            </div>
-          </div>
-          </div>
-      </div>
-    </div>
+            </Grid>
+          </Box>
+        )}
+      </Box>
+    </Container>
   );
 }
