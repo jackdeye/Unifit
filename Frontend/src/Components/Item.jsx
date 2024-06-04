@@ -35,12 +35,17 @@ const Item = ({ product }) => {
   
           localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
           console.log("liked post"); 
+
+          console.log(localStorage.getItem('likedPosts'));
         } else {
           //unliked
-          delete likedPosts[product._id];
+
+          const index = likedPosts.indexOf(product._id);
+          likedPosts.splice(index, 1);
 
           localStorage.setItem('likedPosts', JSON.stringify(likedPosts))
           console.log("unliked post");
+          console.log(localStorage.getItem('likedPosts'));
         }
 
       } else {
