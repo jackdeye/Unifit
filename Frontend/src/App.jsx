@@ -27,17 +27,22 @@ export default function App() {
     () => ({
       toggleColorMode: () => {
         localStorage.setItem("mode", mode === 'light' ? 'dark' : 'light' )
+        console.log("local storage: ", localStorage.getItem("mode"), " mode: ", mode);
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
       },
     }),
-    [],
+    [mode],
   );
 
   useEffect(()=>{
     if( localStorage.getItem("mode")){
       setMode(localStorage.getItem("mode"))
     }
-  },[])
+    console.log("Mode: ", mode, " Local Storage: ", localStorage.getItem("mode"));
+  },[]);
+
+  //useEffect(() => localStorage.setItem("mode", mode), [mode]);
+
   const theme = useMemo(
     () => createTheme({
     palette: {
