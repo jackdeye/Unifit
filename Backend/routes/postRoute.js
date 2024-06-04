@@ -214,16 +214,21 @@ router.post("/upload", auth, upload.any(), async (req, res) => {
 // Update a post by id
 router.patch("/:id", auth, async (req, res) => {
   try {
-    const { name, desc, isForSale, isForRent, buyPrice, rentPrice } = req.body;
+    const { name, desc, isForSale, isForRent, buyPrice, rentPrice, availability, quality, size, username, school } = req.body;
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
       $set: {
-        name,
-        desc,
+        name: name,
+        desc: desc,
         isForSale: isForSale === 'true',
         isForRent: isForRent === 'true',
         buyPrice: isForSale === 'true' ? buyPrice : null,
         rentPrice: isForRent === 'true' ? rentPrice : null,
+        availability: availability,
+        quality: quality,
+        size: size,
+        username: username,
+        school: school,
       },
     };
 
