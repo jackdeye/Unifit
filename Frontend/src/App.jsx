@@ -15,6 +15,7 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import EditPosts from './Pages/EditPosts.jsx'
+import { ParallaxProvider } from 'react-scroll-parallax';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -108,11 +109,12 @@ export default function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline/>
+        <ParallaxProvider>
         <BrowserRouter>
           <div style={{padding:5}}>
           <NavBar profile={profile} profilePicture={profilePicture} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
           <Routes>
-            <Route path="/homepage" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Homepage /></ProtectedRoute>} />
+            <Route path="/homepage" element={<Homepage />} />
             <Route path="/profile" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Profile /></ProtectedRoute>} />
             <Route path="/gallery" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Gallery /></ProtectedRoute>} />
             <Route path="/favorites" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Favorites /></ProtectedRoute>} />
@@ -126,6 +128,7 @@ export default function App() {
           </Routes>
           </div>
         </BrowserRouter>
+        </ParallaxProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
