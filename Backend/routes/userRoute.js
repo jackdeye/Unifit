@@ -36,7 +36,7 @@ router.post("/signup", upload.none(), async (req, res) => {
       purchasedPosts: [],
       likedPosts: [],
       rentedPosts: [],
-      school: school,
+      school,
     });
 
     if (result.insertedId) {
@@ -48,7 +48,7 @@ router.post("/signup", upload.none(), async (req, res) => {
           id: result.insertedId, 
           name: `${firstName} ${lastName}`, 
           profilePicture: null }, 
-          school: school,
+          school,
           token 
         });
     } else {
@@ -77,9 +77,9 @@ router.post("/signin", upload.none(), async (req, res) => {
     return res.status(200).json({ 
       user: { 
         username: existingUser.username,
-        school: existingUser.school,
         name: existingUser.name, 
-        profilePicture: existingUser.profilePicture 
+        profilePicture: existingUser.profilePicture,
+        school: existingUser.school
       }, 
       token 
     });
