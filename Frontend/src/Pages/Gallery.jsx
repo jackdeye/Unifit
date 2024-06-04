@@ -2,31 +2,54 @@ import React, { useEffect, useState } from 'react';
 import '../styles/Gallery.css'; 
 import Item from '../Components/Item.jsx';
 import Fuse from 'fuse.js';
+import { Search } from '@mui/icons-material';
+import {
+  OutlinedInput,
+  InputAdornment,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  Paper,
+  Grid,
+  Typography,
+  Checkbox,
+  FormGroup,
+  Select,
+  MenuItem,
+} from '@mui/material';
 
 const Gallery = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showForSale, setShowForSale] = useState(true);
-  const [showForRent, setShowForRent] = useState(true);
+  const [showForSale, setShowForSale] = useState(false);
+  const [showForRent, setShowForRent] = useState(false);
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  // const [schoolPosts, setSchoolPosts] = useState([]);
   const [showSchoolPosts, setShowSchoolPosts] = useState(false);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
+      const school = localStorage.getItem('school');
+      const username = localStorage.getItem('username');
+      let url = 'http://localhost:5050/post';
+      if (showSchoolPosts && school) {
+        url = `http://localhost:5050/post/school/${school}`;
+      }
       try {
-        const response = await fetch('http://localhost:5050/post');
+        const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
-          const filteredProducts = data.filter(product => product.image && !product.sold && !product.pending && product.username !== localStorage.getItem('username'));
+          const filteredProducts = data.filter(
+            product => product.image 
+            && !product.sold 
+            && !product.pending 
+            && product.username !== localStorage.getItem('username'));
           if (showSchoolPosts) {
-            const schoolPosts = filteredProducts.filter(product => product.school === localStorage.getItem('school'));
-            setProducts(schoolPosts);
-          } else {
-            setProducts(filteredProducts);
+            data = filteredProducts.filter(product => product.school === school);
           }
+          setProducts(filteredProducts);
         } else {
           console.error('Failed to fetch products');
         }
@@ -64,37 +87,22 @@ const Gallery = () => {
     setMaxPrice(event.target.value);
   };
 
-  // const handleShowSchoolPosts = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token'); // Retrieve the token from local storage
-  //     if (!token) {
-  //       throw new Error('No token found. Please log in again.');
-  //     }
-  //     const response = await fetch('http://localhost:5050/post/school/posts', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setSchoolPosts(data);
-  //       setShowSchoolPosts(true);
-  //     } else {
-  //       const errorText = await response.text();
-  //       console.error('Failed to fetch school posts:', errorText);
-  //       throw new Error('Failed to fetch school posts.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching school posts:', error);
-  //     alert('Failed to fetch school posts.');
-  //   }
-  // };
-
   const filterProducts = (p) => p.filter(product => {
-    const matchesSaleFilter = showForSale ? product.isForSale : true;
-    const matchesRentFilter = showForRent ? product.isForRent : true;
+    let matchesSaleFilter = true;
+    let matchesRentFilter = true;
+
+    if (showForSale) {
+        matchesSaleFilter = product.isForSale;
+    }
+
+    if (showForRent) {
+        matchesRentFilter = product.isForRent;
+    }
+
+    if ((showForRent == showForSale)){
+      matchesSaleFilter = true;
+      matchesRentFilter = true;
+    }
     const buyPrice = product.isForSale ? product.buyPrice : Infinity;
     const rentPrice = product.isForRent ? product.rentPrice : Infinity;
     const min = minPrice ? parseFloat(minPrice) : 0;
@@ -130,53 +138,90 @@ const Gallery = () => {
   }
 
   return (
-    <div className="product-list-container">
-      <div className="filters-section">
-        <h2>Filters</h2>
-        <ul>
-          <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
-          <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
-          <li><input type="checkbox" checked={showSchoolPosts} onChange={handleToggleSchool} /> Posts from my School</li>
-        </ul>
-        <div className="price-filter">
-          <div className="price-input">
-          <label>
-            Min Price: 
-            <input type="number" value={minPrice} onChange={handleMinPriceChange} placeholder="Min Price" />
-          </label>
-          </div>
-          <div className="price-input">
-            <label>
-              Max Price: 
-              <input type="number" value={maxPrice} onChange={handleMaxPriceChange} placeholder="Max Price" />
-            </label>
-
-          </div>
-        </div>
-        <div>
-          <label>
-            Sort By Price:
-            <select value={priceOrder} onChange={handlePriceOrderChange}>
-              <option value="desc">High to Low</option>
-              <option value="asc">Low to High</option>
-            </select>
-          </label>
-        </div>
-      </div>
-      <div className="products-gallery">
-        <h2>Products</h2>
-        <input
-          type="text"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="search-bar"
-        />
+    //<div className="product-list-container">
+    <Grid container>
+      <Grid item xs={4} sx={{padding: "10px"}}>
+        <Paper sx={{padding: "10px", borderRadius: "10px"}}>
+          <Typography variant="h5">Filters</Typography>
+          <FormGroup>
+            <FormControlLabel 
+              onChange={handleToggleForSale}
+              control={<Checkbox defaultChecked />}
+              label="For Sale"
+              value={showForSale}
+              name="isForSale"
+            />
+            <FormControlLabel 
+              onChange={handleToggleForRent}
+              control={<Checkbox defaultChecked />}
+              label="For Rent"
+              value={showForRent}
+              name="isForRent"
+            />
+            <FormControlLabel 
+              onChange={handleToggleSchool}
+              control={<Checkbox/>}
+              label="Posts from my School"
+              value={showSchoolPosts}
+              name="isForRent"
+            />
+          </FormGroup>
+          <FormControl sx={{marginTop:"15px"}}>
+            <InputLabel htmlFor="outlined-adornment-min">Min Price</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-min"
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              name="minPrice"
+              value={minPrice}
+              label="Min Price"
+              onChange={handleMinPriceChange}
+            />
+          </FormControl>
+          <FormControl sx={{marginTop:"15px"}}>
+            <InputLabel htmlFor="outlined-adornment-max">Max Price</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-max"
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              name="maxPrice"
+              value={maxPrice}
+              label="Max Price"
+              onChange={handleMaxPriceChange}
+            />
+          </FormControl>
+          <FormControl sx={{marginTop:"15px"}}>
+            <InputLabel id="order-select-label">Sort By</InputLabel>
+            <Select
+              labelId="order-select-label"
+              id="order-simple-select"
+              value={priceOrder}
+              label="sort by price"
+              name="order"
+              onChange={handlePriceOrderChange}
+            >
+              <MenuItem value="desc">High to Low</MenuItem>
+              <MenuItem value="asc">Low to High</MenuItem>
+            </Select>
+          </FormControl>
+        </Paper>
+      </Grid>
+      <Grid item xs={8} sx={{padding: "10px"}}>
+        <Typography variant="h3" padding="10px">Products</Typography>
+        <FormControl size="medium" fullWidth>
+          <InputLabel htmlFor="outlined-adornment">Search</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment"
+            startAdornment={<InputAdornment position="start"><Search/></InputAdornment>}
+            name="search"
+            value={searchQuery}
+            label="search-bar"
+            onChange={handleSearchChange}
+          />
+        </FormControl>
         <div className="products-grid">
           {getFilteredAsItems()}
         </div>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

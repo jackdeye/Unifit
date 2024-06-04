@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gallery.css'; 
-import Item from '../Components/Item.jsx';
 import Fuse from 'fuse.js';
+import Item from '../Components/Item.jsx';
 
 const Favorites = () => {
   const [products, setProducts] = useState([]);
@@ -15,16 +15,26 @@ const Favorites = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5050/post'); //TODO: change to reflect favorited items
-        if (response.ok) {
-          const data = await response.json();
-          const productsWithImages = data.filter(product => product.image);
-          setProducts(productsWithImages);
-        } else {
-          console.error('Failed to fetch products');
-        }
+        const posts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+
+        // Function to fetch post details by ID
+        const fetchPostById = async (id) => {
+          const response = await fetch(`http://localhost:5050/post/${id}`);
+          if (response.ok) {
+            return response.json();
+          } else {
+            console.error('Failed to fetch post:', id);
+            return null;
+          }
+        };
+
+        // Fetch all posts in parallel
+        const postsData = await Promise.all(posts.map(fetchPostById));
+        // Filter out any null responses (in case of fetch failures)
+        setProducts(postsData.filter(post => post !== null));
+
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching liked posts:', error);
       }
     };
 

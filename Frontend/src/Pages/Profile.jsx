@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Profile.css";
 import Item from '../Components/Item.jsx';
-import {Avatar, Button, Badge} from '@mui/material';
+import "../styles/Gallery.css";
+import {Avatar, Container, Box, Typography, Button, Badge, Tabs, Tab, Grid} from '@mui/material';
 
 export default function Profile() {
   const [products, setProducts] = useState([]);
@@ -10,9 +11,12 @@ export default function Profile() {
   const [pendingPosts, setPendingPosts] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [school] = useState(localStorage.getItem('school'));
+  const [rentedPosts, setRentedPosts] = useState([]);
+  const [tabIndex, setTabIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // alert(localStorage.getItem("school"));
     const fetchProducts = async () => {
       const username = localStorage.getItem('username');
       if (username) {
@@ -49,6 +53,21 @@ export default function Profile() {
           setPurchasedPosts(data);
         } catch (error) {
           console.error("Error fetching purchased products:", error);
+        }
+      }
+    };
+    const fetchRentedProducts = async () => {
+      const rentedProductIds = JSON.parse(localStorage.getItem('rentedPosts')) || [];
+      console.log("rentedProductIds", rentedProductIds);
+      if (rentedProductIds.length > 0) {
+        try {
+          const responses = await Promise.all(
+            rentedProductIds.map(id => fetch(`http://localhost:5050/post/${id}`))
+          );
+          const data = await Promise.all(responses.map(res => res.json()));
+          setRentedPosts(data);
+        } catch (error) {
+          console.error("Error fetching rented products:", error);
         }
       }
     };
@@ -92,16 +111,18 @@ export default function Profile() {
   const getProfileInitial = (name) => {
     return name.charAt(0).toUpperCase();
   };
-
   const handlePendingPurchasesClick = () => {
     navigate('/pending-purchases');
   };
 
+  const handleTabChange = (event, newTab) => {
+    setTabIndex(newTab);
+  };
   return (
-    <div>
-      <div className='header'>
-      <div className="avatar-container">
-         <Badge
+    <Container>
+      <Box display='flex' alignItems='center' flexDirection='column' mt={4}>
+        <div className="avatar-container">
+          <Badge
             color="error"
             variant="dot"
             invisible={notifications.length === 0}
@@ -114,58 +135,96 @@ export default function Profile() {
               {getProfileInitial(localStorage.getItem("profile"))}
             </Avatar>
           </Badge>
-      </div>
-        <h5>
-          <span className="username">@{localStorage.getItem("username")}</span>
-        </h5>
+        </div>
+        <Typography variant='h3' mt={2}>
+          {localStorage.getItem("profile")}
+        </Typography>
+        <Typography variant='h5'>
+          @{localStorage.getItem("username")}
+        </Typography>
+        {localStorage.getItem("bio") !== "null" && (
+          <Typography>
+            {localStorage.getItem("bio")}
+          </Typography>
+        )}
+        {school !== "undefined" && (
+          <Typography variant='h6'>
+            {school}
+          </Typography>
+        )}
         {notifications.length > 0 && (
           <div className="notifications">
-            {notifications.map((notification, index) =>
-            (
+            {notifications.map((notification, index) => (
               <p key={index}>{notification}</p>
             ))}
           </div>
         )}
-      </div>
-
-      <div className='all'>
-        <div className='info'>
-          <div>{school}</div>
-          <div><Link to="/EditProfile">EditProfile</Link></div>
-          <div><Link to="/postpage">Create Post</Link></div>
-          {pendingPosts.length > 0 && (
-          <Button variant="contained" onClick={handlePendingPurchasesClick}>
+      </Box>
+      <Box mt={2} textAlign='center'>
+        <Button variant='contained' component={Link} to="/EditProfile">
+          Edit Profile
+        </Button>
+        <Button variant='contained' component={Link} to="/postpage" sx={{ ml: 2 }}>
+          Create Post
+        </Button>
+        {pendingPosts.length > 0 && (
+          <Button variant="contained" sx={{ ml: 2 }} onClick={handlePendingPurchasesClick}>
             Pending Purchases: {pendingPosts.length}
           </Button>
-      )}
-        </div>
-        <div className='products'>
-          <div className="products-gallery">
-            <h2>Your Shop</h2>
-            <div className="products-grid">
+        )}
+      </Box>
+      <Box mt={2}>
+        <Tabs value={tabIndex} onChange={handleTabChange} centered>
+          <Tab label='Your Shop' />
+          <Tab label='Purchases' />
+          <Tab label='Rentals' />
+        </Tabs>
+        {tabIndex === 0 && (
+          <Box mt={2}>
+            <Grid container spacing={2}>
               {products.length === 0 ? (
-                  <p>No items listed yet.</p>
-                ) : (
-                  products.map((product) => (
-                    <Item key={product._id} product={product} sold={product.sold} />
-                  ))
+                <Typography>No items listed yet.</Typography>
+              ) : (
+                products.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+                    <Item product={product} sold={product.sold} />
+                  </Grid>
+                )) 
               )}
-            </div>
-          </div>
-          <div className="products-gallery">
-            <h2>Purchases</h2>
-            <div className="products-grid">
+            </Grid>
+          </Box>
+        )}
+        {tabIndex === 1 && (
+          <Box mt={2}>
+            <Grid container spacing={2}>
               {purchasedPosts.length === 0 ? (
-                  <p>No items bought yet.</p>
-                ) : (
-                  purchasedPosts.map((product) => (
-                    <Item key={product._id} product={product} />
-                  ))
+                <Typography>No items listed yet.</Typography>
+              ) : (
+                purchasedPosts.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+                    <Item product={product} sold={product.sold}/>
+                  </Grid>
+                ))
               )}
-            </div>
-          </div>
-          </div>
-      </div>
-    </div>
+            </Grid>
+          </Box>
+        )}
+        {tabIndex === 2 && (
+          <Box mt={2}>
+            <Grid container spacing={2}>
+              {rentedPosts.length === 0 ? (
+                <Typography>No items listed yet.</Typography>
+              ) : (
+                rentedPosts.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+                    <Item product={product} sold={product.sold}/>
+                  </Grid>
+                ))
+              )}
+            </Grid>
+          </Box>
+        )}
+      </Box>
+    </Container>
   );
 }

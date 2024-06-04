@@ -2,8 +2,39 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../styles/PostPage.css"
 import "../styles/Login.css"
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+//import DatePicker from 'react-datepicker';
+//import 'react-datepicker/dist/react-datepicker.css';
+import {
+  TextField,
+  Grid,
+  Button,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput,
+  InputAdornment,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { CloudUpload, Send } from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const PostPage = () => {
   const navigate = useNavigate();
@@ -12,8 +43,8 @@ const PostPage = () => {
     name: '',
     desc: '',
     image: null,
-    isForSale: false,
-    isForRent: false,
+    isForSale: true,
+    isForRent: true,
     buyPrice: '',
     rentPrice: '',
     availability: [null, null],
@@ -44,14 +75,14 @@ const PostPage = () => {
   const handleStartDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [date, prev.availability[1]]
+      availability: [date.toDate(), prev.availability[1]]
     }));
   };
 
   const handleEndDateChange = (date) => {
     setFormData(prev => ({
       ...prev,
-      availability: [prev.availability[0], date]
+      availability: [prev.availability[0], date.toDate()]
     }));
   };
 
@@ -95,8 +126,8 @@ const PostPage = () => {
           name: '',
           desc: '',
           image: null,
-          isForSale: false,
-          isForRent: false,
+          isForSale: true,
+          isForRent: true,
           buyPrice: '',
           rentPrice: '',
           availability: [null, null],
@@ -116,110 +147,143 @@ const PostPage = () => {
   };
 
   return (
-    <div className='container'>
-      <h1 className='header'>Create a New Post</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Title:
-            <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-          </label>
-        </div>
-        <div>
-          <label>
-            Description:
-            <textarea name="desc" value={formData.desc} onChange={handleChange} required />
-          </label>
-        </div>
-        <div>
-          <label>
-            Image:
-            <input type="file" name="image" accept="image/*" onChange={handleChange} required />
-          </label>
-        </div>
-        <div>
-          <label>
-            For Sale:
-            <input type="checkbox" name="isForSale" checked={formData.isForSale} onChange={handleChange} />
-          </label>
-        </div>
-        <div>
-          <label>
-            For Rent:
-            <input type="checkbox" name="isForRent" checked={formData.isForRent} onChange={handleChange} />
-          </label>
-        </div>
-        {formData.isForSale && (
-          <div>
-            <label>
-              Buy Price:
-              <input type="number" name="buyPrice" value={formData.buyPrice} onChange={handleChange} required={formData.isForSale} />
-            </label>
-          </div>
-        )}
-        {formData.isForRent && (
-          <div>
-            <label>
-              Rent Price:
-              <input type="number" name="rentPrice" value={formData.rentPrice} onChange={handleChange} required={formData.isForRent} />
-            </label>
-          </div>
-        )}
-        {formData.isForRent && (
-          <>
-            <div>
-              <label>
-                Start Date:
-                <DatePicker
-                  selected={formData.availability[0]}
-                  onChange={handleStartDateChange}
-                  dateFormat="yyyy-MM-dd"
-                  placeholderText="Select Start Date"
-                  className="date-input"
-                  required={formData.isForRent}
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                End Date:
-                <DatePicker
-                  selected={formData.availability[1]}
-                  onChange={handleEndDateChange}
-                  dateFormat="yyyy-MM-dd"
-                  placeholderText="Select End Date"
-                  className="date-input"
-                  required={formData.isForRent}
-                />
-              </label>
-            </div>
-          </>
-        )}
-        <div>
-          <label>
-            Quality:
-            <select name="quality" value={formData.quality} onChange={handleChange} required>
-              <option value="New">New</option>
-              <option value="Like New">Like New</option>
-              <option value="Used">Used</option>
-              <option value="Lightly Used">Lightly Used</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label>
-            Size:
-            <select name="size" value={formData.size} onChange={handleChange} required>
-              <option value="XS">XS</option>
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-            </select>
-          </label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      width = "80vh"
+      height="80vh"
+      margin="auto"
+    >
+      <Grid item xs={6} display="flex" flexDirection="column">
+        <TextField
+          sx={{ m: 1, width: '25ch' }}
+          id="outlined-required"
+          label="Title"
+          value={formData.name}
+          name="name"
+          onChange={handleChange}
+        />
+        <TextField
+          sx={{ m: 1, width: '25ch' }}
+          id="outlined-required"
+          label="Description"
+          value={formData.desc}
+          name="desc"
+          onChange={handleChange}
+        />
+      { formData.isForSale ? 
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Buy Price</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            name="buyPrice"
+            value={formData.buyPrice}
+            label="Buy Price"
+            onChange={handleChange}
+          />
+        </FormControl>
+        :
+        <div/>
+      }
+      { formData.isForRent ? 
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Rent Price</InputLabel>
+          
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            name="rentPrice"
+            value={formData.rentPrice}
+            label="Rent Price"
+            onChange={handleChange}
+          />
+        </FormControl>
+        :
+        <div/>
+      }
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel id="quality-select-label">Quality</InputLabel>
+          <Select
+            labelId="quality-select-label"
+            id="quality-simple-select"
+            value={formData.quality}
+            label="Quality"
+            name="quality"
+            onChange={handleChange}
+          >
+            <MenuItem value="New">New</MenuItem>
+            <MenuItem value="Like New">Like New</MenuItem>
+            <MenuItem value="Used">Used</MenuItem>
+            <MenuItem value="Lightly Used">Lightly Used</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={4} display="flex" flexDirection="column" alignItems="center">
+        <FormControl sx={{ m: 1, width: '25ch' }}>
+          <InputLabel id="size-select-label">Size</InputLabel>
+          <Select
+            labelId="size-select-label"
+            id="size-simple-select"
+            value={formData.size}
+            label="Size"
+            name="size"
+            onChange={handleChange}
+          >
+            <MenuItem value="XS">XS</MenuItem>
+            <MenuItem value="S">S</MenuItem>
+            <MenuItem value="M">M</MenuItem>
+            <MenuItem value="L">L</MenuItem>
+          </Select>
+        </FormControl>
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUpload/>}
+          sx={{ m: 1, width: '25ch' }}
+        >
+          Upload file
+          <VisuallyHiddenInput type="file" name="image" onChange={handleChange} />
+        </Button>
+        <FormGroup>
+          <FormControlLabel 
+            onChange={handleChange}
+            control={<Checkbox defaultChecked />}
+            label="For Sale"
+            value={formData.isForSale}
+            name="isForSale"
+          />
+          <FormControlLabel 
+            onChange={handleChange}
+            control={<Checkbox defaultChecked />}
+            label="For Rent"
+            value={formData.isForRent}
+            name="isForRent"
+          />
+        </FormGroup>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date" 
+            onChange={handleStartDateChange}
+            sx={{ m: 1, width: '25ch' }}
+          />
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="End Date" 
+            onChange={handleEndDateChange}
+            sx={{ m: 1, width: '25ch' }}
+          />
+        </LocalizationProvider>
+        <Button variant="contained" onClick={handleSubmit} endIcon={<Send/>}>
+          Post
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 export default PostPage;

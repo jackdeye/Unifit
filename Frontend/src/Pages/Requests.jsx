@@ -137,6 +137,7 @@
 
 import { useState, useEffect } from 'react';
 import Item from '../Components/Item'; // Adjust the import path as needed
+import '../styles/Requests.css'; // Import the CSS file
 
 const Requests = () => {
   const [requests, setRequests] = useState([]);
@@ -179,23 +180,13 @@ const Requests = () => {
       });
 
       if (response.ok) {
-        const {notification, buyerUsername} = await response.json();
-        // const data = await response.json();
-        // console.log(data.message);
-
-        // // Update the buyer's local storage with the notification
+        const { notification, buyerUsername } = await response.json();
         let buyerNotifications = JSON.parse(localStorage.getItem(`${buyerUsername}_notifications`)) || [];
         buyerNotifications.push(notification);
-
-        // const buyerUsername = requests.find(request => request._id === postId).buyerUsername;
-        // let buyerNotifications = JSON.parse(localStorage.getItem(`${buyerUsername}_notifications`)) || [];
-        // buyerNotifications.push(data.message);
         localStorage.setItem(`${buyerUsername}_notifications`, JSON.stringify(buyerNotifications));
 
-        // Update the UI to remove the accepted request
         setRequests(requests.filter(request => request._id !== postId));
 
-        // Remove from localStorage pendingRequests
         const pendingRequests = JSON.parse(localStorage.getItem('pendingRequests')) || [];
         const updatedPendingRequests = pendingRequests.filter(id => id !== postId);
         localStorage.setItem('pendingRequests', JSON.stringify(updatedPendingRequests));
@@ -208,18 +199,22 @@ const Requests = () => {
   };
 
   return (
-    <div>
+    <div className="requests-container">
       <h2>Requests</h2>
       {requests.length === 0 ? (
         <p>No pending requests.</p>
       ) : (
         <div>
           {requests.map((request) => (
-            <div key={request._id}>
-              <Item product={request} sold={request.sold} />
-              <p>Requested by: {request.buyerUsername}</p>
-              <button onClick={() => handleAccept(request._id)}>Accept</button>
-              <button>Decline</button>
+            <div className="request-item" key={request._id}>
+              <div className="request-details">
+                <Item product={request} sold={request.sold} />
+                <p>Requested by: {request.buyerUsername}</p>
+              </div>
+              <div className="request-buttons">
+                <button onClick={() => handleAccept(request._id)}>Accept</button>
+                <button>Decline</button>
+              </div>
             </div>
           ))}
         </div>
