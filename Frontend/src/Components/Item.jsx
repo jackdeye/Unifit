@@ -5,11 +5,36 @@ import '../styles/Item.css'; // Assuming you have a CSS file for styling
 const Item = ({ product }) => {
   const [like, setLike] = useState(false);
 
-  useEffect(() => {
-    if (like === null) {
-      setLike(false);
+  const useEffect = async () => {
+    try {
+      const response = await fetch(`http://localhost:5050/post/${product._id}/currLiked`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store token in localStorage
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const isLiked = result.isLiked;
+
+        if (isLiked){
+          setLike(true);
+          // alert("initialized to true");
+        } else {
+          setLike(false);
+          // alert("initialized to false");
+        }
+      } else {
+        console.log("failed to check if liked");
+      }
+    } catch (error) {
+      console.error("Failed in initialize like");
+      alert("did not initialize");
     }
-  }, []);
+  }
+  useEffect();
 
   const handleLike = async () => {
     setLike(!like); 
