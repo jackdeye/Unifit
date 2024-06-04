@@ -33,7 +33,7 @@ const Homepage = () => {
       </div>
       <div className="mission-statement">
         <p>A platform that allows university students to effortlessly buy, sell, and rent clothes </p>
-        <p><span style={{ textDecoration: "underline" }}>without</span> the hassle of shipping over an item from a stranger.</p>
+        <p><span style={{ textDecoration: "underline" }}>without</span> the hassle of shipping</p>
         <p>Our goal is to:</p>
         <ul>
           <li>Fight against fast fashion</li>
