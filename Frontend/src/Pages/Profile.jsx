@@ -13,10 +13,12 @@ export default function Profile() {
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
+    // alert(localStorage.getItem("school"));
     const fetchProducts = async () => {
       const username = localStorage.getItem('username');
       if (username) {
         try {
+          alert(localStorage.getItem('school'));
           const response = await fetch(`http://localhost:5050/post/user/${username}`);
           if (response.ok) {
             const data = await response.json();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/NavBar.css"
 import {
@@ -14,11 +14,19 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useTheme } from '@mui/material/styles';
+import {ColorModeContext} from '../App.jsx'
 
 export default function Navbar({ profile, profilePicture, isAuthenticated, onLogout }) {
   const navigate = useNavigate();
   const [localProfilePicture, setLocalProfilePicture] = useState(profilePicture);
   const [name, setName] = useState(profile);
+
+  const theme = useTheme();
+
+  const colorMode = useContext(ColorModeContext);
 
   const handleLogout = () => {
     onLogout();
@@ -107,7 +115,10 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
             </Button>
           ))}
         </Box>
-        <Divider/>
+          <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
+      <Divider/>
       {isAuthenticated ? (
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
