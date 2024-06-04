@@ -146,14 +146,14 @@ const Gallery = () => {
           <FormGroup>
             <FormControlLabel 
               onChange={handleToggleForSale}
-              control={<Checkbox defaultChecked />}
+              control={<Checkbox defaultChecked={false} />}
               label="For Sale"
               value={showForSale}
               name="isForSale"
             />
             <FormControlLabel 
               onChange={handleToggleForRent}
-              control={<Checkbox defaultChecked />}
+              control={<Checkbox defaultChecked={false} />}
               label="For Rent"
               value={showForRent}
               name="isForRent"
