@@ -34,15 +34,13 @@ const Item = ({ product }) => {
           likedPosts.push(product._id); //PULL PRODUCT ID FROM LOCAL STORAGE WHEN UNLIKED >:(((((((((((((())))))))))))))
   
           localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-          alert("liked post"); 
+          console.log("liked post"); 
         } else {
           //unliked
-          alert("attempting to unlike post");
-          // likedPosts.pull(product._id);
           delete likedPosts[product._id];
 
           localStorage.setItem('likedPosts', JSON.stringify(likedPosts))
-          alert("unliked post");
+          console.log("unliked post");
         }
 
       } else {
