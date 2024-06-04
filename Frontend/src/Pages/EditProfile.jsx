@@ -1,6 +1,37 @@
 import React, { useState } from 'react';
 import "../styles/EditProfile.css";
-
+import {
+  Button,
+  IconButton,
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  FormControl,
+  TextField,
+  ButtonGroup,
+  Paper,
+  Grid,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import {
+  Visibility,
+  VisibilityOff,
+  AddPhotoAlternate,
+  Save,
+} from '@mui/icons-material';
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 function EditProfile() {
   const [formData, setFormData] = useState({
     name: '',
@@ -9,6 +40,7 @@ function EditProfile() {
     profilePicture: null,
     school: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (event) => {
     const { name, value, files } = event.target;
@@ -79,71 +111,114 @@ function EditProfile() {
       alert('Failed to update profile.');
     }
   };
-  
+
+      
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
+
   return (
-    <div className='container'>
-      <h1>Edit Profile</h1>
-      <form onSubmit={handleSubmit}>
-        <h4>Name:
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder='Enter your name'
-          />
-        </h4>
 
-        <h4>Bio:
-          <input
-            type="text"
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            placeholder="Enter your bio"
-          />
-        </h4>
-
-        <h4>Password:
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your new password"
-          />
-        </h4>
-
-        <h4>School:
-          <select
-            type='school'
-            name='school'
-            value={formData.school}
-            onChange={handleChange}
+    <div style={{height:"80vh", alignItems: "center", display: "flex"}}>
+    <Paper sx={{ borderRadius:10, width:400, height:550, margin:"auto", mt:2 }}>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        height="500px"
+      >
+        <Grid item>
+          <h1>Edit Profile</h1>
+        </Grid>
+        <Grid item>
+        <TextField
+          sx={{ m: 1, width: '29ch' }}
+          label="Name"
+          type='text'
+          name='name'
+          value={formData.name} 
+          onChange={handleChange}
+        />
+        </Grid>
+        <Grid item>
+        <TextField
+          sx={{ m: 1, width: '29ch' }}
+          id="outlined-multiline-flexible"
+          label="Bio"
+          type='text'
+          name='bio'
+          multiline
+          value={formData.bio} 
+          onChange={handleChange}
+          maxRows={4}
+        />
+        </Grid>
+        <Grid item>
+        <FormControl sx={{ m: 1, width: '29ch' }} variant="outlined">
+        <InputLabel htmlFor="password">Password</InputLabel>
+        <OutlinedInput
+         name='password'
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+          value={formData.password} 
+          onChange={handleChange}
+        />
+      </FormControl >
+      </Grid>
+      <Grid item>
+      <FormControl  sx={{ m: 1, width: '29ch' }} variant="outlined">
+        <InputLabel id="school">School</InputLabel>
+        <Select
+          type='school'
+          name='school'
+          value={formData.school}
+          label="School"
+          onChange={handleChange}
+        > 
+          <MenuItem value={"UCLA"}>UCLA</MenuItem>
+          <MenuItem value={'University of Maryland'}>University of Maryland, College Park</MenuItem>
+          <MenuItem value={'oocla'}>oocla</MenuItem>
+          <MenuItem value={'UC Berkeley'}>UC Berkeley</MenuItem>
+          <MenuItem value={'Florida State University, School of Circustry'}>Florida State University, School of Circustry</MenuItem>
+          <MenuItem value={'University of Spoiled Children'}>University of Spoiled Children</MenuItem>
+          <MenuItem value={'Stanford University'}>Stanford University</MenuItem>
+          <MenuItem value={'Some school in the midwest (love u eggert)'}>Some school in the midwest (love u eggert)</MenuItem>
+        </Select>
+      </FormControl>
+      </Grid>
+      <Grid item>
+      <Button
+              component="label"
+              variant={formData.profilePicture ? "outlined" : "contained"}
+              startIcon={<AddPhotoAlternate />}
+              sx={{ m: 1, width: '33ch' }}
             >
-            <option value=''>Select a school</option>
-            <option value='UCLA'>UCLA</option>
-            <option value='University of Maryland'>University of Maryland, College Park</option>
-            <option value='oocla'>oocla</option>
-            <option value='UC Berkeley'>UC Berkeley</option>
-            <option value='Florida State University, School of Circustry'>Florida State University, School of Circustry</option>
-            <option value='University of Spoiled Children'>University of Spoiled Children</option>
-            <option value='Stanford University'>Stanford University</option>
-            <option value='Some school in the midwest (love u eggert)'>Some school in the midwest (love u eggert)</option>
-          </select>
-        </h4>
-
-        <h4>Profile Picture:
-          <input
-            type="file"
-            name="profilePicture"
-            accept="image/*"
-            onChange={handleChange}
-          />
-        </h4>
-
-        <button type="submit">Save</button>
-      </form>
+              {formData.profilePicture ? 'File Uploaded' : 'Upload Profile Picture'}
+              <VisuallyHiddenInput type="file" name="profilePicture" accept="image/*" onChange={handleChange} />
+            </Button>
+      </Grid>
+      <Grid item mt={4}>
+      <Button variant="contained" onClick={handleSubmit} endIcon={<Save/>}>
+          Save Changes
+        </Button>
+      </Grid>
+        </Grid>
+    </Paper>
     </div>
   );
 }
