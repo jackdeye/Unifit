@@ -6,8 +6,8 @@ import Fuse from 'fuse.js';
 const Gallery = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showForSale, setShowForSale] = useState(true);
-  const [showForRent, setShowForRent] = useState(true);
+  const [showForSale, setShowForSale] = useState(false);
+  const [showForRent, setShowForRent] = useState(false);
   const [priceOrder, setPriceOrder] = useState('desc'); // Order of price sorting
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
