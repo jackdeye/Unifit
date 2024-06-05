@@ -36,9 +36,6 @@ export default function Login({ onLogin }) {
   };
 
   const handleSubmission = async (event) => {
-    console.log("we are getting run");
-    console.log(username);
-    console.log(password);
     event.preventDefault(); 
     const formDataToSend = new FormData();
     formDataToSend.append('username', username);
@@ -63,6 +60,7 @@ export default function Login({ onLogin }) {
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('profilePicture', data.user.profilePicture);
         localStorage.setItem('school', data.user.school);
+        localStorage.setItem('likedPosts', data.user.likedPosts);
         console.log('login pfp: ', data.user.profilePicture);
         localStorage.setItem('purchasedPosts', JSON.stringify(data.user.purchasedPosts || []));
         localStorage.setItem('pendingPosts', JSON.stringify(data.user.pendingPosts || []));

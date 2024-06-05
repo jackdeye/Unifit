@@ -62,29 +62,29 @@ const Item = ({ product, sold, showBuyRentButtons }) => {
         }
       });
       if (response.ok) {
-        const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
+        // const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || [];
 
-        const result = await response.json();
-        const isLiked = result.isLiked;
+        // const result = await response.json();
+        // const isLiked = result.isLiked;
 
-        if (isLiked) {
-          //liked
-          likedPosts.push(product._id); //PULL PRODUCT ID FROM LOCAL STORAGE WHEN UNLIKED >:(((((((((((((())))))))))))))
+        // if (isLiked) {
+        //   //liked
+        //   likedPosts.push(product._id); //PULL PRODUCT ID FROM LOCAL STORAGE WHEN UNLIKED >:(((((((((((((())))))))))))))
   
-          localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-          console.log("liked post"); 
+        //   localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        //   console.log("liked post"); 
 
-          console.log(localStorage.getItem('likedPosts'));
-        } else {
-          //unliked
+        //   console.log(localStorage.getItem('likedPosts'));
+        // } else {
+        //   //unliked
 
-          const index = likedPosts.indexOf(product._id);
-          likedPosts.splice(index, 1);
+        //   const index = likedPosts.indexOf(product._id);
+        //   likedPosts.splice(index, 1);
 
-          localStorage.setItem('likedPosts', JSON.stringify(likedPosts))
-          console.log("unliked post");
-          console.log(localStorage.getItem('likedPosts'));
-        }
+        //   localStorage.setItem('likedPosts', JSON.stringify(likedPosts))
+        //   console.log("unliked post");
+        //   console.log(localStorage.getItem('likedPosts'));
+        // }
 
       } else {
         alert("Failed to like post");
@@ -130,7 +130,6 @@ const Item = ({ product, sold, showBuyRentButtons }) => {
   };
   return(
     <Card sx={{ maxWidth: 345 }}>
-      {sold && <div className="sold-overlay">SOLD</div>}
       <CardActionArea onClick={() => {
         navigate(`/item/${product._id}`);
       }}>
@@ -140,6 +139,7 @@ const Item = ({ product, sold, showBuyRentButtons }) => {
         >
         </CardMedia>
         <CardContent>
+          {sold && <div className="sold-overlay">SOLD</div>}
           <Typography gutterBottom variant="h5" component="div">
             {product.name}
           </Typography>

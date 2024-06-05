@@ -82,6 +82,7 @@ router.post("/signin", upload.none(), async (req, res) => {
         name: existingUser.name, 
         profilePicture: existingUser.profilePicture,
         school: existingUser.school,
+        likedPosts: existingUser.likedPosts,
         purchasedPosts: existingUser.purchasedPosts, 
         pendingPosts: existingUser.pendingPosts,
         pendingRequests: existingUser.pendingRequests,
@@ -166,25 +167,53 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//get liked posts
-router.get("/:username/likedpost", async (req, res) => {
-  const { username } = req.params;
+router.get("/:id/likedPost", async (req, res) => {
   try {
-    const userId = req.userId;
-    
-    const collection = await db.collection("users");
-    const query = { _id: new ObjectId(userId) }; // Ensure req.userId is set and valid
-    const post = await collection.findOne(username, { likedPosts: 1 });
-    
-    if (!post) {
-      return res.status(404).send("Posts not found");
+    const username = req.params.id;
+    // if (!isValidObjectId(userId)) {
+    //   return res.status(400).send("Invalid userId");
+    // }
+
+    const userCollection = db.collection("users");
+    const existingUser = await userCollection.findOne({ username });
+
+    if (!existingUser) {
+      return res.status(404).send("User not found");
     }
 
-    res.status(200).json(post.likedPosts);
+    res.status(200).json({
+      user: {
+        likedPosts: existingUser.likedPosts
+      }
+    });
+
+    
   } catch (err) {
-    // console.error("Error in userRoute:", error);
-    res.status(500).send("Error fetching liked posts");
+    console.error(err);
+    res.status(500).send("Error fetching user");
   }
 });
+
+
+//get liked posts
+// router.get("/:username/likedpost", async (req, res) => {
+//   const { username } = req.params;
+//   try {
+//     const userId = req.userId;
+    
+//     const collection = await db.collection("users");
+//     const query = { _id: new ObjectId(userId) }; // Ensure req.userId is set and valid
+//     const post = await collection.findOne(username, { likedPosts: 1 });
+    
+//     if (!post) {
+//       return res.status(404).send("Posts not found");
+//     }
+
+//     res.status(200).json(post.likedPosts);
+//   } catch (err) {
+//     // console.error("Error in userRoute:", error);
+//     res.status(500).send("Error fetching liked posts");
+//   }
+// });
 
 export default router;

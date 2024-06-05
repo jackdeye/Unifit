@@ -103,6 +103,7 @@ export default function App() {
     // Dispatch custom event
     const event = new Event('localStorageUpdated');
     window.dispatchEvent(event);
+    setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
