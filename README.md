@@ -9,10 +9,14 @@ Unifit: a platform that allows university students to effortlessly buy, sell, an
 ## Features
 - User Authentication
   - After user logs in, they remain logged in for 1 hour then are automatically logged out for security.
+- Post:
+  - Users can post items along with the product's name, description, picture, size, and quality. If the user wants the item to be for sale, they can check the "for sale" box and add the buy price. Also, if they want the item to be available for rent, they can check the "for rent" box, add the rental price, and the dates the product is available to rent out
 - Gallery:
+  - Displays products that other users have previously posted
   - Filters: For Rent, For Buy, Posts from user's School, Fuzzy Find for searching through posts
 - Profile
-  - Upload profile picture, school, bio
+  - Displays username, name, profile picture, school, bio
+  - Ability to edit aspects of profile
   - Displays all purchased, rented posts, and user's own listings
   - When an item is purchased, the seller can Accept or Decline the purchase
     - If sold, post is greyed out and marked sold on profile
