@@ -130,6 +130,7 @@ const Item = ({ product, sold, showBuyRentButtons }) => {
   };
   return(
     <Card sx={{ maxWidth: 345 }}>
+      {sold && <div className="sold-overlay">SOLD</div>}
       <CardActionArea onClick={() => {
         navigate(`/item/${product._id}`);
       }}>
