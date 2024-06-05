@@ -36,9 +36,6 @@ export default function Login({ onLogin }) {
   };
 
   const handleSubmission = async (event) => {
-    console.log("we are getting run");
-    console.log(username);
-    console.log(password);
     event.preventDefault(); 
     const formDataToSend = new FormData();
     formDataToSend.append('username', username);
