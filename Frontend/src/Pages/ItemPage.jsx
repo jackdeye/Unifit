@@ -220,7 +220,7 @@ const ItemPage = () => {
               </Button>
             </>
           )}
-             <Button variant="contained" onClick={handleRent} sx={{ ml: 2 , mt:2}} >Confirm Rental</Button>
+             {product.isForRent && (<Button variant="contained" onClick={handleRent} sx={{ ml: 2 , mt:2}} >Confirm Rental</Button>)}
 
             </Grid>
           </Grid>
