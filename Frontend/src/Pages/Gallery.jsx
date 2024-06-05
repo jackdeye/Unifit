@@ -40,14 +40,14 @@ const Gallery = () => {
       try {
         const response = await fetch(url);
         if (response.ok) {
-          let data = await response.json();
-          const filteredProducts = data.filter(
+          const data = await response.json();
+          let filteredProducts = data.filter(
             product => product.image 
             && !product.sold 
             && !product.pending 
             && product.username !== localStorage.getItem('username'));
-          if (showSchoolPosts) {
-            data = filteredProducts.filter(product => product.school === school);
+          if (showSchoolPosts && school) {
+            filteredProducts = filteredProducts.filter(product => product.school === school);
           }
           setProducts(filteredProducts);
         } else {
@@ -103,6 +103,7 @@ const Gallery = () => {
       matchesSaleFilter = true;
       matchesRentFilter = true;
     }
+
     const buyPrice = product.isForSale ? product.buyPrice : Infinity;
     const rentPrice = product.isForRent ? product.rentPrice : Infinity;
     const min = minPrice ? parseFloat(minPrice) : 0;
@@ -163,7 +164,7 @@ const Gallery = () => {
               control={<Checkbox/>}
               label="Posts from my School"
               value={showSchoolPosts}
-              name="isForRent"
+              name="isForSchool"
             />
           </FormGroup>
           <FormControl sx={{marginTop:"15px"}}>
