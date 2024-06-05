@@ -162,6 +162,7 @@ const PostPage = () => {
           id="outlined-required"
           label="Title"
           value={formData.name}
+          autoComplete='off'
           name="name"
           onChange={handleChange}
         />
@@ -170,6 +171,7 @@ const PostPage = () => {
           id="outlined-required"
           label="Description"
           value={formData.desc}
+          autoComplete='off'
           name="desc"
           onChange={handleChange}
         />

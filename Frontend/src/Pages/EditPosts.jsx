@@ -239,6 +239,7 @@ const EditPosts = () => {
           sx={{ m: 1, width: '25ch' }}
           id="outlined-required"
           label="Title"
+          autoComplete='off'
           value={formData.name}
           name="name"
           onChange={handleChange}
@@ -247,6 +248,7 @@ const EditPosts = () => {
           sx={{ m: 1, width: '25ch' }}
           id="outlined-required"
           label="Description"
+          autoComplete='off'
           value={formData.desc}
           name="desc"
           onChange={handleChange}

@@ -49,8 +49,8 @@ router.post("/signup", upload.none(), async (req, res) => {
           username, 
           id: result.insertedId, 
           name: `${firstName} ${lastName}`, 
-          profilePicture: null }, 
-          school,
+          profilePicture: null , 
+          school },
           token 
         });
     } else {

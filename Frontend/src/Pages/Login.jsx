@@ -103,6 +103,7 @@ export default function Login({ onLogin }) {
           sx={{ m: 1, width: '25ch' }}
           id="outlined-required"
           label="Username"
+          autoComplete='off'
           onChange={(e)=>username=e.target.value}
         />
         </Grid>
@@ -112,6 +113,7 @@ export default function Login({ onLogin }) {
         <OutlinedInput
           id="outlined-adornment-password"
           type={showPassword ? 'text' : 'password'}
+          autoComplete='off'
           endAdornment={
             <InputAdornment position="end">
               <IconButton
