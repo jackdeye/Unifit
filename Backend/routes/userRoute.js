@@ -49,8 +49,14 @@ router.post("/signup", upload.none(), async (req, res) => {
           username, 
           id: result.insertedId, 
           name: `${firstName} ${lastName}`, 
+<<<<<<< HEAD
           profilePicture: null , 
           school },
+=======
+          profilePicture: null, 
+          school
+        },
+>>>>>>> b2797f1a98ebd0f606ec77bbf17e2c0fc4fdb161
           token 
         });
     } else {
@@ -118,8 +124,6 @@ router.post("/editprofile", upload.single('profilePicture'), async (req, res) =>
     if (req.file) {
       const base64Image = req.file.buffer.toString("base64");
       updates.profilePicture = base64Image;
-    } else {
-      updates.profilePicture = null;
     }
 
     const result = await collection.updateOne(
