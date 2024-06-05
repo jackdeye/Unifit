@@ -61,7 +61,7 @@ router.get("/school/:school", async (req, res) => {
 
   try {
     const collection = await db.collection("posts");
-    const results = await collection.find({ school : schoolName }).toArray();
+    const results = await collection.find({ schoolName }).toArray();
     if (!results.length) {
       return res.status(404).send("No posts found for this school");
     }
