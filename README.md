@@ -13,7 +13,9 @@ Unifit: a platform that allows university students to effortlessly buy, sell, an
   - Filters: For Rent, For Buy, Posts from user's School, Fuzzy Find for searching through posts
 - Profile
   - Upload profile picture, school, bio
-  - Displays all purchased, rented posts, and user's own listings 
+  - Displays all purchased, rented posts, and user's own listings
+  - When an item is purchased, the seller can Accept or Decline the purchase
+    - If sold, post is greyed out and marked sold on profile
 - Favorites
   - Displays all the posts a user has liked
 - Product Page
