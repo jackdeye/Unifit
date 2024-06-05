@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react';
 import '../styles/Gallery.css'; 
 import Fuse from 'fuse.js';
 import Item from '../Components/Item.jsx';
-import {
-  OutlinedInput,
-  InputAdornment,
-  FormControl,
-  InputLabel,
-} from '@mui/material';
-import { Search } from '@mui/icons-material';
 
 const Favorites = () => {
   const [products, setProducts] = useState([]);
@@ -21,28 +14,40 @@ const Favorites = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
+      try {        
+        const username = localStorage.getItem('username');
+        const response = await fetch(`http://localhost:5050/user/${username}/likedPost`);
+    
+        if (response.ok) {
+            const data = await response.json();
+            // Store likedPosts as a JSON string
+            localStorage.setItem('likedPosts', JSON.stringify(data.user.likedPosts));
+        } else {
+            console.error("no good");
+        }
+    
+        // Retrieve and parse likedPosts array from localStorage
         const posts = JSON.parse(localStorage.getItem('likedPosts')) || [];
-
+    
         // Function to fetch post details by ID
         const fetchPostById = async (id) => {
-          const response = await fetch(`http://localhost:5050/post/${id}`);
-          if (response.ok) {
-            return response.json();
-          } else {
-            console.error('Failed to fetch post:', id);
-            return null;
-          }
+            const response = await fetch(`http://localhost:5050/post/${id}`);
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.error('Failed to fetch post:', id);
+                return null;
+            }
         };
-
+    
         // Fetch all posts in parallel
         const postsData = await Promise.all(posts.map(fetchPostById));
         // Filter out any null responses (in case of fetch failures)
         setProducts(postsData.filter(post => post !== null));
-
-      } catch (error) {
+    
+    } catch (error) {
         console.error('Error fetching liked posts:', error);
-      }
+    }
     };
 
     fetchProducts();
@@ -93,7 +98,7 @@ const Favorites = () => {
       ret = fuse.search(searchQuery).map(obj => obj.item);
     }
     ret = filterProducts(ret).map((product) => (
-      <Item key={product._id} product={product} showBuyRentButtons='true'/>
+      <Item key={product._id} product={product} />
     ));
     if(ret.length === 0) {
       ret = <div>No Products Found</div>;
@@ -103,19 +108,46 @@ const Favorites = () => {
 
   return (
     <div className="product-list-container">
-      <div className="products-favorite">
+      <div className="filters-section">
+        <h2>Filters</h2>
+        <ul>
+          <li><input type="checkbox" checked={showForSale} onChange={handleToggleForSale} /> For Sale</li>
+          <li><input type="checkbox" checked={showForRent} onChange={handleToggleForRent} /> For Rent</li>
+        </ul>
+        <div className="price-filter">
+          <div className="price-input">
+          <label>
+            Min Price: 
+            <input type="number" value={minPrice} onChange={handleMinPriceChange} placeholder="Min Price" />
+          </label>
+          </div>
+          <div className="price-input">
+            <label>
+              Max Price: 
+              <input type="number" value={maxPrice} onChange={handleMaxPriceChange} placeholder="Max Price" />
+            </label>
+
+          </div>
+        </div>
+        <div>
+          <label>
+            Sort By Price:
+            <select value={priceOrder} onChange={handlePriceOrderChange}>
+              <option value="asc">High to Low</option>
+              <option value="desc">Low to High</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div className="products-gallery">
         <h2>Products</h2>
-        <FormControl size="medium" fullWidth>
-          <InputLabel htmlFor="outlined-adornment">Search</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment"
-            startAdornment={<InputAdornment position="start"><Search/></InputAdornment>}
-            name="search"
-            value={searchQuery}
-            label="search-bar"
-            onChange={handleSearchChange}
-          />
-        </FormControl>
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="search-bar"
+        />
         <div className="products-grid">
           {getFilteredAsItems()}
         </div>

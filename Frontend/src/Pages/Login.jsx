@@ -63,6 +63,7 @@ export default function Login({ onLogin }) {
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('profilePicture', data.user.profilePicture);
         localStorage.setItem('school', data.user.school);
+        localStorage.setItem('likedPosts', data.user.likedPosts);
         console.log('login pfp: ', data.user.profilePicture);
         localStorage.setItem('purchasedPosts', JSON.stringify(data.user.purchasedPosts || []));
         localStorage.setItem('pendingPosts', JSON.stringify(data.user.pendingPosts || []));
