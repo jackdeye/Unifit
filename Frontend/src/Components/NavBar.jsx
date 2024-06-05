@@ -99,6 +99,7 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
 
   useEffect(() => {
     setLocalProfilePicture(profilePicture);
+    console.log(localProfilePicture);
     setName(profile);
   }, [profilePicture, profile]);
 
