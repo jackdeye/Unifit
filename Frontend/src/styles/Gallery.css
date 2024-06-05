@@ -46,6 +46,12 @@
     padding: 20px;
     gap: 10px;
   }
+
+  .products-favorite {
+    width: 100%;
+    padding: 20px;
+    gap: 10px;
+  }
   
   .products-gallery h2 {
     margin-bottom: 10px;
