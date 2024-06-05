@@ -9,7 +9,10 @@ import {
   CardActionArea,
   CardActions,
   Button,
+  IconButton,
 } from '@mui/material';
+
+import { Favorite } from '@mui/icons-material'
 
 const Item = ({ product, sold, showBuyRentButtons }) => {
   const [like, setLike] = useState(false);
@@ -134,21 +137,14 @@ const Item = ({ product, sold, showBuyRentButtons }) => {
           sx={{ height: 200 }}
           image={`data:image/jpeg;base64,${product.image}`}
         >
-          <button
-              className={`heart-button ${like ? 'liked' : ''}`}
-              aria-label="Like"
-              onClick={handleLike}
-            >
-              <span className="heart"></span>
-          </button>
         </CardMedia>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {product.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {product.isForSale && <p>Buy: ${product.buyPrice}</p>}
-            {product.isForRent && <p>Rent: ${product.rentPrice}</p>}
+            {product.isForSale && <div>Buy: ${product.buyPrice}</div>}
+            {product.isForRent && <div>Rent: ${product.rentPrice}</div>}
           </Typography>
           {product.isForSale && showBuyRentButtons && <Button sx={{marginRight:"10px"}} variant="contained" onClick={handleBuyRequest}>Buy</Button>}
           {product.isForRent && showBuyRentButtons && (
@@ -158,8 +154,20 @@ const Item = ({ product, sold, showBuyRentButtons }) => {
           )}
         </CardContent>
       </CardActionArea>
+      <CardActions>
+        <IconButton size="medium" onClick={handleLike} className={`heart-button ${like ? 'liked' : ''}`}>
+          <span className="heart"></span>
+        </IconButton>
+      </CardActions>
     </Card>
   );
 };
 
+        /*<button
+            className={`heart-button ${like ? 'liked' : ''}`}
+            aria-label="Like"
+            onClick={handleLike}
+          >
+            <span className="heart"></span>
+        </button>*/
 export default Item;
