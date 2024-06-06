@@ -118,8 +118,12 @@ router.patch("/:id/rent", auth, async (req, res) => {
     // Parse selected date
     const selectedDate = new Date(date);
     // Check if selected date falls within the availability range
+     // Extract YYYY-MM-DD part
+     const startDateString = startDate.toISOString().slice(0, 10);
+     const endDateString = endDate.toISOString().slice(0, 10);
+     const selectedDateString = selectedDate.toISOString().slice(0, 10);
 
-    if (selectedDate >= startDate && selectedDate <= endDate) {
+     if (selectedDateString >= startDateString && selectedDateString <= endDateString){
       // Check if posts.rented is not empty and selectedDate is not in posts.rented
       if (post.rented && post.rented.length > 0) {
         const rentedDates = post.rented.map(date => new Date(date));
@@ -131,11 +135,16 @@ router.patch("/:id/rent", auth, async (req, res) => {
             { $push: { rented: selectedDate } }
           );
 
-          // add post to user's rented posts
-          await userCollection.updateOne(
-            { _id: new ObjectId(userId) },
-            { $push: { rentedPosts: new ObjectId(postId) } }
-          );
+          const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+          if (!user.rentedPosts.includes(postId)) {
+            await userCollection.updateOne(
+              { _id: new ObjectId(userId) },
+              { $push: { rentedPosts: new ObjectId(postId) } }
+            );
+          } else {
+            console.log('Post already in user\'s rentedPosts');
+          }
           return res.status(200).send("Rental confirmed successfully");
         } else {
           return res.status(400).send("Date already rented");
