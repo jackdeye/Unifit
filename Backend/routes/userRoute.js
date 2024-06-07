@@ -193,26 +193,4 @@ router.get("/:id/likedPost", async (req, res) => {
   }
 });
 
-
-//get liked posts
-// router.get("/:username/likedpost", async (req, res) => {
-//   const { username } = req.params;
-//   try {
-//     const userId = req.userId;
-    
-//     const collection = await db.collection("users");
-//     const query = { _id: new ObjectId(userId) }; // Ensure req.userId is set and valid
-//     const post = await collection.findOne(username, { likedPosts: 1 });
-    
-//     if (!post) {
-//       return res.status(404).send("Posts not found");
-//     }
-
-//     res.status(200).json(post.likedPosts);
-//   } catch (err) {
-//     // console.error("Error in userRoute:", error);
-//     res.status(500).send("Error fetching liked posts");
-//   }
-// });
-
 export default router;

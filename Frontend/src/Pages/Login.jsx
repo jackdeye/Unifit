@@ -54,18 +54,15 @@ export default function Login({ onLogin }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data: ", data);
         localStorage.setItem('token', data.token);
         localStorage.setItem('profile', data.user.name);
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('profilePicture', data.user.profilePicture);
         localStorage.setItem('school', data.user.school);
         localStorage.setItem('likedPosts', data.user.likedPosts);
-        console.log('login pfp: ', data.user.profilePicture);
         localStorage.setItem('purchasedPosts', JSON.stringify(data.user.purchasedPosts || []));
         localStorage.setItem('pendingPosts', JSON.stringify(data.user.pendingPosts || []));
         localStorage.setItem('pendingRequests', JSON.stringify(data.user.pendingRequests || []));
-        // console.log("local storage purchasedPosts: ", localStorage.getItem('purchasedPosts'));
         onLogin(
           data.user.name, 
           data.token, 
@@ -73,7 +70,6 @@ export default function Login({ onLogin }) {
           data.user.purchasedPosts
         );
         alert('User logged in!');
-        console.log("Logged In!");
         navigate('/homepage');
       } else {
         const errorText = await response.json();

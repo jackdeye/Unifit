@@ -31,7 +31,7 @@ const Favorites = () => {
             // Store likedPosts as a JSON string
             localStorage.setItem('likedPosts', JSON.stringify(data.user.likedPosts));
         } else {
-            console.error("no good");
+            console.error("Error Fetching Usernames");
         }
     
         // Retrieve and parse likedPosts array from localStorage

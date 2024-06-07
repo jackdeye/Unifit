@@ -23,7 +23,7 @@ const ItemPage = () => {
           const data = await response.json();
           setProduct(data);
         } else {
-          console.log(response);
+          console.error(response);
           console.error('Failed to fetch product');
         }
       } catch (error) {

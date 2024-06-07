@@ -72,9 +72,7 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
       setName(localStorage.getItem('profile'));
       // Check for pending requests
       const pendingRequests = localStorage.getItem('pendingRequests');
-      console.log("pendingRequests: ", pendingRequests);
       setHasPendingRequests(pendingRequests && JSON.parse(pendingRequests).length > 0);
-      console.log("setHasPendingRequests", hasPendingRequests);
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -99,7 +97,6 @@ export default function Navbar({ profile, profilePicture, isAuthenticated, onLog
 
   useEffect(() => {
     setLocalProfilePicture(profilePicture);
-    console.log(localProfilePicture);
     setName(profile);
   }, [profilePicture, profile]);
 

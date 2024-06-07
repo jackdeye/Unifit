@@ -29,7 +29,6 @@ export default function App() {
     () => ({
       toggleColorMode: () => {
         localStorage.setItem("mode", mode === 'light' ? 'dark' : 'light' )
-        console.log("local storage: ", localStorage.getItem("mode"), " mode: ", mode);
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
       },
     }),
@@ -40,7 +39,6 @@ export default function App() {
     if( localStorage.getItem("mode")){
       setMode(localStorage.getItem("mode"))
     }
-    console.log("Mode: ", mode, " Local Storage: ", localStorage.getItem("mode"));
   },[]);
 
   //useEffect(() => localStorage.setItem("mode", mode), [mode]);
@@ -95,9 +93,7 @@ export default function App() {
     localStorage.setItem('token', token);
     localStorage.setItem('profile', profile);
     localStorage.setItem('profilePicture', profilePicture || ''); 
-    console.log("purchased posts array: ", purchasedPosts);
     localStorage.setItem('purchasedPosts', JSON.stringify(purchasedPosts) || []);
-    console.log('purchasedPosts: ', localStorage.getItem('purchasedPosts'));
     setProfile(profile);
     setProfilePicture(profilePicture || '');
     // Dispatch custom event

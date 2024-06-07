@@ -159,7 +159,6 @@ const EditPosts = () => {
     event.preventDefault();
 
     try {
-      console.log(formData);
       const token = localStorage.getItem('token'); // Retrieve the token from local storage
       if (!token) {
         throw new Error('No token found. Please log in again.');

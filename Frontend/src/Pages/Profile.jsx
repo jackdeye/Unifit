@@ -58,7 +58,6 @@ export default function Profile() {
     };
     const fetchRentedProducts = async () => {
       const rentedProductIds = JSON.parse(localStorage.getItem('rentedPosts')) || [];
-      console.log("rentedProductIds", rentedProductIds);
       if (rentedProductIds.length > 0) {
         try {
           const responses = await Promise.all(

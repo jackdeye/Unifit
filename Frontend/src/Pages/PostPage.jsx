@@ -96,7 +96,6 @@ const PostPage = () => {
       }
       const username = localStorage.getItem('username');
       const school = localStorage.getItem('school');
-      console.log("username: ", username);
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('desc', formData.desc);
