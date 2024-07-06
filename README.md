@@ -2,6 +2,8 @@
 CS35L Spring 2024 Final Project
 - Selina Song, Fiona Peng, Aidan Van Duyne, Jack Deye, Clare Jin, Alyssa Leung
 
+[Youtube Video Demo](https://youtu.be/8Kdt_7sgEt8?feature=shared)
+
 ## Summary
 Have you ever wondered why clothes are so expensive when you will get just a few uses out of them? Whether it is a nice suit needed for a presentation or a dress for a single night out with friends, uses for expensive clothes can be few and far between. 
 
