@@ -158,6 +158,13 @@ const ItemPage = () => {
       if (response.ok) {
         alert('Item rented successfully!');
         setSelectedDate(null);
+
+        const newRentedDate = selectedDate.toISOString().split('T')[0];
+        setProduct(prevProduct => ({
+        ...prevProduct,
+        rented: [...(prevProduct.rented || []), newRentedDate]
+      }));
+
         // Fetch the current rentedPosts from localStorage
         const rentedPosts = JSON.parse(localStorage.getItem('rentedPosts')) || [];
 
